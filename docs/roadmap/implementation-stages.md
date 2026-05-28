@@ -1,42 +1,47 @@
 ﻿# Implementation Stages
 
-## Stage 0 - Repository Foundation
-- create final monorepo structure
-- migrate existing VATranscribe_clean modules
+Stage 0 - Migration
+- create VATranscribeWeb repository
+- migrate working modules from VATranscribe_clean
 - keep old implementations safe
-- prepare docs, env and CI placeholders
 
-## Stage 1 - Security and Privacy Foundation
-- auth hardening
-- refresh token rotation
-- user consents
-- audit logs
-- file ownership checks
-- rate limits
-- privacy requests
+Stage 1 - Structure and Documentation
+- create apps/marketing skeleton
+- create apps/admin skeleton
+- create docs/security
+- create docs/privacy
+- create docs/monetization
+- create scripts/reports
+- create tests/security and tests/privacy
 
-## Stage 2 - SaaS Billing
+Stage 2 - Security and Privacy Foundation
+- harden auth
+- add consent records
+- add audit logs
+- add privacy request models
+- add file ownership checks
+
+Stage 3 - Billing Core
 - plans
 - subscriptions
 - payments
 - webhooks
 - fiscal receipts
 
-## Stage 3 - Usage, Quota and Credits
+Stage 4 - Usage, Quota and Credits
 - usage events
 - quota reservations
 - credit packs
-- monthly limits
+- monthly reset
 
-## Stage 4 - Desktop Licensing
+Stage 5 - Desktop Licensing
 - licenses
 - devices
-- activations
-- desktop release downloads
+- activation
+- app versions
 
-## Stage 5 - Marketing, SEO and Monetization
-- marketing site
-- SEO pages
-- affiliate links
+Stage 6 - Marketing Monetization
+- affiliate
 - ads
 - sponsored placements
+- reports

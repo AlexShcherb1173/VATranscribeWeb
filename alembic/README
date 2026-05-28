@@ -1,0 +1,12 @@
+This directory contains Alembic migration environment for VATranscribe.
+
+Usage examples:
+
+1. Create a new migration:
+   alembic revision --autogenerate -m "init"
+
+2. Apply migrations:
+   alembic upgrade head
+
+3. Roll back one migration:
+   alembic downgrade -1

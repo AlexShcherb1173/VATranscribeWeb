@@ -1,0 +1,5 @@
+# Optional advanced Lyrics / Music clip mode dependencies for the worker.
+# Add these packages to the worker image/requirements used by infra/docker/worker.Dockerfile.
+demucs>=4.0.1
+torch
+torchaudio

@@ -1,0 +1,14 @@
+{
+  "name": "@vatranscribe/api",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "docker compose up -d api worker db redis",
+    "build": "docker compose build api worker",
+    "typecheck": "python -m compileall apps packages",
+    "lint": "python -m compileall apps packages",
+    "test": "python -m pytest",
+    "doctor": "python -c \"from apps.api.app.config import get_settings; s=get_settings(); print(s.app_name); print(s.api_prefix); print(s.cors_origins_list)\"",
+    "clean": "echo \"Python clean is handled from root\""
+  }
+}

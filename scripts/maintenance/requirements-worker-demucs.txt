@@ -1,0 +1,5 @@
+# Worker-only dependencies for the permanent Lyrics / Music clip pipeline.
+# Torch and torchaudio CPU wheels are installed explicitly in infra/docker/worker.Dockerfile.
+demucs==4.0.1
+soundfile>=0.12.1,<1.0.0
+numpy>=1.26.0,<2.0.0

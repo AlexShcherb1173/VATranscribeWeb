@@ -56,7 +56,7 @@ RUN python -m pip install --upgrade pip setuptools wheel \
     && pip install --default-timeout=300 --retries 10 --index-url https://download.pytorch.org/whl/cpu \
         torch==2.5.1+cpu \
         torchaudio==2.5.1+cpu \
-    && pip install --default-timeout=300 --retries 10 -r requirements-worker-demucs.txt \
+    && pip install --default-timeout=300 --retries 10 -r requirements-demucs.txt \
     && python -c "import torch, torchaudio, demucs; print('Demucs permanent build OK:', torch.__version__)"
 
 COPY . .

@@ -1,0 +1,95 @@
+﻿
+Path                                                                     LineNumber Line                                                                                        
+----                                                                     ---------- ----                                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py          9 from apps.api.app.dependencies import get_current_user                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         10 from apps.api.app.models import User                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         16     RegisterRequest,                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         18     UserRead,                                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         22 from apps.api.app.services.account_bootstrap import ensure_user_profile, ensure_user_quota  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         23 from apps.api.app.services.audit_service import record_audit_event                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         26     create_refresh_token_for_user,                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         27     revoke_all_user_refresh_tokens,                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         39 def ensure_account_defaults(db: Session, user: User) -> None:                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         41         ensure_user_profile(db, user)                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         42         ensure_user_quota(db, user)                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         43         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         45         db.rollback()                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         46         ensure_user_profile(db, user)                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         47         ensure_user_quota(db, user)                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         48         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         51 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         52 def register_user(                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         53     payload: RegisterRequest,                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         56 ) -> User:                                                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         59     existing_user = db.scalar(select(User).where(User.email == email))                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         60     if existing_user is not None:                                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         61         record_audit_event(                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         64             action="auth.register_failed",                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         65             entity_type="User",                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         71         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         74             detail="User with this email already exists.",                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         77     user = User(                                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         83     db.add(user)                                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         86         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         88         db.rollback()                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         89         record_audit_event(                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         92             action="auth.register_failed",                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         93             entity_type="User",                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py         99         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        102             detail="User with this email already exists.",                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        105     db.refresh(user)                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        106     ensure_account_defaults(db, user)                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        107     db.refresh(user)                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        109     record_audit_event(                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        112         action="auth.register_success",                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        113         actor_user_id=str(user.id),                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        114         entity_type="User",                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        115         entity_id=str(user.id),                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        117             "email_mask": mask_email(user.email),                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        120     db.commit()                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        122     return user                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        126 def login_user(                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        133     user = db.scalar(select(User).where(User.email == email))                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        135     if user is None or not verify_password(payload.password, user.password_hash):           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        136         record_audit_event(                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        140             entity_type="User",                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        146         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        152     if not user.is_active:                                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        153         record_audit_event(                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        157             actor_user_id=str(user.id),                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        158             entity_type="User",                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        159             entity_id=str(user.id),                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        162                 "reason": "inactive_user",                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        165         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        168             detail="User is inactive.",                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        171     ensure_account_defaults(db, user)                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        172     db.refresh(user)                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        174     refresh_token, token_row = create_refresh_token_for_user(db, user)                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        176     record_audit_event(                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        180         actor_user_id=str(user.id),                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        184             "email_mask": mask_email(user.email),                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        188     db.commit()                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        191         access_token=create_access_token(subject=str(user.id)),                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        204         user, new_refresh_token, token_row = rotate_refresh_token(db, payload.refresh_token)
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        206         record_audit_event(                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        215         db.commit()                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        218     record_audit_event(                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        222         actor_user_id=str(user.id),                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        227     db.commit()                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        230         access_token=create_access_token(subject=str(user.id)),                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        237 def logout_user(                                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        247     record_audit_event(                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        257     db.commit()                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        263 def logout_all_user_sessions(                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        265     current_user: User = Depends(get_current_user),                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        268     revoked_count = revoke_all_user_refresh_tokens(db, current_user)                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        270     record_audit_event(                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        274         actor_user_id=str(current_user.id),                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        275         entity_type="User",                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        276         entity_id=str(current_user.id),                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        282     db.commit()                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        290 @router.get("/me", response_model=UserRead)                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        291 def read_me(current_user: User = Depends(get_current_user)) -> User:                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py        292     return current_user                                                                     
+
+

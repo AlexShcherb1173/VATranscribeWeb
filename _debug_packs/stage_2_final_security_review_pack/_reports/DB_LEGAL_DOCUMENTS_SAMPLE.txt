@@ -1,0 +1,7 @@
+﻿ document_type | version |              title               | is_active |         published_at          
+---------------+---------+----------------------------------+-----------+-------------------------------
+ personal_data | 1.0     | Personal Data Processing Consent | t         | 2026-05-30 20:26:32.736954+00
+ privacy       | 1.0     | Privacy Policy                   | t         | 2026-05-30 20:26:32.736176+00
+ terms         | 1.0     | Terms of Service                 | t         | 2026-05-30 20:26:32.735149+00
+(3 rows)
+

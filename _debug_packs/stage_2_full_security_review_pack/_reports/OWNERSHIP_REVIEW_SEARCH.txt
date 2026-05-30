@@ -1,0 +1,148 @@
+﻿
+Path                                                                                 LineNumber Line                                                                                             
+----                                                                                 ---------- ----                                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                      9 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    113         actor_user_id=str(user.id),                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    157             actor_user_id=str(user.id),                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    180         actor_user_id=str(user.id),                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    222         actor_user_id=str(user.id),                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    265     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    268     revoked_count = revoke_all_user_refresh_tokens(db, current_user)                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    274         actor_user_id=str(current_user.id),                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    276         entity_id=str(current_user.id),                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    291 def read_me(current_user: User = Depends(get_current_user)) -> User:                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    292     return current_user                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                   7 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  24     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  26     result = get_billing_overview(db, current_user)                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  32         actor_user_id=str(current_user.id),                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  34         entity_id=str(current_user.id),                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  46     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  52         actor_user_id=str(current_user.id),                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  54         entity_id=str(current_user.id),                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  64             user=current_user,                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  73             actor_user_id=str(current_user.id),                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  75             entity_id=str(current_user.id),                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  92         actor_user_id=str(current_user.id),                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                 26         user_id=0,                                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py                 8 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py                70     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py                91     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py                93     assert_can_create_job(db, current_user, jobs_to_add=1)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py               144         user_id=current_user.id,                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py               163     increment_jobs_used(db, current_user, 1)                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         11 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         21     current_user: User,                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         24         select(ExportArtifact)                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         29             MediaAsset.user_id == current_user.id,                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         49     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         51     item = _get_export_artifact_or_404(artifact_id, db, current_user)                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         71     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py         73     item = _get_export_artifact_or_404(artifact_id, db, current_user)                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py        104     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\export_artifacts.py        106     item = _get_export_artifact_or_404(artifact_id, db, current_user)                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                     12 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                     38 def _get_job_or_404(job_id: str, db: Session, current_user: User) -> Job:                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                     39     stmt = select(Job).where(                                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                     41         Job.user_id == current_user.id,                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                     59     job = db.get(Job, job_id)                                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    174         "transcription_media_asset_id": job.transcription_media_asset_id,                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    240     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    243         select(Job)                                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    244         .where(Job.user_id == current_user.id)                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    256     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    258     return _serialize_job(_get_job_or_404(job_id, db, current_user))                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    270     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    272     assert_can_create_job(db, current_user, jobs_to_add=1)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    275         user_id=current_user.id,                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    286         transcription_media_asset_id=payload.transcription_media_asset_id,                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    297     increment_jobs_used(db, current_user, 1)                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    313     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    315     _get_job_or_404(job_id, db, current_user)                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    335     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    337     job = _get_job_or_404(job_id, db, current_user)                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    362     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    364     job = _get_job_or_404(job_id, db, current_user)                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    387     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    392     return retry_job(job_id=job_id, db=db, current_user=current_user)                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    403     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    405     job = _get_job_or_404(job_id, db, current_user)                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    452     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    454     job = _get_job_or_404(job_id, db, current_user)                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    489     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    494     return cancel_job(job_id=job_id, db=db, current_user=current_user)                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             11 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             40     current_user: User,                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             43         select(MediaAsset)                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             47             MediaAsset.user_id == current_user.id,                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             62     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             65         select(MediaAsset)                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             66         .where(MediaAsset.user_id == current_user.id)                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             76     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             78     return _build_media_asset_response(_get_media_asset_or_404(media_asset_id, db, current_user))
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             85     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py             87     item = _get_media_asset_or_404(media_asset_id, db, current_user)                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py            107     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py            109     item = _get_media_asset_or_404(media_asset_id, db, current_user)                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\media_assets.py            125     sync_storage_usage_from_media_assets(db, current_user)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\profile.py                   5 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\profile.py                  20     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\profile.py                  22     profile = ensure_user_profile(db, current_user)                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\profile.py                  34     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\profile.py                  36     profile = ensure_user_profile(db, current_user)                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\quota.py                     5 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\quota.py                    20     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\quota.py                    22     quota = get_or_create_quota(db, current_user)                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\settings.py                  9 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\settings.py                 49     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\settings.py                 65     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\settings.py                 90     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py           13 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          155     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          157     stmt = select(MediaAsset).where(                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          159         MediaAsset.user_id == current_user.id,                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          169     assert_can_create_job(db, current_user, jobs_to_add=1)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          172         current_user,                                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          184         user_id=current_user.id,                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          189         transcription_media_asset_id=media_asset.id,                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          202     increment_jobs_used(db, current_user, 1)                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          221     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          224         select(Transcript)                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py          234             MediaAsset.user_id == current_user.id,                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py              15 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             138     current_user: User,                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             141         select(Transcript)                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             151             MediaAsset.user_id == current_user.id,                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             168     current_user: User,                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             171         select(ExportArtifact)                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             177             MediaAsset.user_id == current_user.id,                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             374     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             377         select(Transcript)                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             384         .where(MediaAsset.user_id == current_user.id)                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             400     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             402     transcript = _get_transcript_or_404(transcript_id, db, current_user)                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             441         select(Transcript)                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             448         .where(Transcript.id == transcript.id)                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             464     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             466     item = _get_export_artifact_or_404(artifact_id, db, current_user)                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             492     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             494     item = _get_export_artifact_or_404(artifact_id, db, current_user)                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             503     sync_storage_usage_from_media_assets(db, current_user)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             512     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             514     item = _get_transcript_or_404(transcript_id, db, current_user)                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             526     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             528     item = _get_transcript_or_404(transcript_id, db, current_user)                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcripts.py             538     sync_storage_usage_from_media_assets(db, current_user)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                  11 from apps.api.app.dependencies import get_current_user                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                  70     current_user: User,                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                  75     assert_can_create_job(db, current_user, jobs_to_add=1)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                  79         user_id=current_user.id,                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                  96     increment_jobs_used(db, current_user, 1)                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                 143     current_user: User = Depends(get_current_user),                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                 171     upload_job = _create_upload_job(db, current_user, original_name, extension, known_size_bytes)
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                 175             assert_can_store_bytes(db, current_user, known_size_bytes)                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                 192             assert_can_store_bytes(db, current_user, size_bytes)                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                 202             user_id=current_user.id,                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                 218         increment_storage_used(db, current_user, size_bytes)                                     
+
+

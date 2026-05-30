@@ -1,0 +1,11 @@
+﻿         action          |            actor_user_id             | entity_type  |              entity_id               |          created_at           
+-------------------------+--------------------------------------+--------------+--------------------------------------+-------------------------------
+ auth.register_failed    |                                      | User         |                                      | 2026-05-30 20:27:13.008367+00
+ legal.consents_accepted | a851800d-d5b2-4602-a951-86c99281a6a6 | User         | a851800d-d5b2-4602-a951-86c99281a6a6 | 2026-05-30 20:27:00.96663+00
+ auth.register_success   | a851800d-d5b2-4602-a951-86c99281a6a6 | User         | a851800d-d5b2-4602-a951-86c99281a6a6 | 2026-05-30 20:27:00.96663+00
+ auth.logout             |                                      | RefreshToken |                                      | 2026-05-30 16:32:56.133196+00
+ auth.refresh_success    | dac2098a-aaae-4409-8110-11bea2dfeff5 | RefreshToken | 6408a2a1-d9aa-4838-a1ce-159f4445d0b6 | 2026-05-30 16:32:55.20484+00
+ billing.overview_viewed | dac2098a-aaae-4409-8110-11bea2dfeff5 | User         | dac2098a-aaae-4409-8110-11bea2dfeff5 | 2026-05-30 16:32:55.120253+00
+ auth.login_success      | dac2098a-aaae-4409-8110-11bea2dfeff5 | RefreshToken | 564d084b-5c93-40a7-adc6-0a9f6edb1eec | 2026-05-30 16:32:55.036937+00
+(7 rows)
+

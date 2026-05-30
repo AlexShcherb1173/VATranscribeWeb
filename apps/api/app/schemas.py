@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
@@ -41,6 +41,28 @@ class UserConsentRead(BaseModel):
 class ConsentAcceptCurrentResponse(BaseModel):
     items: list[UserConsentRead] = Field(default_factory=list)
 
+
+
+class PrivacyRequestCreate(BaseModel):
+    request_type: str = Field(pattern="^(export|delete_account|delete_files|revoke_consent)$")
+    comment: str | None = Field(default=None, max_length=2000)
+
+
+class PrivacyRequestRead(BaseModel):
+    id: str
+    user_id: str
+    request_type: str
+    status: str
+    comment: str | None = None
+    created_at: datetime | None = None
+    processed_at: datetime | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PrivacyOverviewResponse(BaseModel):
+    status: str = "ok"
+    requests: list[PrivacyRequestRead] = Field(default_factory=list)
 
 class RegisterRequest(BaseModel):
     email: EmailStr
@@ -344,3 +366,4 @@ class TranscriptResponse(BaseModel):
     exports: list[ExportArtifactResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
+

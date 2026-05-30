@@ -1,0 +1,99 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/api.Dockerfile
+    container_name: vatranscribe-api
+    working_dir: /app
+    command: uvicorn apps.api.app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+
+      # yt-dlp / YouTube options
+      YT_DLP_PROXY_URL: ${YT_DLP_PROXY_URL:-}
+      YT_DLP_YOUTUBE_PLAYER_CLIENT: ${YT_DLP_YOUTUBE_PLAYER_CLIENT:-}
+      YT_DLP_YOUTUBE_PO_TOKEN: ${YT_DLP_YOUTUBE_PO_TOKEN:-}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: vatranscribe-worker
+    working_dir: /app
+    command: celery -A apps.worker.app.worker:celery worker --loglevel=info --pool=solo --concurrency=1
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+      C_FORCE_ROOT: "true"
+      XDG_CACHE_HOME: "/app/storage/cache"
+      TORCH_HOME: "/app/storage/cache/torch"
+
+      # yt-dlp / YouTube options
+      YT_DLP_PROXY_URL: ${YT_DLP_PROXY_URL:-}
+      YT_DLP_YOUTUBE_PLAYER_CLIENT: ${YT_DLP_YOUTUBE_PLAYER_CLIENT:-}
+      YT_DLP_YOUTUBE_PO_TOKEN: ${YT_DLP_YOUTUBE_PO_TOKEN:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: vatranscribe-db
+    environment:
+      POSTGRES_DB: vatranscribe
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - vatranscribe_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vatranscribe"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: vatranscribe-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - vatranscribe_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  vatranscribe_postgres_data:
+  vatranscribe_redis_data:

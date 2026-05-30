@@ -1,0 +1,441 @@
+﻿╤ЄЁєъЄєЁр яряюъ Єюьр ═ют√щ Єюь
+╤хЁшщэ√щ эюьхЁ Єюьр: 0000020F A4E3:30D1
+D:\DEVPROJECT\PYTHONPROJECT\VATRANSCRIBEWEB\APPS\WEB\SRC
+ж   index.css
+ж   main.tsx
+ж   vite-env.d.ts
+ж   
++---app
+ж   ж   .gitkeep
+ж   ж   
+ж   +---providers
+ж   ж       AppProviders.tsx
+ж   ж       
+ж   +---router
+ж   ж       index.tsx
+ж   ж       
+ж   +---store
+ж   ж       index.ts
+ж   ж       
+ж   L---styles
+ж           index.css
+ж           
++---entities
+ж   ж   .gitkeep
+ж   ж   
+ж   +---billing
+ж   ж   L---model
+ж   ж           types.ts
+ж   ж           
+ж   +---job
+ж   ж   L---model
+ж   ж           types.ts
+ж   ж           
+ж   +---media-file
+ж   ж   L---model
+ж   ж           types.ts
+ж   ж           
+ж   +---profile
+ж   ж   L---model
+ж   ж           types.ts
+ж   ж           
+ж   +---quota
+ж   ж   L---model
+ж   ж           types.ts
+ж   ж           
+ж   +---transcript
+ж   ж   L---model
+ж   ж           types.ts
+ж   ж           
+ж   L---user
+ж       L---mode
+ж               types.ts
+ж               
++---features
+ж   ж   .gitkeep
+ж   ж   
+ж   +---auth
+ж   ж   +---api
+ж   ж   ж       auth.ts
+ж   ж   ж       
+ж   ж   +---model
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           LoginForm.tsx
+ж   ж           RegisterForm.tsx
+ж   ж           
+ж   +---billing
+ж   ж   +---api
+ж   ж   ж       billing.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           BillingSummaryCard.tsx
+ж   ж           PlanSelectorCard.tsx
+ж   ж           UpgradeBanner.tsx
+ж   ж           UpgradePlanCard.tsx
+ж   ж           UsageHistoryWidget.tsx
+ж   ж           
+ж   +---downloads
+ж   ж   +---api
+ж   ж   ж       downloads.ts
+ж   ж   ж       
+ж   ж   +---model
+ж   ж   ж       DownloadFlowProvider.tsx
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   +---models
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           AnalyzeUrlForm.tsx
+ж   ж           DownloadJobForm.tsx
+ж   ж           FormatsTable.tsx
+ж   ж           
+ж   +---files
+ж   ж   +---api
+ж   ж   ж       files.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           FilesTable.tsx
+ж   ж           StartTranscriptionButton.tsx
+ж   ж           
+ж   +---jobs
+ж   ж   +---api
+ж   ж   ж       jobs.ts
+ж   ж   ж       
+ж   ж   +---model
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           JobActions.tsx
+ж   ж           JobDetailsCard.tsx
+ж   ж           JobLogsPanel.tsx
+ж   ж           JobsStatsGrid.tsx
+ж   ж           
+ж   +---profile
+ж   ж   +---api
+ж   ж   ж       profile.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           AccountSummaryCard.tsx
+ж   ж           PlanCard.tsx
+ж   ж           ProfileForm.tsx
+ж   ж           QuotaWarningBanner.tsx
+ж   ж           
+ж   +---quota
+ж   ж   L---ui
+ж   ж           QuotaCard.tsx
+ж   ж           QuotaGrid.tsx
+ж   ж           
+ж   +---transcriptions
+ж   ж   +---api
+ж   ж   ж       transcriptions.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           SubtitleGenerator.tsx
+ж   ж           TranscriptCard.tsx
+ж   ж           TranscriptExports.tsx
+ж   ж           TranscriptSegmentsTable.tsx
+ж   ж           TranscriptsTable.tsx
+ж   ж           
+ж   +---transcripts
+ж   ж   L---ui
+ж   ж           TranscriptCard.tsx
+ж   ж           TranscriptExports.tsx
+ж   ж           TranscriptSegmentsTable.tsx
+ж   ж           TranscriptsTable.tsx
+ж   ж           
+ж   L---uploads
+ж       +---api
+ж       ж       uploads.ts
+ж       ж       
+ж       +---model
+ж       ж       types.ts
+ж       ж       UploadQueueProvider.tsx
+ж       ж       
+ж       L---ui
+ж               UploadDropzone.tsx
+ж               UploadQueue.tsx
+ж               UploadResultCard.tsx
+ж               
++---pages
+ж   ж   .gitkeep
+ж   ж   
+ж   +---auth
+ж   ж   ж   AuthPage.tsx
+ж   ж   ж   
+ж   ж   +---api
+ж   ж   ж       auth.ts
+ж   ж   ж       
+ж   ж   +---model
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           LoginForm.tsx
+ж   ж           RegisterForm.tsx
+ж   ж           
+ж   +---billing
+ж   ж   ж   BillingPage.tsx
+ж   ж   ж   
+ж   ж   +---api
+ж   ж   ж       billing.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           BillingSummaryCard.tsx
+ж   ж           PlanSelectorCard.tsx
+ж   ж           UpgradeBanner.tsx
+ж   ж           UpgradePlanCard.tsx
+ж   ж           UsageHistoryWidget.tsx
+ж   ж           
+ж   +---dashboard
+ж   ж       DashboardPage.tsx
+ж   ж       
+ж   +---downloads
+ж   ж   ж   DownloadsPage.tsx
+ж   ж   ж   
+ж   ж   +---api
+ж   ж   ж       downloads.ts
+ж   ж   ж       
+ж   ж   +---model
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   +---models
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           AnalyzeUrlForm.tsx
+ж   ж           DownloadJobForm.tsx
+ж   ж           FormatsTable.tsx
+ж   ж           
+ж   +---features
+ж   ж   +---files
+ж   ж   ж   +---api
+ж   ж   ж   ж       files.ts
+ж   ж   ж   ж       
+ж   ж   ж   L---ui
+ж   ж   ж           FilesTable.tsx
+ж   ж   ж           StartTranscriptionButton.tsx
+ж   ж   ж           
+ж   ж   L---uploads
+ж   ж       L---model
+ж   ж               UploadQueueProvider.tsx
+ж   ж               
+ж   +---files
+ж   ж   ж   FilesPage.tsx
+ж   ж   ж   
+ж   ж   +---api
+ж   ж   ж       files.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           FilesTable.tsx
+ж   ж           StartTranscriptionButton.tsx
+ж   ж           
+ж   +---jobs
+ж   ж   ж   JobsPage.tsx
+ж   ж   ж   
+ж   ж   +---api
+ж   ж   ж       jobs.ts
+ж   ж   ж       
+ж   ж   +---model
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           JobActions.tsx
+ж   ж           JobDetailsCard.tsx
+ж   ж           JobLogsPanel.tsx
+ж   ж           JobsStatsGrid.tsx
+ж   ж           
+ж   +---landing
+ж   ж       LandingPage.tsx
+ж   ж       
+ж   +---pages
+ж   ж   L---files
+ж   ж       ж   FilesPage.tsx
+ж   ж       ж   
+ж   ж       +---api
+ж   ж       ж       files.ts
+ж   ж       ж       
+ж   ж       L---ui
+ж   ж               FilesTable.tsx
+ж   ж               StartTranscriptionButton.tsx
+ж   ж               
+ж   +---pricing
+ж   ж       PricingPage.tsx
+ж   ж       
+ж   +---profile
+ж   ж   ж   ProfilePage.tsx
+ж   ж   ж   
+ж   ж   +---api
+ж   ж   ж       profile.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           AccountSummaryCard.tsx
+ж   ж           PlanCard.tsx
+ж   ж           ProfileForm.tsx
+ж   ж           QuotaWarningBanner.tsx
+ж   ж           
+ж   +---quota
+ж   ж   L---ui
+ж   ж           QuotaCard.tsx
+ж   ж           QuotaGrid.tsx
+ж   ж           
+ж   +---result
+ж   ж       ResultPage.tsx
+ж   ж       
+ж   +---settings
+ж   ж       SettingsPage.tsx
+ж   ж       
+ж   +---shared
+ж   ж   +---api
+ж   ж   ж       client.ts
+ж   ж   ж       files.ts
+ж   ж   ж       jobs.ts
+ж   ж   ж       settings.ts
+ж   ж   ж       transcriptions.ts
+ж   ж   ж       
+ж   ж   +---hooks
+ж   ж   ж       useBillingOverviewQuery.ts
+ж   ж   ж       useCurrentUserQuery.ts
+ж   ж   ж       useJobDetailsQuery.ts
+ж   ж   ж       useJobLogsQuery.ts
+ж   ж   ж       useJobsQuery.ts
+ж   ж   ж       useMediaFilesQuery.ts
+ж   ж   ж       useProfileQuery.ts
+ж   ж   ж       useQuotaQuery.ts
+ж   ж   ж       useTranscriptDetailsQuery.ts
+ж   ж   ж       useTranscriptsQuery.ts
+ж   ж   ж       useUpdateProfileMutation.ts
+ж   ж   ж       useUpgradePlanMutation.ts
+ж   ж   ж       
+ж   ж   +---i18n
+ж   ж   ж       I18nProvider.tsx
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           Badge.tsx
+ж   ж           Card.tsx
+ж   ж           EmptyState.tsx
+ж   ж           ErrorBoundary.tsx
+ж   ж           PageHeader.tsx
+ж   ж           PricingModal.tsx
+ж   ж           Spinner.tsx
+ж   ж           toast.ts
+ж   ж           ToastProvider.tsx
+ж   ж           
+ж   +---transcriptions
+ж   ж   ж   TranscriptionsPage.tsx
+ж   ж   ж   
+ж   ж   +---api
+ж   ж   ж       transcriptions.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           TranscriptCard.tsx
+ж   ж           TranscriptExports.tsx
+ж   ж           TranscriptSegmentsTable.tsx
+ж   ж           TranscriptsTable.tsx
+ж   ж           
+ж   +---transcripts
+ж   ж   ж   TranscriptsPage.tsx
+ж   ж   ж   
+ж   ж   L---ui
+ж   ж           TranscriptCard.tsx
+ж   ж           TranscriptExports.tsx
+ж   ж           TranscriptSegmentsTable.tsx
+ж   ж           TranscriptsTable.tsx
+ж   ж           
+ж   +---upgrade
+ж   ж       UpgradePage.tsx
+ж   ж       
+ж   +---uploads
+ж   ж   +---api
+ж   ж   ж       uploads.ts
+ж   ж   ж       
+ж   ж   +---model
+ж   ж   ж       types.ts
+ж   ж   ж       
+ж   ж   L---ui
+ж   ж           UploadDropzone.tsx
+ж   ж           UploadQueue.tsx
+ж   ж           UploadResultCard.tsx
+ж   ж           
+ж   L---widgets
+ж       L---uploader
+ж               UploaderPanel.tsx
+ж               
++---shared
+ж   ж   .gitkeep
+ж   ж   
+ж   +---api
+ж   ж       client.ts
+ж   ж       files.ts
+ж   ж       jobs.ts
+ж   ж       settings.ts
+ж   ж       transcriptions.ts
+ж   ж       
+ж   +---auth
+ж   ж       navigation.ts
+ж   ж       session.ts
+ж   ж       token.ts
+ж   ж       
+ж   +---config
+ж   ж       env.ts
+ж   ж       
+ж   +---hooks
+ж   ж       useBillingOverviewQuery.ts
+ж   ж       useCurrentUserQuery.ts
+ж   ж       useJobDetailsQuery.ts
+ж   ж       useJobLogsQuery.ts
+ж   ж       useJobsQuery.ts
+ж   ж       useMediaFilesQuery.ts
+ж   ж       useProfileQuery.ts
+ж   ж       useQuotaQuery.ts
+ж   ж       useTranscriptDetailsQuery.ts
+ж   ж       useTranscriptsQuery.ts
+ж   ж       useUpdateProfileMutation.ts
+ж   ж       useUpgradePlanMutation.ts
+ж   ж       
+ж   +---i18n
+ж   ж       I18nProvider.tsx
+ж   ж       index.ts
+ж   ж       
+ж   +---lib
+ж   ж       auth-errors.ts
+ж   ж       format.ts
+ж   ж       job-mappers.ts
+ж   ж       pendingStartUrl.ts
+ж   ж       utils.ts
+ж   ж       
+ж   L---ui
+ж           Badge.tsx
+ж           Card.tsx
+ж           EmptyState.tsx
+ж           ErrorBoundary.tsx
+ж           PageHeader.tsx
+ж           PricingModal.tsx
+ж           Spinner.tsx
+ж           toast.ts
+ж           ToastProvider.tsx
+ж           
+L---widgets
+    ж   .gitkeep
+    ж   
+    +---app-shell
+    ж       AppShell.tsx
+    ж       
+    +---job-table
+    ж       JobFilters.tsx
+    ж       JobTable.tsx
+    ж       
+    +---protected-route
+    ж       ProtectedRoute.tsx
+    ж       
+    +---sidebar
+    ж       Sidebar.tsx
+    ж       
+    +---topbar
+    ж       MagicFlowNav.tsx
+    ж       Topbar.tsx
+    ж       
+    L---uploader
+            UploaderPanel.tsx
+            

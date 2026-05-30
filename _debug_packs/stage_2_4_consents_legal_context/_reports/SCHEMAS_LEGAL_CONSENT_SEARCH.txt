@@ -1,0 +1,7 @@
+﻿
+Path                                                                LineNumber Line                             
+----                                                                ---------- ----                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py          9 class RegisterRequest(BaseModel):
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         38 class UserRead(BaseModel):       
+
+

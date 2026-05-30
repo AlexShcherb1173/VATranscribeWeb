@@ -1,0 +1,39 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+.turbo/
+.vite/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Storage
+storage/uploads/
+storage/downloads/
+storage/tmp/
+storage/temp/
+storage/logs/
+storage/transcripts/
+zip
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Docker
+*.log
+.git_broken_backup/
+.git_broken*/

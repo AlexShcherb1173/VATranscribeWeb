@@ -1,0 +1,110 @@
+﻿
+Path                                                                                         LineNumber Line                                                                                          
+----                                                                                         ---------- ----                                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\dependencies.py                             21             detail="Authentication required",                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                                     62             'auth_register': f'{settings.api_prefix}/auth/register',                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                                     90             'consents': f'{settings.api_prefix}/consents/me',                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                                     91             'legal_documents': f'{settings.api_prefix}/legal/documents',                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                                     92             'privacy': f'{settings.api_prefix}/privacy/me',                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                                  164 class AuditLog(Base):                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                                  165     __tablename__ = "audit_logs"                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                                   9 class RegisterRequest(BaseModel):                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             16     RegisterRequest,                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             21 from apps.api.app.security_foundation.privacy import mask_email                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             23 from apps.api.app.services.audit_service import record_audit_event                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             51 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             52 def register_user(                                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             53     payload: RegisterRequest,                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             61         record_audit_event(                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             64             action="auth.register_failed",                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             89         record_audit_event(                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                             92             action="auth.register_failed",                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            109     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            112         action="auth.register_success",                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            136         record_audit_event(                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            153         record_audit_event(                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            176     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            206         record_audit_event(                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            218     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            247     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                            270     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                          14 from apps.api.app.services.audit_service import record_audit_event                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                          28     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                          48     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                          69         record_audit_event(                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                          88     record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                          6 from apps.api.app.services.consent_service import consent_service                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                          9 router = APIRouter(prefix='/consents', tags=['consents'])                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         12 class ConsentCreate(BaseModel):                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         13     document_type: str = Field(min_length=2, max_length=100)                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         14     document_version: str = Field(min_length=1, max_length=50)                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         15     accepted: bool = True                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         19 def list_my_consents() -> dict[str, list[dict]]:                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         24 def create_consent(payload: ConsentCreate) -> dict:                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         25     record = consent_service.build_consent_record(                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         27         document_type=payload.document_type,                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         28         document_version=payload.document_version,                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         29         accepted=payload.accepted,                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\consents.py                         31     return {'status': 'accepted', 'consent': record}                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py                       108             detail="requested_format is required",                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\downloads.py                       135             detail="selected_format_id is required for selected_original mode",               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\legal.py                            10 def list_legal_documents() -> dict[str, list[dict]]:                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\legal.py                            14 @router.get('/documents/{document_type}/current')                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\legal.py                            15 def get_current_legal_document(document_type: str) -> dict:                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\legal.py                            17         'document_type': document_type,                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\privacy.py                           6 from apps.api.app.services.privacy_request_service import privacy_request_service             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\privacy.py                           9 router = APIRouter(prefix='/privacy', tags=['privacy'])                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\privacy.py                          12 class PrivacyRequestCreate(BaseModel):                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\privacy.py                          13     request_type: str = Field(pattern='^(export|delete_account|delete_files|revoke_consent)$')
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\privacy.py                          18 def get_my_privacy_overview() -> dict:                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\privacy.py                          23 def create_privacy_request(payload: PrivacyRequestCreate) -> dict:                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\privacy.py                          24     privacy_request_service.validate_request_type(payload.request_type)                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\settings.py                         70             detail="Cookies file is required",                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\transcriptions.py                   38     Kept local to this router so newly introduced frontend fields can be accepted             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                         150             detail="File name is required",                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\uploads.py                         159             detail="File extension is required",                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                         19 # Stage 2 security/privacy foundation routers                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                         20 from apps.api.app.routers.consents import router as consents_router                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                         22 from apps.api.app.routers.privacy import router as privacy_router                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                         43 # Stage 2 security/privacy foundation routers                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                         44 router.include_router(consents_router)                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                         46 router.include_router(privacy_router)                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\audit.py                             7 class AuditLogRead(BaseModel):                                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                           7 class ConsentCreate(BaseModel):                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                           8     document_type: str = Field(min_length=2, max_length=100)                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                           9     document_version: str = Field(min_length=1, max_length=50)                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                          10     accepted: bool = True                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                          13 class ConsentRead(BaseModel):                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                          16     document_type: str                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                          17     document_version: str                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\consent.py                          18     accepted: bool                                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\legal.py                             7 class LegalDocumentRead(BaseModel):                                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\legal.py                             9     document_type: str                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\legal.py                            18 class LegalDocumentCreate(BaseModel):                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\legal.py                            19     document_type: str = Field(min_length=2, max_length=100)                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\privacy.py                           7 class PrivacyRequestCreate(BaseModel):                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\privacy.py                           8     request_type: str = Field(pattern='^(export|delete_account|delete_files|revoke_consent)$')
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\privacy.py                          12 class PrivacyRequestRead(BaseModel):                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py                    9 from apps.api.app.models import AuditLog                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py                   38 def record_audit_event(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py                   46 ) -> AuditLog:                                                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py                   47     event = AuditLog(                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                  6 class ConsentService:                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                  7     def build_consent_record(                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                 10         document_type: str,                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                 11         document_version: str,                                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                 12         accepted: bool = True,                                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                 16             'document_type': document_type,                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                 17             'document_version': document_version,                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                 18             'accepted': accepted,                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\consent_service.py                 22 consent_service = ConsentService()                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\legal_document_service.py           4 class LegalDocumentService:                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\legal_document_service.py           5     def normalize_document_type(self, document_type: str) -> str:                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\legal_document_service.py           6         return document_type.strip().lower().replace(' ', '_')                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\legal_document_service.py           9 legal_document_service = LegalDocumentService()                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\privacy_request_service.py          4 class PrivacyRequestService:                                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\privacy_request_service.py          5     allowed_request_types = {'export', 'delete_account', 'delete_files', 'revoke_consent'}    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\privacy_request_service.py          9             raise ValueError('Unsupported privacy request type')                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\privacy_request_service.py         12 privacy_request_service = PrivacyRequestService()                                             
+
+

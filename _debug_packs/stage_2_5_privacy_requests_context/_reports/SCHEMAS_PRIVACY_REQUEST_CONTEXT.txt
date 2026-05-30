@@ -1,0 +1,12 @@
+﻿
+Path                                                                LineNumber Line                                                                   
+----                                                                ---------- ----                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         98     status: str = "ok"                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        104     status: str                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        159     status: str                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        258     status: str                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        289     status: str                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        322 class ExportArtifactResponse(BaseModel):                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        344     exports: list[ExportArtifactResponse] = Field(default_factory=list)
+
+

@@ -1,0 +1,29 @@
+﻿
+Path                                                               LineNumber Line                                                            
+----                                                               ---------- ----                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py         51 class User(Base):                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py         63     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py         90         order_by="Subscription.created_at.desc()",              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py         96         order_by="UsageSnapshot.created_at.asc()",              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        112     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        113         "RefreshToken",                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        116         foreign_keys="RefreshToken.user_id",                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        120 class RefreshToken(Base):                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        144     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        164 class AuditLog(Base):                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        203     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        231     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        274     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        315     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        404     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        430         order_by="JobLog.created_at",                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        456     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        497     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        560     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        569 class UserProfile(Base):                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        588     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        603 class UserQuota(Base):                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        627     created_at: Mapped[datetime] = mapped_column(               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py        662     created_at: Mapped[datetime] = mapped_column(               
+
+

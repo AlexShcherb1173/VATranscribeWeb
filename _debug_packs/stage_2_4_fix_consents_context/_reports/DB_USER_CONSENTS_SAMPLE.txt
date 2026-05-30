@@ -1,0 +1,4 @@
+﻿ user_id | document_type | document_version | accepted | created_at 
+---------+---------------+------------------+----------+------------
+(0 rows)
+

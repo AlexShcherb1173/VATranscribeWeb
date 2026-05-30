@@ -1,0 +1,33 @@
+﻿vatranscribe-api  | INFO:     Started server process [1]
+vatranscribe-api  | INFO:     Waiting for application startup.
+vatranscribe-api  | INFO:     Application startup complete.
+vatranscribe-api  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+vatranscribe-api  | INFO:     172.20.0.1:51390 - "GET /api/v1/health/live HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:40314 - "POST /api/v1/auth/register HTTP/1.1" 201 Created
+vatranscribe-api  | INFO:     172.20.0.1:51624 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:42784 - "GET /api/v1/auth/me HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:53636 - "POST /api/v1/auth/refresh HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:55826 - "POST /api/v1/auth/refresh HTTP/1.1" 401 Unauthorized
+vatranscribe-api  | INFO:     172.20.0.1:51238 - "GET /api/v1/auth/me HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:50620 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:58866 - "POST /api/v1/auth/refresh HTTP/1.1" 401 Unauthorized
+vatranscribe-api  | INFO:     172.20.0.1:46800 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:32906 - "POST /api/v1/auth/logout-all HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:55726 - "POST /api/v1/auth/refresh HTTP/1.1" 401 Unauthorized
+vatranscribe-api  | INFO:     172.20.0.1:43100 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:43100 - "GET /api/v1/billing/overview HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:43100 - "POST /api/v1/auth/refresh HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:43100 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     Shutting down
+vatranscribe-api  | INFO:     Waiting for application shutdown.
+vatranscribe-api  | INFO:     Application shutdown complete.
+vatranscribe-api  | INFO:     Finished server process [1]
+vatranscribe-api  | INFO:     Started server process [1]
+vatranscribe-api  | INFO:     Waiting for application startup.
+vatranscribe-api  | INFO:     Application startup complete.
+vatranscribe-api  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+vatranscribe-api  | INFO:     172.20.0.1:47334 - "GET /api/v1/health/live HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:59872 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:59872 - "GET /api/v1/billing/overview HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:59872 - "POST /api/v1/auth/refresh HTTP/1.1" 200 OK
+vatranscribe-api  | INFO:     172.20.0.1:59872 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK

@@ -1,7 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="" />
+    <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/OWNERSHIP_SEARCH.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/TREE_API_APP.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/database.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/dependencies.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/downloads.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/export_artifacts.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/jobs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/media_assets.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/transcriptions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/transcripts.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/uploads.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/schemas.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/ownership.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/password_policy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/privacy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/rate_limits.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/token_rotation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/account_bootstrap.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/audit_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/auth_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/billing_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/consent_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/legal_document_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/plan_catalog.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/privacy_request_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/quota_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/security_event_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/upload_helpers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/api/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/test_ownership.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/test_password_policy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/test_rate_limits.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/alembic/versions/20260529_0001_security_privacy_foundation.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,18 +51,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "AlexShcherb1173"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;AlexShcherb1173&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/AlexShcherb1173/VATranscribeWeb.git",
-    "accountId": "292de0f0-30d0-49e7-b224-10a279763362"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AlexShcherb1173/VATranscribeWeb.git&quot;,
+    &quot;accountId&quot;: &quot;292de0f0-30d0-49e7-b224-10a279763362&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5,
   &quot;fromUser&quot;: false
@@ -31,20 +72,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "feature/stage-2-security-privacy-foundation",
-    "last_opened_file_path": "D:/DevProject/PythonProject/VATranscribeWeb",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/stage-2-security-privacy-foundation&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/DevProject/PythonProject/VATranscribeWeb&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

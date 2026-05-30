@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
@@ -19,6 +19,7 @@ from apps.api.app.schemas import (
 )
 from apps.api.app.security import create_access_token
 from apps.api.app.security_foundation.privacy import mask_email
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.services.account_bootstrap import ensure_user_profile, ensure_user_quota
 from apps.api.app.services.audit_service import record_audit_event
 from apps.api.app.services.auth_service import get_password_hash, verify_password
@@ -49,6 +50,43 @@ def ensure_account_defaults(db: Session, user: User) -> None:
         db.commit()
 
 
+def check_auth_rate_limit(
+    db: Session,
+    request: Request,
+    action: str,
+    key: str,
+    limit: int,
+    window_seconds: int,
+    email: str | None = None,
+) -> None:
+    try:
+        rate_limiter.check(
+            key=key,
+            limit=limit,
+            window_seconds=window_seconds,
+        )
+    except HTTPException as exc:
+        if exc.status_code == status.HTTP_429_TOO_MANY_REQUESTS:
+            meta = {
+                "limited_action": action,
+                "limit": limit,
+                "window_seconds": window_seconds,
+            }
+
+            if email:
+                meta["email_mask"] = mask_email(email)
+
+            record_audit_event(
+                db=db,
+                request=request,
+                action="auth.rate_limited",
+                entity_type="RateLimit",
+                meta=meta,
+            )
+            db.commit()
+
+        raise
+
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 def register_user(
     payload: RegisterRequest,
@@ -56,6 +94,16 @@ def register_user(
     db: Session = Depends(get_db),
 ) -> User:
     email = normalize_email(payload.email)
+
+    check_auth_rate_limit(
+        db=db,
+        request=request,
+        action="auth.register",
+        key=build_rate_limit_key("auth:register", request),
+        limit=5,
+        window_seconds=600,
+        email=email,
+    )
 
     try:
         required_documents = validate_required_consents(
@@ -175,6 +223,16 @@ def login_user(
 ) -> TokenResponse:
     email = normalize_email(payload.email)
 
+    check_auth_rate_limit(
+        db=db,
+        request=request,
+        action="auth.login",
+        key=build_rate_limit_key("auth:login", request, subject=email),
+        limit=10,
+        window_seconds=300,
+        email=email,
+    )
+
     user = db.scalar(select(User).where(User.email == email))
 
     if user is None or not verify_password(payload.password, user.password_hash):
@@ -245,6 +303,15 @@ def refresh_tokens(
     request: Request,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
+    check_auth_rate_limit(
+        db=db,
+        request=request,
+        action="auth.refresh",
+        key=build_rate_limit_key("auth:refresh", request),
+        limit=30,
+        window_seconds=300,
+    )
+
     try:
         user, new_refresh_token, token_row = rotate_refresh_token(db, payload.refresh_token)
     except HTTPException:
@@ -335,3 +402,4 @@ def logout_all_user_sessions(
 @router.get("/me", response_model=UserRead)
 def read_me(current_user: User = Depends(get_current_user)) -> User:
     return current_user
+

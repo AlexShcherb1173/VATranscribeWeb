@@ -1,0 +1,128 @@
+﻿
+Path                                                                                 LineNumber Line                                                                                             
+----                                                                                 ---------- ----                                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                             62             'auth_register': f'{settings.api_prefix}/auth/register',                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                             63             'auth_login': f'{settings.api_prefix}/auth/login',                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                             67             'billing_overview': f'{settings.api_prefix}/billing/overview',                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\main.py                             68             'billing_upgrade': f'{settings.api_prefix}/billing/upgrade',                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                           85     subscriptions: Mapped[list["Subscription"]] = relationship(                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                           86         "Subscription",                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                           89         order_by="Subscription.created_at.desc()",                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                          185     subscriptions: Mapped[list["Subscription"]] = relationship(                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                          186         "Subscription",                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                          191 class Subscription(Base):                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                          192     __tablename__ = "subscriptions"                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                          230         back_populates="subscriptions",                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\models.py                          234         back_populates="subscriptions",                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                           9 class RegisterRequest(BaseModel):                                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                          14 class LoginRequest(BaseModel):                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                          29 class LogoutRequest(BaseModel):                                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                          33 class LogoutResponse(BaseModel):                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         104 class BillingPlanResponse(BaseModel):                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         118 class BillingSubscriptionResponse(BaseModel):                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         138 class BillingOverviewResponse(BaseModel):                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         139     current_plan: BillingPlanResponse                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         140     available_plans: list[BillingPlanResponse] = Field(default_factory=list)                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         141     subscription: BillingSubscriptionResponse                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         146 class BillingUpgradeRequest(BaseModel):                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         148     billing_period: str = "monthly"                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         151 class BillingUpgradeResponse(BaseModel):                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         152     current_plan: BillingPlanResponse                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         153     subscription: BillingSubscriptionResponse                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py                         249 class JobActionResponse(BaseModel):                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     12     LoginRequest,                                                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     13     LogoutRequest,                                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     14     LogoutResponse,                                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     16     RegisterRequest,                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     49 @router.post('/register', response_model=UserRead, status_code=status.HTTP_201_CREATED)          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     50 def register_user(payload: RegisterRequest, db: Session = Depends(get_db)) -> User:              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     84 @router.post('/login', response_model=TokenResponse)                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                     85 def login_user(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    130 @router.post('/logout', response_model=LogoutResponse)                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    131 def logout_user(                                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    132     payload: LogoutRequest,                                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    134 ) -> LogoutResponse:                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    139     return LogoutResponse(ok=True, detail='Logged out')                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    142 @router.post('/logout-all', response_model=LogoutResponse)                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    143 def logout_all_user_sessions(                                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    146 ) -> LogoutResponse:                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\auth.py                    150     return LogoutResponse(                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  10     BillingOverviewResponse,                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  11     BillingUpgradeRequest,                                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  12     BillingUpgradeResponse,                                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  14 from apps.api.app.services.billing_service import get_billing_overview, upgrade_user_plan        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  16 router = APIRouter(prefix="/billing", tags=["Billing"])                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  19 @router.get("/overview", response_model=BillingOverviewResponse)                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  20 def billing_overview(                                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  23 ) -> BillingOverviewResponse:                                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  24     return BillingOverviewResponse(**get_billing_overview(db, current_user))                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  27 @router.post("/upgrade", response_model=BillingUpgradeResponse)                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  28 def billing_upgrade(                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  29     payload: BillingUpgradeRequest,                                                              
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  32 ) -> BillingUpgradeResponse:                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  34         current_plan, subscription, quota = upgrade_user_plan(                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  38             billing_period=payload.billing_period,                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  46     return BillingUpgradeResponse(                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\billing.py                  48         subscription=subscription,                                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                     15     JobActionResponse,                                                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    208 def _enqueue_existing_job(db: Session, job: Job, message: str) -> JobActionResponse:             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    229     return JobActionResponse(                                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    329     response_model=JobActionResponse,                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    336 ) -> JobActionResponse:                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    356     response_model=JobActionResponse,                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    363 ) -> JobActionResponse:                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    381     response_model=JobActionResponse,                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    388 ) -> JobActionResponse:                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    397     response_model=JobActionResponse,                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    404 ) -> JobActionResponse:                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    432     return JobActionResponse(                                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    483     response_model=JobActionResponse,                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\jobs.py                    490 ) -> JobActionResponse:                                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                  6 from apps.api.app.routers.billing import router as billing_router                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\routers\__init__.py                 33 router.include_router(billing_router)                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\audit.py                     7 class AuditLogRead(BaseModel):                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\audit.py                     9     actor_user_id: int | None = None                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas\audit.py                    10     action: str                                                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py            9         action: str,                                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py           10         actor_user_id: int | None = None,                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py           16             'action': action,                                                                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py           17             'actor_user_id': actor_user_id,                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\audit_service.py           24 audit_service = AuditService()                                                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py          9 from apps.api.app.models import Plan, Subscription, UsageSnapshot, User, UserQuota               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py         14 def _normalize_billing_period_days(billing_period: str) -> int:                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py         15     normalized = (billing_period or "monthly").strip().lower()                                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        109 def get_active_subscription(db: Session, user_id: str) -> Subscription | None:                   
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        111         select(Subscription)                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        112         .options(joinedload(Subscription.plan))                                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        114             Subscription.user_id == str(user_id),                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        115             Subscription.status == "active",                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        117         .order_by(Subscription.created_at.desc())                                                
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        150 def ensure_default_subscription(db: Session, user: User) -> tuple[Plan, Subscription, UserQuota]:
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        153     Если её нет, создаёт free subscription.                                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        155     current = get_active_subscription(db, user.id)                                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        165     subscription = Subscription(                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        175     db.add(subscription)                                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        177     db.refresh(subscription)                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        180     return free_plan, subscription, quota                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        225 def get_billing_overview(db: Session, user: User) -> dict:                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        226     current_plan, subscription, quota = ensure_default_subscription(db, user)                    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        233         "subscription": subscription,                                                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        239 def upgrade_user_plan(                                                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        243     billing_period: str = "monthly",                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        244 ) -> tuple[Plan, Subscription, UserQuota]:                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        246     Fake billing upgrade:                                                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        248     - отменяет текущую active subscription                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        249     - создаёт новую active subscription                                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        253     current_subscription = get_active_subscription(db, user.id)                                  
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        255     if current_subscription is not None and current_subscription.plan_id == target_plan.id:      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        257         return target_plan, current_subscription, quota                                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        260     period_days = _normalize_billing_period_days(billing_period)                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        262     if current_subscription is not None:                                                         
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        263         current_subscription.status = "canceled"                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        264         db.add(current_subscription)                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        266     new_subscription = Subscription(                                                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        276     db.add(new_subscription)                                                                     
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        278     db.refresh(new_subscription)                                                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\services\billing_service.py        281     return target_plan, new_subscription, quota                                                  
+
+

@@ -1,6 +1,6 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -18,7 +18,9 @@ from apps.api.app.schemas import (
     UserRead,
 )
 from apps.api.app.security import create_access_token
+from apps.api.app.security_foundation.privacy import mask_email
 from apps.api.app.services.account_bootstrap import ensure_user_profile, ensure_user_quota
+from apps.api.app.services.audit_service import record_audit_event
 from apps.api.app.services.auth_service import get_password_hash, verify_password
 from apps.api.app.services.refresh_token_service import (
     create_refresh_token_for_user,
@@ -27,7 +29,7 @@ from apps.api.app.services.refresh_token_service import (
     rotate_refresh_token,
 )
 
-router = APIRouter(prefix='/auth', tags=['Auth'])
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 def normalize_email(email: str) -> str:
@@ -46,15 +48,30 @@ def ensure_account_defaults(db: Session, user: User) -> None:
         db.commit()
 
 
-@router.post('/register', response_model=UserRead, status_code=status.HTTP_201_CREATED)
-def register_user(payload: RegisterRequest, db: Session = Depends(get_db)) -> User:
+@router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
+def register_user(
+    payload: RegisterRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+) -> User:
     email = normalize_email(payload.email)
 
     existing_user = db.scalar(select(User).where(User.email == email))
     if existing_user is not None:
+        record_audit_event(
+            db=db,
+            request=request,
+            action="auth.register_failed",
+            entity_type="User",
+            meta={
+                "email_mask": mask_email(email),
+                "reason": "email_already_exists",
+            },
+        )
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail='User with this email already exists.',
+            detail="User with this email already exists.",
         )
 
     user = User(
@@ -69,90 +86,207 @@ def register_user(payload: RegisterRequest, db: Session = Depends(get_db)) -> Us
         db.commit()
     except IntegrityError as exc:
         db.rollback()
+        record_audit_event(
+            db=db,
+            request=request,
+            action="auth.register_failed",
+            entity_type="User",
+            meta={
+                "email_mask": mask_email(email),
+                "reason": "integrity_error",
+            },
+        )
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail='User with this email already exists.',
+            detail="User with this email already exists.",
         ) from exc
 
     db.refresh(user)
     ensure_account_defaults(db, user)
     db.refresh(user)
 
+    record_audit_event(
+        db=db,
+        request=request,
+        action="auth.register_success",
+        actor_user_id=str(user.id),
+        entity_type="User",
+        entity_id=str(user.id),
+        meta={
+            "email_mask": mask_email(user.email),
+        },
+    )
+    db.commit()
+
     return user
 
 
-@router.post('/login', response_model=TokenResponse)
-def login_user(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
+@router.post("/login", response_model=TokenResponse)
+def login_user(
+    payload: LoginRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+) -> TokenResponse:
     email = normalize_email(payload.email)
 
     user = db.scalar(select(User).where(User.email == email))
 
     if user is None or not verify_password(payload.password, user.password_hash):
+        record_audit_event(
+            db=db,
+            request=request,
+            action="auth.login_failed",
+            entity_type="User",
+            meta={
+                "email_mask": mask_email(email),
+                "reason": "invalid_credentials",
+            },
+        )
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Invalid email or password.',
+            detail="Invalid email or password.",
         )
 
     if not user.is_active:
+        record_audit_event(
+            db=db,
+            request=request,
+            action="auth.login_failed",
+            actor_user_id=str(user.id),
+            entity_type="User",
+            entity_id=str(user.id),
+            meta={
+                "email_mask": mask_email(email),
+                "reason": "inactive_user",
+            },
+        )
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='User is inactive.',
+            detail="User is inactive.",
         )
 
     ensure_account_defaults(db, user)
     db.refresh(user)
 
-    refresh_token, _ = create_refresh_token_for_user(db, user)
+    refresh_token, token_row = create_refresh_token_for_user(db, user)
+
+    record_audit_event(
+        db=db,
+        request=request,
+        action="auth.login_success",
+        actor_user_id=str(user.id),
+        entity_type="RefreshToken",
+        entity_id=str(token_row.id),
+        meta={
+            "email_mask": mask_email(user.email),
+        },
+    )
+
     db.commit()
 
     return TokenResponse(
         access_token=create_access_token(subject=str(user.id)),
         refresh_token=refresh_token,
-        token_type='bearer',
+        token_type="bearer",
     )
 
 
-@router.post('/refresh', response_model=TokenResponse)
+@router.post("/refresh", response_model=TokenResponse)
 def refresh_tokens(
     payload: RefreshTokenRequest,
+    request: Request,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
-    user, new_refresh_token, _ = rotate_refresh_token(db, payload.refresh_token)
+    try:
+        user, new_refresh_token, token_row = rotate_refresh_token(db, payload.refresh_token)
+    except HTTPException:
+        record_audit_event(
+            db=db,
+            request=request,
+            action="auth.refresh_failed",
+            entity_type="RefreshToken",
+            meta={
+                "reason": "invalid_revoked_or_expired",
+            },
+        )
+        db.commit()
+        raise
+
+    record_audit_event(
+        db=db,
+        request=request,
+        action="auth.refresh_success",
+        actor_user_id=str(user.id),
+        entity_type="RefreshToken",
+        entity_id=str(token_row.id),
+    )
+
     db.commit()
 
     return TokenResponse(
         access_token=create_access_token(subject=str(user.id)),
         refresh_token=new_refresh_token,
-        token_type='bearer',
+        token_type="bearer",
     )
 
 
-@router.post('/logout', response_model=LogoutResponse)
+@router.post("/logout", response_model=LogoutResponse)
 def logout_user(
     payload: LogoutRequest,
+    request: Request,
     db: Session = Depends(get_db),
 ) -> LogoutResponse:
+    revoked = False
+
     if payload.refresh_token:
-        revoke_refresh_token(db, payload.refresh_token)
-        db.commit()
+        revoked = revoke_refresh_token(db, payload.refresh_token)
 
-    return LogoutResponse(ok=True, detail='Logged out')
+    record_audit_event(
+        db=db,
+        request=request,
+        action="auth.logout",
+        entity_type="RefreshToken",
+        meta={
+            "revoked": revoked,
+        },
+    )
+
+    db.commit()
+
+    return LogoutResponse(ok=True, detail="Logged out")
 
 
-@router.post('/logout-all', response_model=LogoutResponse)
+@router.post("/logout-all", response_model=LogoutResponse)
 def logout_all_user_sessions(
+    request: Request,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> LogoutResponse:
     revoked_count = revoke_all_user_refresh_tokens(db, current_user)
+
+    record_audit_event(
+        db=db,
+        request=request,
+        action="auth.logout_all",
+        actor_user_id=str(current_user.id),
+        entity_type="User",
+        entity_id=str(current_user.id),
+        meta={
+            "revoked_count": revoked_count,
+        },
+    )
+
     db.commit()
 
     return LogoutResponse(
         ok=True,
-        detail=f'Revoked refresh tokens: {revoked_count}',
+        detail=f"Revoked refresh tokens: {revoked_count}",
     )
 
 
-@router.get('/me', response_model=UserRead)
+@router.get("/me", response_model=UserRead)
 def read_me(current_user: User = Depends(get_current_user)) -> User:
     return current_user

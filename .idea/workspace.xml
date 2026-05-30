@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="30_05">
-      <change afterPath="$PROJECT_DIR$/apps/api/app/services/refresh_token_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/security/test_refresh_token_rotation_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/dev/patch_stage_2_3_audit_logs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/app/routers/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/routers/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/app/routers/billing.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/routers/billing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/app/services/audit_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/services/audit_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/security/audit-logs.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/security/audit-logs.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +70,7 @@
       <updated>1779983647995</updated>
       <workItem from="1779983649053" duration="6837000" />
       <workItem from="1780099957244" duration="1375000" />
-      <workItem from="1780153977489" duration="2679000" />
+      <workItem from="1780153977489" duration="4035000" />
     </task>
     <task id="LOCAL-00001" summary="30_05">
       <option name="closed" value="true" />
@@ -93,7 +96,15 @@
       <option name="project" value="LOCAL" />
       <updated>1780153746517</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="30_05">
+      <option name="closed" value="true" />
+      <created>1780156905315</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1780156905315</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -1,0 +1,26 @@
+﻿
+Path                                                                LineNumber Line                                                       
+----                                                                ---------- ----                                                       
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py          6 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py          9 class RegisterRequest(BaseModel):                          
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         10     email: EmailStr                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         11     password: str = Field(min_length=8, max_length=255)    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         14 class LoginRequest(BaseModel):                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         15     email: EmailStr                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         16     password: str = Field(min_length=1, max_length=255)    
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         19 class TokenResponse(BaseModel):                            
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         20     access_token: str                                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         21     token_type: str = "bearer"                             
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         24 class UserRead(BaseModel):                                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         26     email: EmailStr                                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         59 class UserProfileUpdateRequest(BaseModel):                 
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         64 class UserProfileResponse(BaseModel):                      
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         66     user_id: str                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         75 class UserQuotaResponse(BaseModel):                        
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py         77     user_id: str                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        106     user_id: str                                           
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        128     quota: UserQuotaResponse                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        140     quota: UserQuotaResponse                               
+D:\DevProject\PythonProject\VATranscribeWeb\apps\api\app\schemas.py        205     user_id: str | None = None                             
+
+

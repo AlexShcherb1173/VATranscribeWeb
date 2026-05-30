@@ -492,3 +492,4 @@ def stop_job(
     Frontend-compatible alias for cancel.
     """
     return cancel_job(job_id=job_id, db=db, current_user=current_user)
+

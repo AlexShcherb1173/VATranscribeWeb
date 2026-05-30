@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pack-api-router-context.ps1pack-api-router-context.ps1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/dev/patch-stage-2-router-security-privacy.ps1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/dev/patch-stage-2-security-package-conflict.ps1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/dev/stage-2-security-privacy-foundation.ps1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/routers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/routers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/security/.gitkeep" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/security/jwt.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/security/password.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/security/permissions.py" beforeDir="false" />
-    </list>
+    <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -73,7 +61,7 @@
       <option name="presentableId" value="Default" />
       <updated>1779983647995</updated>
       <workItem from="1779983649053" duration="6837000" />
-      <workItem from="1780099957244" duration="1029000" />
+      <workItem from="1780099957244" duration="1375000" />
     </task>
     <servers />
   </component>

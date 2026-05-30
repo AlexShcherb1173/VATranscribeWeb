@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -18,7 +18,6 @@ from apps.api.app.schemas import (
     JobResponse,
 )
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
-from apps.api.app.services.access_control import get_user_media_asset_or_404
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 

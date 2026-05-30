@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from fastapi import APIRouter
 
@@ -11,21 +11,13 @@ from apps.api.app.routers.jobs import router as jobs_router
 from apps.api.app.routers.media_assets import router as media_assets_router
 from apps.api.app.routers.profile import router as profile_router
 from apps.api.app.routers.quota import router as quota_router
-from apps.api.app.routers.settings import router as settings_router
 from apps.api.app.routers.transcriptions import router as transcriptions_router
 from apps.api.app.routers.transcripts import router as transcripts_router
 from apps.api.app.routers.uploads import router as uploads_router
-
-# Stage 2 security/privacy foundation routers
-from apps.api.app.routers.consents import router as consents_router
-from apps.api.app.routers.legal import router as legal_router
-from apps.api.app.routers.privacy import router as privacy_router
-from apps.api.app.routers.security import router as security_router
-
+from apps.api.app.routers.settings import router as settings_router
 
 router = APIRouter()
 
-# Core transferred routers
 router.include_router(health_router)
 router.include_router(auth_router)
 router.include_router(profile_router)
@@ -39,9 +31,3 @@ router.include_router(transcriptions_router)
 router.include_router(transcripts_router)
 router.include_router(export_artifacts_router)
 router.include_router(settings_router)
-
-# Stage 2 security/privacy foundation routers
-router.include_router(consents_router)
-router.include_router(legal_router)
-router.include_router(privacy_router)
-router.include_router(security_router)

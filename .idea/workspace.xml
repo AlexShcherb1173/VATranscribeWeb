@@ -1,47 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="">
+    <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="30_05">
+      <change afterPath="$PROJECT_DIR$/scripts/dev/patch-stage-2-1-jobs-create-ownership.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/dev/patch-stage-2-2-refresh-token-rotation.ps1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/OWNERSHIP_SEARCH.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/TREE_API_APP.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/database.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/dependencies.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/downloads.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/export_artifacts.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/jobs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/media_assets.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/transcriptions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/transcripts.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/routers/uploads.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/schemas.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/ownership.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/password_policy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/privacy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/rate_limits.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/security_foundation/token_rotation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/.gitkeep" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/account_bootstrap.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/audit_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/auth_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/billing_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/consent_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/legal_document_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/plan_catalog.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/privacy_request_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/quota_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/security_event_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/apps/api/app/services/upload_helpers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/api/.gitkeep" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/.gitkeep" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/test_ownership.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/test_password_policy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_1_file_ownership_context/tests/security/test_rate_limits.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alembic/versions/20260529_0001_security_privacy_foundation.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,10 +67,23 @@
       <workItem from="1779983649053" duration="6837000" />
       <workItem from="1780099957244" duration="1375000" />
     </task>
+    <task id="LOCAL-00001" summary="30_05">
+      <option name="closed" value="true" />
+      <created>1780138401480</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1780138401480</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="30_05" />
+    <option name="LAST_COMMIT_MESSAGE" value="30_05" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -20,6 +20,7 @@ from apps.api.app.schemas import (
 from apps.api.app.security import create_access_token
 from apps.api.app.security_foundation.privacy import mask_email
 from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
+from apps.api.app.security_foundation.password_policy import PasswordPolicyError, validate_password_strength
 from apps.api.app.services.account_bootstrap import ensure_user_profile, ensure_user_quota
 from apps.api.app.services.audit_service import record_audit_event
 from apps.api.app.services.auth_service import get_password_hash, verify_password
@@ -104,6 +105,26 @@ def register_user(
         window_seconds=600,
         email=email,
     )
+
+    try:
+        validate_password_strength(payload.password)
+    except PasswordPolicyError as exc:
+        record_audit_event(
+            db=db,
+            request=request,
+            action="auth.register_failed",
+            entity_type="User",
+            meta={
+                "email_mask": mask_email(email),
+                "reason": "password_policy_failed",
+                "policy_error": str(exc),
+            },
+        )
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        ) from exc
 
     try:
         required_documents = validate_required_consents(
@@ -402,4 +423,5 @@ def logout_all_user_sessions(
 @router.get("/me", response_model=UserRead)
 def read_me(current_user: User = Depends(get_current_user)) -> User:
     return current_user
+
 

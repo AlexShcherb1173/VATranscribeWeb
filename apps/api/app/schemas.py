@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
@@ -6,9 +6,46 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
+
+class LegalDocumentAcceptanceRequest(BaseModel):
+    document_type: str = Field(min_length=2, max_length=100)
+    document_version: str = Field(min_length=1, max_length=50)
+    accepted: bool = True
+
+
+class LegalDocumentRead(BaseModel):
+    id: str
+    document_type: str
+    version: str
+    title: str
+    content: str
+    is_active: bool
+    published_at: datetime | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserConsentRead(BaseModel):
+    id: str
+    user_id: str
+    document_type: str
+    document_version: str
+    accepted: bool
+    created_at: datetime | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ConsentAcceptCurrentResponse(BaseModel):
+    items: list[UserConsentRead] = Field(default_factory=list)
+
+
 class RegisterRequest(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=255)
+    accepted_legal_documents: list[LegalDocumentAcceptanceRequest] = Field(default_factory=list)
 
 
 class LoginRequest(BaseModel):

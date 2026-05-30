@@ -1,31 +1,59 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
-from pydantic import BaseModel, Field
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Request
+from sqlalchemy.orm import Session
 
-from apps.api.app.services.consent_service import consent_service
+from apps.api.app.database import get_db
+from apps.api.app.dependencies import get_current_user
+from apps.api.app.models import User
+from apps.api.app.schemas import ConsentAcceptCurrentResponse, UserConsentRead
+from apps.api.app.services.audit_service import record_audit_event
+from apps.api.app.services.consent_service import (
+    accept_current_required_consents,
+    list_user_consents,
+)
 
-
-router = APIRouter(prefix='/consents', tags=['consents'])
-
-
-class ConsentCreate(BaseModel):
-    document_type: str = Field(min_length=2, max_length=100)
-    document_version: str = Field(min_length=1, max_length=50)
-    accepted: bool = True
-
-
-@router.get('/me')
-def list_my_consents() -> dict[str, list[dict]]:
-    return {'items': []}
+router = APIRouter(prefix="/consents", tags=["consents"])
 
 
-@router.post('')
-def create_consent(payload: ConsentCreate) -> dict:
-    record = consent_service.build_consent_record(
-        user_id=0,
-        document_type=payload.document_type,
-        document_version=payload.document_version,
-        accepted=payload.accepted,
+@router.get("/me", response_model=list[UserConsentRead])
+def list_my_consents(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list:
+    return list_user_consents(db, current_user)
+
+
+@router.post("/accept-current", response_model=ConsentAcceptCurrentResponse)
+def accept_current_consents(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ConsentAcceptCurrentResponse:
+    rows = accept_current_required_consents(
+        db=db,
+        user=current_user,
+        request=request,
     )
-    return {'status': 'accepted', 'consent': record}
+
+    record_audit_event(
+        db=db,
+        request=request,
+        action="legal.consents_accepted",
+        actor_user_id=str(current_user.id),
+        entity_type="User",
+        entity_id=str(current_user.id),
+        meta={
+            "documents": [
+                {
+                    "document_type": row.document_type,
+                    "document_version": row.document_version,
+                }
+                for row in rows
+            ],
+        },
+    )
+
+    db.commit()
+
+    return ConsentAcceptCurrentResponse(items=rows)

@@ -22,6 +22,7 @@ from apps.api.app.security_foundation.privacy import mask_email
 from apps.api.app.services.account_bootstrap import ensure_user_profile, ensure_user_quota
 from apps.api.app.services.audit_service import record_audit_event
 from apps.api.app.services.auth_service import get_password_hash, verify_password
+from apps.api.app.services.consent_service import record_user_consents, validate_required_consents
 from apps.api.app.services.refresh_token_service import (
     create_refresh_token_for_user,
     revoke_all_user_refresh_tokens,
@@ -55,6 +56,25 @@ def register_user(
     db: Session = Depends(get_db),
 ) -> User:
     email = normalize_email(payload.email)
+
+    try:
+        required_documents = validate_required_consents(
+            db=db,
+            accepted_legal_documents=payload.accepted_legal_documents,
+        )
+    except HTTPException:
+        record_audit_event(
+            db=db,
+            request=request,
+            action="auth.register_failed",
+            entity_type="User",
+            meta={
+                "email_mask": mask_email(email),
+                "reason": "required_legal_consents_missing_or_invalid",
+            },
+        )
+        db.commit()
+        raise
 
     existing_user = db.scalar(select(User).where(User.email == email))
     if existing_user is not None:
@@ -105,6 +125,31 @@ def register_user(
     db.refresh(user)
     ensure_account_defaults(db, user)
     db.refresh(user)
+
+    consent_rows = record_user_consents(
+        db=db,
+        user=user,
+        request=request,
+        documents=required_documents,
+    )
+
+    record_audit_event(
+        db=db,
+        request=request,
+        action="legal.consents_accepted",
+        actor_user_id=str(user.id),
+        entity_type="User",
+        entity_id=str(user.id),
+        meta={
+            "documents": [
+                {
+                    "document_type": row.document_type,
+                    "document_version": row.document_version,
+                }
+                for row in consent_rows
+            ],
+        },
+    )
 
     record_audit_event(
         db=db,

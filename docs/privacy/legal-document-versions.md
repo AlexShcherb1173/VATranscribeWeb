@@ -1,7 +1,13 @@
-﻿# Legal Document Versions
+# Legal Document Versions
 
-Legal documents must be versioned.
+Legal documents are stored in legal_documents.
 
-Only one version per document_type should be active.
+Each document has document_type, version, title, content, is_active and published_at.
 
-User consent must reference document_type and document_version.
+Required active documents:
+
+- terms
+- privacy
+- personal_data
+
+Default legal document content is placeholder text and must be replaced before production.

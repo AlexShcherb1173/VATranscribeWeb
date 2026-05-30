@@ -79,6 +79,7 @@ export function RegisterForm({ onRegistered, redirectTo }: RegisterFormProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [acceptedLegalDocuments, setAcceptedLegalDocuments] = useState(false);
 
   function validatePassword(value: string): string | null {
     if (value.length < 8) return t.auth.passwordMin;
@@ -90,7 +91,7 @@ export function RegisterForm({ onRegistered, redirectTo }: RegisterFormProps) {
   }
 
   const mutation = useMutation({
-    mutationFn: async (payload: { email: string; password: string }) => {
+    mutationFn: async (payload: { email: string; password: string; accepted_legal_documents: { document_type: string; document_version: string; accepted: boolean }[] }) => {
       await registerUser(payload);
 
       if (!redirectTo) {
@@ -143,11 +144,21 @@ export function RegisterForm({ onRegistered, redirectTo }: RegisterFormProps) {
       return;
     }
 
+    if (!acceptedLegalDocuments) {
+      setErrorMessage("Необходимо принять условия сервиса и политику конфиденциальности.");
+      return;
+    }
+
     setErrorMessage(null);
 
     mutation.mutate({
       email: email.trim(),
       password,
+      accepted_legal_documents: [
+        { document_type: "terms", document_version: "1.0", accepted: true },
+        { document_type: "privacy", document_version: "1.0", accepted: true },
+        { document_type: "personal_data", document_version: "1.0", accepted: true },
+      ],
     });
   }
 
@@ -210,6 +221,18 @@ export function RegisterForm({ onRegistered, redirectTo }: RegisterFormProps) {
           />
         </div>
       </div>
+
+      <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 text-xs leading-5 text-slate-300">
+        <input
+          type="checkbox"
+          checked={acceptedLegalDocuments}
+          onChange={(event) => setAcceptedLegalDocuments(event.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-white/20 bg-slate-950"
+        />
+        <span>
+          Я принимаю условия сервиса, политику конфиденциальности и согласие на обработку персональных данных.
+        </span>
+      </label>
 
       {errorMessage ? (
         <div className="rounded-xl border border-rose-900/60 bg-rose-950/30 px-3 py-2 text-sm text-rose-200">

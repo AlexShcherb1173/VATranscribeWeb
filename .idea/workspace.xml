@@ -2,13 +2,606 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c58abbfe-e507-44c4-ae14-9578c9c58b1a" name="Changes" comment="30_05">
-      <change afterPath="$PROJECT_DIR$/scripts/dev/patch_stage_2_3_audit_logs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/ALEMBIC_LEGAL_CONSENT_REVISIONS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/AUTH_REGISTER_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/FRONTEND_AUTH_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/GIT_STATUS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/LEGAL_CONSENT_ROUTERS_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/LEGAL_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/MODELS_LEGAL_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/SCHEMAS_LEGAL_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/routers/auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/routers/consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/routers/legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/routers/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/audit_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/account_bootstrap.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/audit_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/auth_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/consent_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/legal_document_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/refresh_token_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/app/providers/AppProviders.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/app/router/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/app/store/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/app/styles/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/features/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/features/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/features/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/features/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/pages/auth/AuthPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/pages/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/pages/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/pages/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/pages/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/shared/api/client.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/shared/api/files.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/shared/api/jobs.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/shared/api/settings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/shared/api/transcriptions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/shared/config/env.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/docs/security/audit-logs.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/security/test_audit_logs_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/security/test_refresh_token_rotation_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/ALEMBIC_CONSENT_LEGAL_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/AUTH_REGISTER_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/CONSENTS_LEGAL_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/DB_LEGAL_DOCUMENTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/DB_USER_CONSENTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/FRONTEND_REGISTER_CONSENT_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/GIT_STATUS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/MODELS_CONSENT_LEGAL_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/PYTEST_SECURITY_PRIVACY.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/ROUTERS_CONSENT_LEGAL_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/SCHEMAS_CONSENT_LEGAL_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/TREE_API_APP.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/env.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0001_init.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0002_job_logs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0003_download_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0004_mp4_mode.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0005_transcriptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0006_add_user_profile_and_quota_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0007_add_billing_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0008_user_profiles_user_quotas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0009_seed_default_plans.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0010_add_users_updated_at.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0011_sync_runtime_schema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/0012_add_job_progress_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/20260519_0001_bigint_file_sizes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/20260521_0002_job_heartbeat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/20260524_0003_tx_profile.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/20260524_0004_lyrics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/20260529_sec_priv_found.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/dependencies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/routers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/routers/auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/routers/consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/routers/legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/routers/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/schemas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/security.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/security_foundation/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/security_foundation/ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/security_foundation/password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/security_foundation/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/security_foundation/rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/security_foundation/token_rotation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/services/access_control.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/services/account_bootstrap.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/services/audit_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/services/auth_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/services/consent_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/services/legal_document_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/api/app/services/refresh_token_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/app/providers/AppProviders.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/app/router/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/app/store/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/app/styles/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/features/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/features/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/features/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/features/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/pages/auth/AuthPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/pages/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/pages/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/pages/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/pages/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/shared/api/client.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/shared/api/files.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/shared/api/jobs.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/shared/api/settings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/shared/api/transcriptions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/shared/config/env.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/docs/privacy/consent-flow.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/docs/privacy/legal-document-versions.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/docs/security/audit-logs.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/pyproject.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/privacy/test_consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/privacy/test_legal_documents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/privacy/test_privacy_requests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/security/test_audit_logs_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/security/test_file_ownership_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/security/test_ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/security/test_password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/security/test_rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/security/test_refresh_token_rotation_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/DB_PRIVACY_REQUESTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/GIT_STATUS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/MODELS_PRIVACY_REQUEST_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/PRIVACY_REQUESTS_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/PYTEST_SECURITY_PRIVACY.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/ROUTER_PRIVACY_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/SCHEMAS_PRIVACY_REQUEST_CONTEXT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/TREE_API_APP.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/env.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0001_init.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0002_job_logs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0003_download_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0004_mp4_mode.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0005_transcriptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0006_add_user_profile_and_quota_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0007_add_billing_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0008_user_profiles_user_quotas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0009_seed_default_plans.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0010_add_users_updated_at.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0011_sync_runtime_schema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/0012_add_job_progress_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/20260519_0001_bigint_file_sizes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/20260521_0002_job_heartbeat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/20260524_0003_tx_profile.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/20260524_0004_lyrics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/alembic/versions/20260529_sec_priv_found.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/dependencies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/routers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/routers/auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/routers/consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/routers/legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/routers/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/schemas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/security.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/security_foundation/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/security_foundation/ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/security_foundation/password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/security_foundation/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/security_foundation/rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/security_foundation/token_rotation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/services/audit_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/services/consent_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/services/legal_document_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/apps/api/app/services/privacy_request_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/docs/privacy/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/docs/privacy/consent-flow.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/docs/privacy/legal-document-versions.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/docs/privacy/privacy-requests.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/docs/security/audit-logs.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/pyproject.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/privacy/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/privacy/test_consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/privacy/test_consents_legal_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/privacy/test_legal_documents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/privacy/test_privacy_requests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/security/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/security/test_audit_logs_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/security/test_file_ownership_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/security/test_ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/security/test_password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/security/test_rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/tests/security/test_refresh_token_rotation_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/ALEMBIC_CURRENT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/ALEMBIC_HEADS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/ALEMBIC_STAGE_2_REVISIONS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/AUTH_REFRESH_AUDIT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/DB_AUDIT_LOGS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/DB_LEGAL_DOCUMENTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/DB_PRIVACY_REQUESTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/DB_REFRESH_TOKENS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/DB_USER_CONSENTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/DOCKER_API_LOGS_TAIL_160.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/DOCKER_COMPOSE_PS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/FRONTEND_AUTH_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/GIT_LOG_LAST_20.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/GIT_STATUS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/LEGAL_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/LIVE_ENDPOINT_PROBES.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/OWNERSHIP_REVIEW_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/PRIVACY_REQUESTS_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/PYTEST_SECURITY_PRIVACY.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/RATE_LIMITS_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/STAGE_2_SECURITY_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/TREE_API_APP.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/_reports/TREE_WEB_SRC.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/env.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0001_init.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0002_job_logs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0003_download_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0004_mp4_mode.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0005_transcriptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0006_add_user_profile_and_quota_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0007_add_billing_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0008_user_profiles_user_quotas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0009_seed_default_plans.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0010_add_users_updated_at.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0011_sync_runtime_schema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/0012_add_job_progress_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/20260519_0001_bigint_file_sizes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/20260521_0002_job_heartbeat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/20260524_0003_tx_profile.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/20260524_0004_lyrics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/alembic/versions/20260529_sec_priv_found.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/dependencies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/billing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/downloads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/export_artifacts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/files.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/jobs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/media_assets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/quota.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/security.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/transcriptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/transcripts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/uploads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/schemas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/security.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/security_foundation/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/security_foundation/ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/security_foundation/password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/security_foundation/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/security_foundation/rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/security_foundation/token_rotation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/access_control.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/account_bootstrap.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/audit_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/auth_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/billing_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/consent_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/legal_document_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/plan_catalog.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/privacy_request_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/quota_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/refresh_token_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/security_event_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/services/upload_helpers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/app/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/app/providers/AppProviders.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/app/router/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/app/store/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/app/styles/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/features/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/features/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/features/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/features/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/pages/auth/AuthPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/pages/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/pages/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/pages/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/pages/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/shared/api/client.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/shared/api/files.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/shared/api/jobs.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/shared/api/settings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/shared/api/transcriptions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/web/src/shared/config/env.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/api/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/architecture/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/architecture/project-structure.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/billing/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/legal/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/privacy/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/privacy/consent-flow.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/privacy/legal-document-versions.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/privacy/privacy-requests.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/security/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/security/admin-audit-actions.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/security/audit-logs.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/security/file-ownership.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/security/rate-limits.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/security/refresh-token-rotation.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/pyproject.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch-stage-2-1-file-ownership.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch-stage-2-1-jobs-create-ownership.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch-stage-2-2-refresh-token-rotation.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch-stage-2-router-security-privacy.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch-stage-2-security-package-conflict.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch-stage-2-short-alembic-revision.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch_stage_2_1_fix_jobs_ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch_stage_2_3_audit_logs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch_stage_2_4_consents_legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/patch_stage_2_4_fix_consents_legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/scripts/dev/stage-2-security-privacy-foundation.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/api/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/billing/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/privacy/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/privacy/test_consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/privacy/test_consents_legal_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/privacy/test_legal_documents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/privacy/test_privacy_requests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/security/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/security/test_audit_logs_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/security/test_file_ownership_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/security/test_ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/security/test_password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/security/test_rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/tests/security/test_refresh_token_rotation_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/ALEMBIC_CURRENT.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/ALEMBIC_HEADS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/ALEMBIC_STAGE_2_REVISIONS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/AUTH_REFRESH_AUDIT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/DB_AUDIT_LOGS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/DB_LEGAL_DOCUMENTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/DB_USER_CONSENTS_SAMPLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/DOCKER_API_LOGS_TAIL_120.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/DOCKER_COMPOSE_PS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/FRONTEND_AUTH_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/GIT_LOG_LAST_20.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/GIT_STATUS.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/LEGAL_CONSENT_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/OWNERSHIP_REVIEW_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/PRIVACY_REQUESTS_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/PYTEST_SECURITY_PRIVACY.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/RATE_LIMITS_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/STAGE_2_SECURITY_SEARCH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/TREE_API_APP.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/_reports/TREE_WEB_AUTH.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/env.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0001_init.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0002_job_logs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0003_download_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0004_mp4_mode.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0005_transcriptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0006_add_user_profile_and_quota_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0007_add_billing_tables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0008_user_profiles_user_quotas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0009_seed_default_plans.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0010_add_users_updated_at.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0011_sync_runtime_schema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/0012_add_job_progress_fields.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/20260519_0001_bigint_file_sizes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/20260521_0002_job_heartbeat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/20260524_0003_tx_profile.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/20260524_0004_lyrics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/alembic/versions/20260529_sec_priv_found.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/dependencies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/billing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/downloads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/export_artifacts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/files.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/jobs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/media_assets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/profile.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/quota.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/security.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/transcriptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/transcripts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/routers/uploads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/schemas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/security.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/security_foundation/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/security_foundation/ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/security_foundation/password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/security_foundation/privacy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/security_foundation/rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/security_foundation/token_rotation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/access_control.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/account_bootstrap.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/audit_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/auth_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/billing_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/consent_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/legal_document_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/plan_catalog.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/privacy_request_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/quota_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/refresh_token_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/security_event_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/api/app/services/upload_helpers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/app/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/app/providers/AppProviders.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/app/router/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/app/store/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/app/styles/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/features/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/features/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/features/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/features/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/pages/auth/AuthPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/pages/auth/api/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/pages/auth/model/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/pages/auth/ui/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/pages/auth/ui/RegisterForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/shared/api/client.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/shared/api/files.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/shared/api/jobs.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/shared/api/settings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/shared/api/transcriptions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/apps/web/src/shared/config/env.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/api/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/architecture/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/architecture/project-structure.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/billing/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/legal/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/privacy/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/privacy/consent-flow.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/privacy/legal-document-versions.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/privacy/privacy-requests.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/security/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/security/admin-audit-actions.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/security/audit-logs.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/security/auth-hardening.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/security/file-ownership.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/security/rate-limits.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/docs/security/refresh-token-rotation.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/pyproject.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch-stage-2-1-file-ownership.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch-stage-2-1-jobs-create-ownership.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch-stage-2-2-refresh-token-rotation.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch-stage-2-router-security-privacy.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch-stage-2-security-package-conflict.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch-stage-2-short-alembic-revision.ps1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch_stage_2_3_audit_logs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/scripts/dev/patch_stage_2_4_consents_legal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/api/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/billing/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/privacy/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/privacy/test_consents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/privacy/test_legal_documents.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/privacy/test_privacy_requests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/security/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/security/test_audit_logs_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/security/test_file_ownership_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/security/test_ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/security/test_password_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/security/test_rate_limits.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_debug_packs/stage_2_full_security_review_pack/tests/security/test_refresh_token_rotation_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/dev/patch_stage_2_1_final_jobs_ownership.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/dev/patch_stage_2_5_privacy_requests.ps1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/routers/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/routers/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/routers/billing.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/routers/billing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/api/app/services/audit_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/services/audit_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/security/audit-logs.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/security/audit-logs.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/_reports/ALEMBIC_AUDIT_REVISIONS.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_5_privacy_requests_context/_reports/ALEMBIC_PRIVACY_REQUEST_CONTEXT.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/_reports/AUDIT_SEARCH.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/_reports/AUTH_BILLING_ENDPOINTS.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/_reports/GIT_STATUS.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/_reports/MODELS_AUDIT_SEARCH.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/_reports/SCHEMAS_AUDIT_SEARCH.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/_reports/TREE_API_APP.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/_reports/TREE_API_APP.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic.ini" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0001_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0001_init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0002_job_logs.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0002_job_logs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0003_download_fields.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0003_download_fields.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0004_mp4_mode.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0004_mp4_mode.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0005_transcriptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0005_transcriptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0006_add_user_profile_and_quota_tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0006_add_user_profile_and_quota_tables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0007_add_billing_tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0007_add_billing_tables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0008_user_profiles_user_quotas.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0008_user_profiles_user_quotas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0009_seed_default_plans.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0009_seed_default_plans.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0010_add_users_updated_at.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0010_add_users_updated_at.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0011_sync_runtime_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0011_sync_runtime_schema.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/0012_add_job_progress_fields.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/0012_add_job_progress_fields.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/20260519_0001_bigint_file_sizes.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/20260519_0001_bigint_file_sizes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/20260521_0002_job_heartbeat.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/20260521_0002_job_heartbeat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/20260524_0003_tx_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/20260524_0003_tx_profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/20260524_0004_lyrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/20260524_0004_lyrics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/alembic/versions/20260529_sec_priv_found.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/alembic/versions/20260529_sec_priv_found.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/admin/src/app/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/admin/src/entities/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/web/src/app/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/admin/src/features/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/docs/api/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/admin/src/pages/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/docs/legal/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/admin/src/shared/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/api/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/admin/src/widgets/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/privacy/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/dependencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/routers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/routers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/routers/auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/routers/billing.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/routers/plans.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/_reports/ALEMBIC_CURRENT.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/routers/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/routers/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/apps/api/app/routers/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/security.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/security_foundation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/security_foundation/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/security_foundation/ownership.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/security_foundation/ownership.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/security_foundation/password_policy.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/security_foundation/password_policy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/security_foundation/privacy.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/security_foundation/privacy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/security_foundation/rate_limits.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/security_foundation/rate_limits.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/security_foundation/token_rotation.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/security_foundation/token_rotation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/security/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/access_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/access_control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/account_bootstrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/account_bootstrap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/audit_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/auth_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/auth_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/billing_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/billing_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/consent_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/consent_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/legal_document_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/legal_document_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/plan_catalog.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/plan_catalog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/privacy_request_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/privacy_request_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/quota_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/quota_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/refresh_token_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/refresh_token_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/security_event_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/security_event_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/apps/api/app/services/upload_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/apps/api/app/services/services/upload_helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docs/billing/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/alembic/versions/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docs/privacy/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/apps/web/src/app/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docs/privacy/consent-flow.md" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/docs/privacy/consent-flow.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docs/privacy/legal-document-versions.md" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/docs/privacy/legal-document-versions.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docs/privacy/privacy-requests.md" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/docs/privacy/privacy-requests.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docs/security/audit-logs.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/docs/security/auth-hardening.md" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_final_security_review_pack/docs/security/auth-hardening.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/api/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/docs/privacy/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/billing/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/api/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/privacy/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/privacy/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/privacy/test_consents.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/privacy/test_consents.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/privacy/test_legal_documents.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/privacy/test_legal_documents.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/privacy/test_privacy_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/privacy/test_privacy_requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/security/.gitkeep" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_fix_consents_context/tests/security/.gitkeep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/security/test_file_ownership_static.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/security/test_file_ownership_static.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/security/test_ownership.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/security/test_ownership.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/security/test_password_policy.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/security/test_password_policy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/security/test_rate_limits.py" beforeDir="false" afterPath="$PROJECT_DIR$/_debug_packs/stage_2_4_consents_legal_context/tests/security/test_rate_limits.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_debug_packs/stage_2_3_audit_logs_context/tests/security/test_refresh_token_rotation_static.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/app/routers/jobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/routers/jobs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/security/file-ownership.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/security/file-ownership.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/dev/patch_stage_2_4_consents_legal.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/dev/patch_stage_2_4_consents_legal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/security/test_file_ownership_static.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/security/test_file_ownership_static.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

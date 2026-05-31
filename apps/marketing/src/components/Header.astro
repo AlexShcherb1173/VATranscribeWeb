@@ -1,4 +1,4 @@
-﻿---
+---
 import { siteConfig } from "../config/site";
 ---
 
@@ -13,6 +13,9 @@ import { siteConfig } from "../config/site";
       {siteConfig.nav.map((item) => <a href={item.href}>{item.label}</a>)}
     </nav>
 
-    <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>Open app</a>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a class="button button-secondary" href={`${siteConfig.appUrl}/auth/login`}>Log in</a>
+      <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>Start free</a>
+    </div>
   </div>
 </header>

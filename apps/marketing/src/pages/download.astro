@@ -1,16 +1,47 @@
-﻿---
+---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
+
+const downloadItems = [
+  {
+    title: "Web dashboard",
+    status: "Available in development",
+    description: "Use the SaaS dashboard for auth, jobs, files, transcripts, billing overview and privacy flows."
+  },
+  {
+    title: "Desktop app",
+    status: "Planned",
+    description: "Future desktop builds will be listed here with version, checksum and release notes."
+  },
+  {
+    title: "CLI / worker tools",
+    status: "Planned",
+    description: "Internal and developer tooling can be distributed from this page later."
+  }
+];
 ---
 
-<MarketingLayout title="Download" description="Download VATranscribe desktop and trial tools.">
+<MarketingLayout title="Download" description="VATranscribe download page for dashboard access, desktop installers and release resources.">
   <section class="section">
     <div class="container">
       <span class="eyebrow">Download</span>
-      <h1 class="h1">Desktop download page foundation.</h1>
-      <p class="lead">This page will host desktop installers, version notes and trial download tracking.</p>
+      <h1 class="h1">One place for dashboard access and future desktop builds.</h1>
+      <p class="lead">
+        Stage 3.2 defines the download surface. Real installers, checksums and release notes will be added later.
+      </p>
+
+      <div class="grid grid-3" style="margin-top: 32px;">
+        {downloadItems.map((item) => (
+          <article class="card">
+            <span class="badge badge-accent">{item.status}</span>
+            <h3 class="h3" style="margin-top: 16px;">{item.title}</h3>
+            <p class="muted">{item.description}</p>
+          </article>
+        ))}
+      </div>
+
       <div class="button-row">
-        <a class="button button-primary" href="/docs">Read setup docs</a>
-        <a class="button button-secondary" href="/pricing">Compare plans</a>
+        <a class="button button-primary" href="http://localhost:5175/auth/register">Open web app</a>
+        <a class="button button-secondary" href="/docs">Read documentation</a>
       </div>
     </div>
   </section>

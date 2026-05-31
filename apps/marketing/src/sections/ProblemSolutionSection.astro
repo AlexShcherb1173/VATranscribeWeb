@@ -1,0 +1,33 @@
+---
+const problems = [
+  "Media links, downloads and transcripts are usually spread across unrelated tools.",
+  "User ownership, auditability and privacy workflows are often added too late.",
+  "Desktop downloads, SaaS quotas and billing pages are hard to connect after launch."
+];
+
+const solutions = [
+  "Keep URL analysis, downloads, media assets and transcripts in one product workflow.",
+  "Start with auth hardening, token rotation, consents, audit logs and privacy requests.",
+  "Separate marketing, SaaS dashboard, API and future admin panel from the beginning."
+];
+---
+
+<section class="section">
+  <div class="container grid grid-2">
+    <div>
+      <span class="eyebrow">Problem</span>
+      <h2 class="h2">Media automation becomes fragile when product layers are mixed.</h2>
+      <ul class="list">
+        {problems.map((item) => <li>— {item}</li>)}
+      </ul>
+    </div>
+
+    <div class="card card-strong">
+      <span class="eyebrow">Solution</span>
+      <h2 class="h2">A clean SaaS layer around real media jobs.</h2>
+      <ul class="list">
+        {solutions.map((item) => <li>✓ {item}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>

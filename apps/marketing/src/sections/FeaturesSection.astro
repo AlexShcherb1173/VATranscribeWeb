@@ -1,39 +1,48 @@
-﻿---
+---
 import FeatureCard from "../components/FeatureCard.astro";
 
 const features = [
   {
-    title: "Downloader workflows",
-    description: "Prepare MP3 and MP4 jobs with format selection, logs and processing history."
+    badge: "Downloader",
+    title: "MP3 and MP4 workflows",
+    description: "Prepare compatible audio/video downloads with job state, progress and logs."
   },
   {
-    title: "Transcription foundation",
-    description: "Turn media assets into transcripts and keep results connected to user-owned files."
+    badge: "Transcription",
+    title: "Transcript pipeline foundation",
+    description: "Connect media assets to transcription jobs, transcript history and export artifacts."
   },
   {
-    title: "Security-first SaaS base",
-    description: "Refresh token rotation, consents, privacy requests, audit logs and ownership checks."
+    badge: "Security",
+    title: "Security and privacy baseline",
+    description: "Refresh token rotation, rate limits, backend password policy, consents and audit logs."
   },
   {
-    title: "Billing-ready architecture",
-    description: "Plan, subscription, quota and usage foundations are ready for provider integration."
+    badge: "Ownership",
+    title: "User-owned files",
+    description: "Jobs, media assets, transcripts and exports are scoped by authenticated ownership."
   },
   {
-    title: "Desktop-ready direction",
-    description: "Marketing and download pages are prepared for future desktop app distribution."
+    badge: "Billing",
+    title: "Billing-ready model",
+    description: "Plans, quotas, subscriptions and usage history are prepared for payment integration."
   },
   {
-    title: "SEO content layer",
-    description: "Astro static pages, legal pages, docs and blog sections are split from the SaaS app."
+    badge: "Marketing",
+    title: "SEO-ready public layer",
+    description: "Astro marketing pages stay separate from the authenticated SaaS dashboard."
   }
 ];
 ---
 
 <section class="section">
   <div class="container">
-    <span class="eyebrow">Core features</span>
-    <h2 class="h2">A public site over a real SaaS product.</h2>
-    <p class="lead">The marketing layer explains the product while the dashboard remains focused on user workflows.</p>
+    <span class="eyebrow">Features</span>
+    <h2 class="h2">Built as a product, not a script collection.</h2>
+    <p class="lead">
+      VATranscribe is structured around real application layers: marketing, web dashboard, API,
+      worker, future desktop app and monetization foundations.
+    </p>
     <div class="grid grid-3" style="margin-top: 28px;">
       {features.map((feature) => <FeatureCard {...feature} />)}
     </div>

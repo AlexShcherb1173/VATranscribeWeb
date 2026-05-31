@@ -1,6 +1,7 @@
-﻿---
+---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
 import PricingGrid from "../components/PricingGrid.astro";
+import FaqSection from "../sections/FaqSection.astro";
 ---
 
 <MarketingLayout title="Pricing" description="VATranscribe pricing plans for media download and transcription workflows.">
@@ -8,8 +9,28 @@ import PricingGrid from "../components/PricingGrid.astro";
     <div class="container">
       <span class="eyebrow">Pricing</span>
       <h1 class="h1">Plans for creators, developers and teams.</h1>
-      <p class="lead">Static pricing cards now; backend plan synchronization comes in the billing stage.</p>
+      <p class="lead">
+        These pricing cards are static for Stage 3.2. Stage 3.5 will connect them to the backend plan catalog.
+      </p>
       <PricingGrid />
     </div>
   </section>
+
+  <section class="section-tight" id="contact">
+    <div class="container">
+      <div class="card card-strong">
+        <span class="eyebrow">Business</span>
+        <h2 class="h2">Need a team workflow or private deployment?</h2>
+        <p class="lead">
+          Business pricing is intended for audit-heavy workflows, custom quotas and future admin control.
+        </p>
+        <div class="button-row">
+          <a class="button button-primary" href="/docs">Prepare requirements</a>
+          <a class="button button-secondary" href="/legal/privacy">Review privacy baseline</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection />
 </MarketingLayout>

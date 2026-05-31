@@ -51,3 +51,7 @@ __pycache__/
 _migration_backup/
 
 _migration_backup/
+
+apps/marketing/.astro/
+
+apps/marketing/.astro/

@@ -1,0 +1,44 @@
+---
+const trustItems = [
+  {
+    title: "Auth hardening",
+    description: "Access tokens, refresh token rotation, logout-all and backend password policy."
+  },
+  {
+    title: "Consent history",
+    description: "Terms, privacy and personal data consent versions are stored per user."
+  },
+  {
+    title: "Privacy requests",
+    description: "Users can create privacy export/delete/revoke requests with audit tracking."
+  },
+  {
+    title: "Audit logs",
+    description: "Auth, billing, consent and privacy actions are recorded for operational visibility."
+  }
+];
+---
+
+<section class="section">
+  <div class="container">
+    <div class="card card-strong">
+      <div class="grid grid-2">
+        <div>
+          <span class="eyebrow">Trust layer</span>
+          <h2 class="h2">Security and privacy are already part of the foundation.</h2>
+          <p class="lead">
+            Stage 2 established the baseline required before turning the product into a public SaaS.
+          </p>
+        </div>
+        <div class="grid">
+          {trustItems.map((item) => (
+            <div class="card">
+              <h3 class="h3">{item.title}</h3>
+              <p class="muted">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

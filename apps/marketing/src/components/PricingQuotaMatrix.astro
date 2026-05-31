@@ -1,0 +1,59 @@
+---
+import { getPricingContent } from "../config/pricing";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const content = getPricingContent(locale);
+const labels = locale === "ru"
+  ? {
+      plan: "Тариф",
+      storage: "Хранилище",
+      transcription: "Транскрибация",
+      jobs: "Задачи",
+      price: "Цена"
+    }
+  : {
+      plan: "Plan",
+      storage: "Storage",
+      transcription: "Transcription",
+      jobs: "Jobs",
+      price: "Price"
+    };
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">{content.quotaTitle}</span>
+    <h2 class="h2">{content.quotaTitle}</h2>
+    <p class="lead">{content.quotaLead}</p>
+
+    <div class="table-card">
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>{labels.plan}</th>
+            <th>{labels.storage}</th>
+            <th>{labels.transcription}</th>
+            <th>{labels.jobs}</th>
+            <th>{labels.price}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {content.plans.map((plan) => (
+            <tr>
+              <td><strong>{plan.name}</strong><span>{plan.code}</span></td>
+              <td>{plan.storage}</td>
+              <td>{plan.transcription}</td>
+              <td>{plan.jobs}</td>
+              <td>{plan.price} / {plan.period}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

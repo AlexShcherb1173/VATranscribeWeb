@@ -1,5 +1,5 @@
 ---
-import { getPricingPlans } from "../config/pricing";
+import { getPricingContent } from "../config/pricing";
 import type { Locale } from "../i18n/locales";
 
 type Props = {
@@ -7,26 +7,46 @@ type Props = {
 };
 
 const { locale = "en" } = Astro.props;
-const plans = getPricingPlans(locale);
+const content = getPricingContent(locale);
 ---
 
-<div class="grid grid-3" style="margin-top: 30px;">
-  {plans.map((plan) => (
-    <article class={`card ${plan.highlighted ? "card-strong" : ""}`}>
-      <span class={`badge ${plan.highlighted ? "badge-accent" : ""}`}>
-        {plan.highlighted ? (locale === "ru" ? "Рекомендуем" : "Recommended") : plan.code}
-      </span>
-      <h3 style="font-size: 1.7rem; margin: 18px 0 0;">{plan.name}</h3>
-      <p class="muted">{plan.description}</p>
-      <div style="font-size: 2.4rem; font-weight: 900; letter-spacing: -0.06em;">
-        {plan.price}
-        <span class="muted" style="font-size: 0.95rem; font-weight: 500;"> / {plan.period}</span>
+<div class="pricing-period" aria-label="Billing period selector foundation">
+  <span class="pricing-period-option active">{content.periodToggle.monthly}</span>
+  <span class="pricing-period-option">{content.periodToggle.yearly}</span>
+  <span class="pricing-period-note">{content.periodToggle.yearlyNote}</span>
+</div>
+
+<div class="grid grid-3 pricing-grid">
+  {content.plans.map((plan) => (
+    <article class={`pricing-card card ${plan.highlighted ? "card-strong pricing-card-featured" : ""}`}>
+      <div class="pricing-card-top">
+        <span class={`badge ${plan.highlighted ? "badge-accent" : ""}`}>{plan.badge}</span>
+        <span class="pricing-plan-code">{plan.code}</span>
       </div>
-      <p class="muted-strong" style="margin: 10px 0 0;">{plan.quota}</p>
+
+      <h3 class="pricing-plan-name">{plan.name}</h3>
+      <p class="muted">{plan.description}</p>
+
+      <div class="pricing-price">
+        <span>{plan.price}</span>
+        <small>/ {plan.period}</small>
+      </div>
+
+      <p class="muted-strong">{plan.quota}</p>
+      <p class="pricing-best-for">{plan.bestFor}</p>
+
+      <div class="pricing-mini-quota">
+        <div><strong>{plan.storage}</strong><span>Storage</span></div>
+        <div><strong>{plan.transcription}</strong><span>Transcription</span></div>
+        <div><strong>{plan.jobs}</strong><span>Jobs</span></div>
+      </div>
+
       <ul class="list">
         {plan.features.map((feature) => <li>✓ {feature}</li>)}
       </ul>
-      <a class="button button-primary button-block" href={plan.href} style="margin-top: 24px;">{plan.cta}</a>
+
+      <a class="button button-primary button-block" href={plan.href}>{plan.cta}</a>
+      <p class="pricing-yearly-note">{plan.yearlyNote}</p>
     </article>
   ))}
 </div>

@@ -1,17 +1,12 @@
 ---
-import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import LegalDocumentLayout from "../../components/LegalDocumentLayout.astro";
+import { getLegalDocumentBySlug } from "../../config/legal";
+
+const legalDocument = getLegalDocumentBySlug("cookies");
+
+if (!legalDocument) {
+  throw new Error("Legal document not found: cookies");
+}
 ---
 
-<MarketingLayout canonicalPath="/legal/cookies" title="Cookie Policy" description="Cookie Policy for VATranscribe.">
-  <section class="section">
-    <div class="container prose">
-      <span class="eyebrow">Legal</span>
-      <h1>Cookie Policy</h1>
-      <p>This is a placeholder legal page. Replace it with reviewed legal text before production launch.</p>
-      <h2>Scope</h2>
-      <p>This document applies to VATranscribe marketing pages, SaaS dashboard and related services.</p>
-      <h2>Contact</h2>
-      <p>Add official business and support contact details before publication.</p>
-    </div>
-  </section>
-</MarketingLayout>
+<LegalDocumentLayout document={legalDocument} />

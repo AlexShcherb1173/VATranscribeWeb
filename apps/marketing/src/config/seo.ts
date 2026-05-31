@@ -75,10 +75,18 @@ export const seoPages: SeoPage[] = [
     changefreq: "weekly"
   },
   {
+    path: "/legal",
+    title: "VATranscribe Legal Center",
+    description:
+      "VATranscribe legal center with Terms, Privacy Policy, Personal Data Processing Consent, Cookie Policy and Refund Policy.",
+    priority: "0.4",
+    changefreq: "monthly"
+  },
+  {
     path: "/legal/terms",
     title: "VATranscribe Terms of Service",
     description:
-      "Terms of Service placeholder for VATranscribe. Replace with reviewed legal text before production launch.",
+      "Terms governing access to VATranscribe, including account use, media processing, subscriptions, acceptable use and service limitations.",
     priority: "0.35",
     changefreq: "monthly"
   },
@@ -86,7 +94,7 @@ export const seoPages: SeoPage[] = [
     path: "/legal/privacy",
     title: "VATranscribe Privacy Policy",
     description:
-      "Privacy Policy placeholder for VATranscribe. Replace with reviewed legal text before production launch.",
+      "Privacy Policy describing what data VATranscribe may collect, how it is used, how long it is kept and how users can request access or deletion.",
     priority: "0.35",
     changefreq: "monthly"
   },
@@ -94,7 +102,7 @@ export const seoPages: SeoPage[] = [
     path: "/legal/personal-data",
     title: "VATranscribe Personal Data Processing Consent",
     description:
-      "Personal data processing consent placeholder for VATranscribe. Replace with reviewed legal text before production launch.",
+      "Consent text for processing personal data needed for account creation, authentication, media workflow operation, audit logs and privacy requests.",
     priority: "0.3",
     changefreq: "monthly"
   },
@@ -102,7 +110,7 @@ export const seoPages: SeoPage[] = [
     path: "/legal/cookies",
     title: "VATranscribe Cookie Policy",
     description:
-      "Cookie Policy placeholder for VATranscribe. Replace with reviewed legal text before production launch.",
+      "Cookie Policy explaining essential cookies, local storage, analytics cookies and future tracking technology controls.",
     priority: "0.3",
     changefreq: "monthly"
   },
@@ -110,7 +118,7 @@ export const seoPages: SeoPage[] = [
     path: "/legal/refund",
     title: "VATranscribe Refund Policy",
     description:
-      "Refund Policy placeholder for VATranscribe. Replace with reviewed legal text before production launch.",
+      "Refund Policy draft for future subscriptions, plan changes, failed payments, trials and exceptional refunds.",
     priority: "0.3",
     changefreq: "monthly"
   }

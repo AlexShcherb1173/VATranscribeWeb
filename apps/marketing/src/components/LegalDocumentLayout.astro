@@ -1,0 +1,92 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import { legalDocuments } from "../config/legal";
+import type { LegalDocumentConfig } from "../config/legal";
+
+type Props = {
+  document: LegalDocumentConfig;
+};
+
+const { document } = Astro.props;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: document.title,
+  version: document.version,
+  datePublished: document.effectiveDate,
+  dateModified: document.effectiveDate,
+  url: document.path,
+  description: document.summary
+};
+---
+
+<MarketingLayout
+  title={document.title}
+  description={document.summary}
+  canonicalPath={document.path}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2" style="align-items: start;">
+        <article class="prose">
+          <span class="eyebrow">Legal document</span>
+          <h1>{document.title}</h1>
+
+          <div class="card" style="margin: 24px 0;">
+            <p style="margin: 0;"><strong>Version:</strong> {document.version}</p>
+            <p style="margin: 8px 0 0;"><strong>Effective date:</strong> {document.effectiveDate}</p>
+            <p style="margin: 8px 0 0;">
+              <strong>Required for registration:</strong> {document.requiredForRegistration ? "Yes" : "No"}
+            </p>
+          </div>
+
+          <p>{document.summary}</p>
+
+          <div class="card card-strong" style="margin: 24px 0;">
+            <strong>Draft notice</strong>
+            <p class="muted" style="margin-bottom: 0;">{document.notice}</p>
+          </div>
+
+          {document.sections.map((section) => (
+            <section style="margin-top: 34px;">
+              <h2>{section.title}</h2>
+
+              {section.paragraphs?.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+
+              {section.bullets ? (
+                <ul>
+                  {section.bullets.map((bullet) => (
+                    <li>{bullet}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          ))}
+        </article>
+
+        <aside class="card" style="position: sticky; top: 96px;">
+          <span class="eyebrow">Legal center</span>
+          <h2 style="margin-top: 10px;">Documents</h2>
+          <ul class="list">
+            {legalDocuments.map((item) => (
+              <li>
+                <a href={item.path} aria-current={item.path === document.path ? "page" : undefined}>
+                  {item.shortTitle} — v{item.version}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div style="margin-top: 24px;">
+            <a class="button button-secondary button-block" href="/legal/terms">Terms</a>
+            <a class="button button-secondary button-block" href="/legal/privacy" style="margin-top: 10px;">Privacy</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

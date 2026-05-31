@@ -1,0 +1,32 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { legalDocuments } from "../../config/legal";
+---
+
+<MarketingLayout
+  title="Legal Center"
+  description="VATranscribe legal center with Terms, Privacy Policy, Personal Data Processing Consent, Cookie Policy and Refund Policy."
+  canonicalPath="/legal"
+>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Legal center</span>
+      <h1 class="h1">Legal documents and product policies.</h1>
+      <p class="lead">
+        Review the current legal document drafts used by VATranscribe marketing pages,
+        account registration and future billing flows.
+      </p>
+
+      <div class="grid grid-3" style="margin-top: 32px;">
+        {legalDocuments.map((document) => (
+          <a class="card" href={document.path}>
+            <span class="badge">{document.requiredForRegistration ? "Required" : "Policy"}</span>
+            <h2 class="h3" style="margin-top: 16px;">{document.title}</h2>
+            <p class="muted">Version {document.version} · Effective {document.effectiveDate}</p>
+            <p class="muted">{document.summary}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

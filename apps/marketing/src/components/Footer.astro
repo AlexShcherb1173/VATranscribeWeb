@@ -1,4 +1,4 @@
-﻿---
+---
 import { siteConfig } from "../config/site";
 const year = new Date().getFullYear();
 ---
@@ -20,6 +20,7 @@ const year = new Date().getFullYear();
 
     <div>
       <strong>Legal</strong>
+      <p class="muted" style="margin: 10px 0 0;"><a href="/legal">Legal center</a></p>
       <ul class="list">
         {siteConfig.legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
       </ul>

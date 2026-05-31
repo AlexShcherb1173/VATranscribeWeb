@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import uuid
 from datetime import datetime
@@ -10,6 +10,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    JSON,
     String,
     Text,
     func,
@@ -108,6 +109,241 @@ class User(Base):
         foreign_keys="Job.user_id",
     )
 
+    refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
+        "RefreshToken",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="RefreshToken.user_id",
+    )
+
+
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    token_hash: Mapped[str] = mapped_column(
+        String(128),
+        unique=True,
+        nullable=False,
+    )
+    is_revoked: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="refresh_tokens",
+    )
+
+
+class PrivacyRequest(Base):
+    __tablename__ = "privacy_requests"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    request_type: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+    )
+    status: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        default="pending",
+    )
+    comment: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    processed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        foreign_keys=[user_id],
+    )
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    actor_user_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    action: Mapped[str] = mapped_column(
+        String(150),
+        nullable=False,
+        index=True,
+    )
+    entity_type: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+    entity_id: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+    meta_json: Mapped[dict | None] = mapped_column(
+        JSON,
+        nullable=True,
+    )
+    ip_hash: Mapped[str | None] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+    user_agent_hash: Mapped[str | None] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    actor: Mapped["User | None"] = relationship(
+        "User",
+        foreign_keys=[actor_user_id],
+    )
+
+
+class LegalDocument(Base):
+    __tablename__ = "legal_documents"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    document_type: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+        index=True,
+    )
+    version: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+    )
+    title: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+    )
+    content: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+    )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+    )
+    published_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+
+class UserConsent(Base):
+    __tablename__ = "user_consents"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    document_type: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
+    document_version: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+    )
+    accepted: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=True,
+    )
+    ip_hash: Mapped[str | None] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+    user_agent_hash: Mapped[str | None] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        foreign_keys=[user_id],
+    )
 
 class Plan(Base):
     __tablename__ = "plans"
@@ -564,3 +800,4 @@ class UsageSnapshot(Base):
     )
 
     user: Mapped["User"] = relationship("User", back_populates="usage_snapshots")
+

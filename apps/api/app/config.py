@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = Field(
         1440, alias="ACCESS_TOKEN_EXPIRE_MINUTES"
     )
+    refresh_token_expire_days: int = Field(         30, alias="REFRESH_TOKEN_EXPIRE_DAYS"     )
 
     # --- CORS ---
     cors_origins: str = Field("*", alias="CORS_ORIGINS")

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -18,6 +18,7 @@ from apps.api.app.schemas import (
     JobResponse,
 )
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
+from apps.api.app.services.access_control import get_user_media_asset_or_404
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
@@ -270,6 +271,13 @@ def create_job(
 ) -> Job:
     assert_can_create_job(db, current_user, jobs_to_add=1)
 
+    if payload.transcription_media_asset_id:
+        get_user_media_asset_or_404(
+            db=db,
+            current_user=current_user,
+            media_asset_id=payload.transcription_media_asset_id,
+        )
+
     job = Job(
         user_id=current_user.id,
         type=payload.type,
@@ -491,3 +499,6 @@ def stop_job(
     Frontend-compatible alias for cancel.
     """
     return cancel_job(job_id=job_id, db=db, current_user=current_user)
+
+
+

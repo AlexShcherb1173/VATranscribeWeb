@@ -1,4 +1,4 @@
-export type LoginRequest = {
+﻿export type LoginRequest = {
   email: string;
   password: string;
 };
@@ -26,3 +26,4 @@ export type CurrentUser = {
   email: string;
   is_active: boolean;
 };
+

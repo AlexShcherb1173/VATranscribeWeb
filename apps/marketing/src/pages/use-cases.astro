@@ -1,0 +1,22 @@
+﻿---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import FeatureCard from "../components/FeatureCard.astro";
+
+const cases = [
+  ["Creators", "Download source media, create transcripts and prepare reusable text assets."],
+  ["Developers", "Test media workflows with API-first architecture and observable jobs."],
+  ["Teams", "Manage usage, quotas, audit logs and future billing-ready workspaces."]
+];
+---
+
+<MarketingLayout title="Use cases" description="Use cases for VATranscribe.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Use cases</span>
+      <h1 class="h1">Built for media-heavy workflows.</h1>
+      <div class="grid grid-3" style="margin-top: 28px;">
+        {cases.map(([title, description]) => <FeatureCard title={title} description={description} />)}
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

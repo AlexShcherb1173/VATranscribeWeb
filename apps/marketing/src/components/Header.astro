@@ -1,0 +1,18 @@
+﻿---
+import { siteConfig } from "../config/site";
+---
+
+<header style="position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--border); background: rgba(7, 17, 31, 0.78); backdrop-filter: blur(18px);">
+  <div class="container" style="display: flex; align-items: center; justify-content: space-between; min-height: 72px; gap: 24px;">
+    <a href="/" style="display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -0.04em;">
+      <span style="width: 34px; height: 34px; display: grid; place-items: center; border-radius: 12px; background: var(--accent-strong);">V</span>
+      <span>{siteConfig.productName}</span>
+    </a>
+
+    <nav style="display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 0.94rem;">
+      {siteConfig.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+
+    <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>Open app</a>
+  </div>
+</header>

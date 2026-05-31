@@ -1,0 +1,19 @@
+﻿---
+import { siteConfig } from "../config/site";
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Media workflow SaaS</span>
+    <h1 class="h1">Download, transcribe and organize media without losing control.</h1>
+    <p class="lead">
+      {siteConfig.productName} combines downloader workflows, transcription jobs, user accounts,
+      quotas, audit logs and billing-ready architecture in one product layer.
+    </p>
+    <div class="button-row">
+      <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>Start free</a>
+      <a class="button button-secondary" href="/pricing">View pricing</a>
+      <a class="button button-secondary" href="/docs">Read docs</a>
+    </div>
+  </div>
+</section>

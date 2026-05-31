@@ -1,0 +1,41 @@
+﻿---
+import FeatureCard from "../components/FeatureCard.astro";
+
+const features = [
+  {
+    title: "Downloader workflows",
+    description: "Prepare MP3 and MP4 jobs with format selection, logs and processing history."
+  },
+  {
+    title: "Transcription foundation",
+    description: "Turn media assets into transcripts and keep results connected to user-owned files."
+  },
+  {
+    title: "Security-first SaaS base",
+    description: "Refresh token rotation, consents, privacy requests, audit logs and ownership checks."
+  },
+  {
+    title: "Billing-ready architecture",
+    description: "Plan, subscription, quota and usage foundations are ready for provider integration."
+  },
+  {
+    title: "Desktop-ready direction",
+    description: "Marketing and download pages are prepared for future desktop app distribution."
+  },
+  {
+    title: "SEO content layer",
+    description: "Astro static pages, legal pages, docs and blog sections are split from the SaaS app."
+  }
+];
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Core features</span>
+    <h2 class="h2">A public site over a real SaaS product.</h2>
+    <p class="lead">The marketing layer explains the product while the dashboard remains focused on user workflows.</p>
+    <div class="grid grid-3" style="margin-top: 28px;">
+      {features.map((feature) => <FeatureCard {...feature} />)}
+    </div>
+  </div>
+</section>

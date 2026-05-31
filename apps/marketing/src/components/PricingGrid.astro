@@ -1,0 +1,21 @@
+﻿---
+import { pricingPlans } from "../config/pricing";
+---
+
+<div class="grid grid-3">
+  {pricingPlans.map((plan) => (
+    <article class="card">
+      <span class="badge">{plan.code}</span>
+      <h3 style="font-size: 1.7rem; margin: 18px 0 0;">{plan.name}</h3>
+      <p class="muted">{plan.description}</p>
+      <div style="font-size: 2.4rem; font-weight: 900; letter-spacing: -0.06em;">
+        {plan.price}
+        <span class="muted" style="font-size: 0.95rem; font-weight: 500;"> / {plan.period}</span>
+      </div>
+      <ul class="list">
+        {plan.features.map((feature) => <li>✓ {feature}</li>)}
+      </ul>
+      <a class="button button-primary" href={plan.href} style="margin-top: 24px; width: 100%;">{plan.cta}</a>
+    </article>
+  ))}
+</div>

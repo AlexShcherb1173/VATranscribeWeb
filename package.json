@@ -1,40 +1,44 @@
 {
-  "name": "vatranscribe",
-  "private": true,
-  "version": "0.1.0",
-  "description": "VATranscribe monorepo: FastAPI backend, Celery worker, React/Vite frontend.",
-  "packageManager": "npm@10.9.2",
-  "workspaces": [
-    "apps/web",
-    "apps/api"
-  ],
-  "scripts": {
-    "dev": "turbo run dev",
-    "dev:web": "npm run dev --workspace apps/web",
-    "dev:api": "npm run dev --workspace apps/api",
-    "dev:docker": "docker compose up -d",
-    "stop": "docker compose down",
-    "restart": "docker compose restart",
-    "logs": "docker compose logs -f",
-    "logs:api": "docker compose logs api -f",
-    "logs:worker": "docker compose logs worker -f",
-    "build": "turbo run build",
-    "build:web": "npm run build --workspace apps/web",
-    "build:api": "npm run build --workspace apps/api",
-    "preview": "npm run preview --workspace apps/web",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
-    "clean": "turbo run clean && rimraf node_modules .turbo apps/web/node_modules apps/web/dist",
-    "doctor": "npm run doctor --workspace apps/api",
-    "health": "curl http://127.0.0.1:8000/api/v1/health/live"
-  },
-  "devDependencies": {
-    "rimraf": "^6.0.1",
-    "turbo": "^2.5.0"
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
-  }
+    "name":  "vatranscribe",
+    "private":  true,
+    "version":  "0.1.0",
+    "description":  "VATranscribe monorepo: FastAPI backend, Celery worker, React/Vite frontend.",
+    "packageManager":  "npm@10.9.2",
+    "workspaces":  [
+                       "apps/marketing",
+                       "apps/web",
+                       "apps/api"
+                   ],
+    "scripts":  {
+                    "dev":  "turbo run dev",
+                    "dev:web":  "npm run dev --workspace apps/web",
+                    "dev:api":  "npm run dev --workspace apps/api",
+                    "dev:docker":  "docker compose up -d",
+                    "stop":  "docker compose down",
+                    "restart":  "docker compose restart",
+                    "logs":  "docker compose logs -f",
+                    "logs:api":  "docker compose logs api -f",
+                    "logs:worker":  "docker compose logs worker -f",
+                    "build":  "turbo run build",
+                    "build:web":  "npm run build --workspace apps/web",
+                    "build:api":  "npm run build --workspace apps/api",
+                    "preview":  "npm run preview --workspace apps/web",
+                    "lint":  "turbo run lint",
+                    "typecheck":  "turbo run typecheck",
+                    "test":  "turbo run test",
+                    "clean":  "turbo run clean \u0026\u0026 rimraf node_modules .turbo apps/web/node_modules apps/web/dist",
+                    "doctor":  "npm run doctor --workspace apps/api",
+                    "health":  "curl http://127.0.0.1:8000/api/v1/health/live",
+                    "dev:marketing":  "npm run dev --workspace apps/marketing",
+                    "build:marketing":  "npm run build --workspace apps/marketing",
+                    "preview:marketing":  "npm run preview --workspace apps/marketing"
+                },
+    "devDependencies":  {
+                            "rimraf":  "^6.0.1",
+                            "turbo":  "^2.5.0"
+                        },
+    "engines":  {
+                    "node":  "\u003e=20.0.0",
+                    "npm":  "\u003e=10.0.0"
+                }
 }

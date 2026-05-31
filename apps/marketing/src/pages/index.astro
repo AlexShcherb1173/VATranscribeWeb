@@ -1,0 +1,19 @@
+﻿---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import HeroSection from "../sections/HeroSection.astro";
+import FeaturesSection from "../sections/FeaturesSection.astro";
+import PricingGrid from "../components/PricingGrid.astro";
+---
+
+<MarketingLayout title="VATranscribe" description="Download, transcribe and organize media files in one SaaS-ready workspace.">
+  <HeroSection />
+  <FeaturesSection />
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Pricing preview</span>
+      <h2 class="h2">Start simple. Scale into SaaS.</h2>
+      <p class="lead">The pricing page is prepared for future backend plan synchronization.</p>
+      <PricingGrid />
+    </div>
+  </section>
+</MarketingLayout>

@@ -29,7 +29,7 @@ export const pricingPlans: PricingPlan[] = [
       "Community-level support"
     ],
     cta: "Start free",
-    href: "http://localhost:5175/auth/register",
+    href: "http://localhost:5175/auth/register?plan=pro",
     highlighted: false
   },
   {
@@ -47,13 +47,13 @@ export const pricingPlans: PricingPlan[] = [
       "Priority processing foundation"
     ],
     cta: "Choose Pro",
-    href: "http://localhost:5175/auth/register",
+    href: "http://localhost:5175/auth/register?plan=free",
     highlighted: true
   },
   {
     code: "business",
     name: "Business",
-    price: "$39",
+    price: "$49",
     period: "per month",
     description: "For teams that need compliance-oriented media workflows.",
     quota: "Team-ready limits",
@@ -65,7 +65,7 @@ export const pricingPlans: PricingPlan[] = [
       "Team workflow roadmap"
     ],
     cta: "Contact sales",
-    href: "/pricing#contact",
+    href: "http://localhost:5175/auth/register?plan=business",
     highlighted: false
   }
 ];
@@ -86,7 +86,7 @@ export const pricingPlansRu: PricingPlan[] = [
       "Поддержка уровня community"
     ],
     cta: "Начать бесплатно",
-    href: "http://localhost:5175/auth/register",
+    href: "http://localhost:5175/auth/register?plan=pro",
     highlighted: false
   },
   {
@@ -110,7 +110,7 @@ export const pricingPlansRu: PricingPlan[] = [
   {
     code: "business",
     name: "Business",
-    price: "$39",
+    price: "$49",
     period: "в месяц",
     description: "Для команд, которым нужны контролируемые media workflows.",
     quota: "Командные лимиты",
@@ -122,7 +122,7 @@ export const pricingPlansRu: PricingPlan[] = [
       "Roadmap командной работы"
     ],
     cta: "Связаться",
-    href: "/ru/pricing#contact",
+    href: "http://localhost:5175/auth/register?plan=business",
     highlighted: false
   }
 ];

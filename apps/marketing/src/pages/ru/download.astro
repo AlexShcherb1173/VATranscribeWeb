@@ -1,0 +1,48 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+
+const downloadItems = [
+  {
+    title: "Web dashboard",
+    status: "Доступно в разработке",
+    description: "SaaS dashboard для auth, jobs, files, transcripts, billing overview и privacy flows."
+  },
+  {
+    title: "Desktop app",
+    status: "Запланировано",
+    description: "Будущие desktop builds будут опубликованы здесь с version, checksum и release notes."
+  },
+  {
+    title: "CLI / worker tools",
+    status: "Запланировано",
+    description: "Внутренние и developer tools можно будет распространять с этой страницы позже."
+  }
+];
+---
+
+<MarketingLayout canonicalPath="/ru/download" locale="ru" title="Скачать" description="Страница скачивания VATranscribe для dashboard access, desktop installers и release resources.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Скачать</span>
+      <h1 class="h1">Единая страница для dashboard access и будущих desktop builds.</h1>
+      <p class="lead">
+        Stage 3.4.1 задаёт русскую download surface. Реальные installers, checksums и release notes будут добавлены позже.
+      </p>
+
+      <div class="grid grid-3" style="margin-top: 32px;">
+        {downloadItems.map((item) => (
+          <article class="card">
+            <span class="badge badge-accent">{item.status}</span>
+            <h3 class="h3" style="margin-top: 16px;">{item.title}</h3>
+            <p class="muted">{item.description}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="button-row">
+        <a class="button button-primary" href="http://localhost:5175/auth/register">Открыть web app</a>
+        <a class="button button-secondary" href="/ru/docs">Документация</a>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

@@ -1,4 +1,19 @@
-export const pricingPlans = [
+import type { Locale } from "../i18n/locales";
+
+export type PricingPlan = {
+  code: string;
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  quota: string;
+  features: string[];
+  cta: string;
+  href: string;
+  highlighted: boolean;
+};
+
+export const pricingPlans: PricingPlan[] = [
   {
     code: "free",
     name: "Free",
@@ -53,4 +68,65 @@ export const pricingPlans = [
     href: "/pricing#contact",
     highlighted: false
   }
-] as const;
+];
+
+export const pricingPlansRu: PricingPlan[] = [
+  {
+    code: "free",
+    name: "Free",
+    price: "$0",
+    period: "навсегда",
+    description: "Для проверки workflow и тестирования обработки медиа.",
+    quota: "Базовые лимиты",
+    features: [
+      "Предпросмотр MP3/MP4 workflow",
+      "Ограниченная транскрибация",
+      "Базовая история задач",
+      "Согласия с юридическими документами",
+      "Поддержка уровня community"
+    ],
+    cta: "Начать бесплатно",
+    href: "http://localhost:5175/auth/register",
+    highlighted: false
+  },
+  {
+    code: "pro",
+    name: "Pro",
+    price: "$12",
+    period: "в месяц",
+    description: "Для авторов и одиночных операторов с регулярной обработкой медиа.",
+    quota: "Повышенные месячные лимиты",
+    features: [
+      "Повышенный лимит скачиваний",
+      "Повышенный лимит транскрибации",
+      "Библиотека медиафайлов",
+      "История транскриптов",
+      "Основа для приоритетной обработки"
+    ],
+    cta: "Выбрать Pro",
+    href: "http://localhost:5175/auth/register",
+    highlighted: true
+  },
+  {
+    code: "business",
+    name: "Business",
+    price: "$39",
+    period: "в месяц",
+    description: "Для команд, которым нужны контролируемые media workflows.",
+    quota: "Командные лимиты",
+    features: [
+      "Основа audit logs",
+      "Privacy request workflow",
+      "Billing overview",
+      "Архитектура под админку",
+      "Roadmap командной работы"
+    ],
+    cta: "Связаться",
+    href: "/ru/pricing#contact",
+    highlighted: false
+  }
+];
+
+export function getPricingPlans(locale: Locale = "en"): PricingPlan[] {
+  return locale === "ru" ? pricingPlansRu : pricingPlans;
+}

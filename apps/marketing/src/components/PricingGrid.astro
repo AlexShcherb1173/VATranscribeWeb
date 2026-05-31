@@ -1,12 +1,20 @@
 ---
-import { pricingPlans } from "../config/pricing";
+import { getPricingPlans } from "../config/pricing";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const plans = getPricingPlans(locale);
 ---
 
 <div class="grid grid-3" style="margin-top: 30px;">
-  {pricingPlans.map((plan) => (
+  {plans.map((plan) => (
     <article class={`card ${plan.highlighted ? "card-strong" : ""}`}>
       <span class={`badge ${plan.highlighted ? "badge-accent" : ""}`}>
-        {plan.highlighted ? "Recommended" : plan.code}
+        {plan.highlighted ? (locale === "ru" ? "Рекомендуем" : "Recommended") : plan.code}
       </span>
       <h3 style="font-size: 1.7rem; margin: 18px 0 0;">{plan.name}</h3>
       <p class="muted">{plan.description}</p>

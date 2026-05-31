@@ -1,0 +1,59 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+
+const detailedCases = [
+  {
+    id: "creators",
+    title: "Авторы и редакторы",
+    points: [
+      "Собирать source videos и audio assets.",
+      "Готовить MP3/MP4 outputs для монтажа или повторного использования.",
+      "Создавать transcripts для субтитров, заметок и repurposing контента."
+    ]
+  },
+  {
+    id: "developers",
+    title: "Разработчики и тестировщики",
+    points: [
+      "Проверять downloader и transcription jobs через observable logs.",
+      "Тестировать quota, ownership и auth flows в SaaS-like архитектуре.",
+      "Использовать проект как production-grade portfolio foundation."
+    ]
+  },
+  {
+    id: "teams",
+    title: "Команды и операторы",
+    points: [
+      "Готовить audit-friendly media processing workflows.",
+      "Отслеживать privacy requests и consent versions.",
+      "Двигаться к billing, admin и collaboration layers."
+    ]
+  }
+];
+---
+
+<MarketingLayout canonicalPath="/ru/use-cases" locale="ru" title="Сценарии" description="Сценарии VATranscribe для авторов, разработчиков и команд.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Сценарии</span>
+      <h1 class="h1">Media workflow platform для нескольких продуктовых направлений.</h1>
+      <p class="lead">
+        VATranscribe можно позиционировать как creator tool, developer workflow product или team SaaS foundation.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid">
+      {detailedCases.map((item) => (
+        <article class="card" id={item.id}>
+          <span class="eyebrow">{item.id}</span>
+          <h2 class="h2">{item.title}</h2>
+          <ul class="list">
+            {item.points.map((point) => <li>✓ {point}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+</MarketingLayout>

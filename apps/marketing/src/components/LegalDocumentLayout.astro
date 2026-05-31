@@ -1,13 +1,45 @@
 ---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
 import { legalDocuments } from "../config/legal";
+import { legalDocumentsRu } from "../config/legal.ru";
 import type { LegalDocumentConfig } from "../config/legal";
+import type { Locale } from "../i18n/locales";
 
 type Props = {
   document: LegalDocumentConfig;
+  locale?: Locale;
 };
 
-const { document } = Astro.props;
+const { document, locale = "en" } = Astro.props;
+const documents = locale === "ru" ? legalDocumentsRu : legalDocuments;
+
+const labels = locale === "ru"
+  ? {
+      eyebrow: "Юридический документ",
+      version: "Версия",
+      effectiveDate: "Дата вступления в силу",
+      required: "Обязательно при регистрации",
+      yes: "Да",
+      no: "Нет",
+      draftNotice: "Важно",
+      legalCenter: "Юридический центр",
+      documents: "Документы",
+      terms: "Условия",
+      privacy: "Конфиденциальность"
+    }
+  : {
+      eyebrow: "Legal document",
+      version: "Version",
+      effectiveDate: "Effective date",
+      required: "Required for registration",
+      yes: "Yes",
+      no: "No",
+      draftNotice: "Draft notice",
+      legalCenter: "Legal center",
+      documents: "Documents",
+      terms: "Terms",
+      privacy: "Privacy"
+    };
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -17,7 +49,8 @@ const jsonLd = {
   datePublished: document.effectiveDate,
   dateModified: document.effectiveDate,
   url: document.path,
-  description: document.summary
+  description: document.summary,
+  inLanguage: locale
 };
 ---
 
@@ -25,27 +58,28 @@ const jsonLd = {
   title={document.title}
   description={document.summary}
   canonicalPath={document.path}
+  locale={locale}
   jsonLd={jsonLd}
 >
   <section class="section">
     <div class="container">
       <div class="grid grid-2" style="align-items: start;">
         <article class="prose">
-          <span class="eyebrow">Legal document</span>
+          <span class="eyebrow">{labels.eyebrow}</span>
           <h1>{document.title}</h1>
 
           <div class="card" style="margin: 24px 0;">
-            <p style="margin: 0;"><strong>Version:</strong> {document.version}</p>
-            <p style="margin: 8px 0 0;"><strong>Effective date:</strong> {document.effectiveDate}</p>
+            <p style="margin: 0;"><strong>{labels.version}:</strong> {document.version}</p>
+            <p style="margin: 8px 0 0;"><strong>{labels.effectiveDate}:</strong> {document.effectiveDate}</p>
             <p style="margin: 8px 0 0;">
-              <strong>Required for registration:</strong> {document.requiredForRegistration ? "Yes" : "No"}
+              <strong>{labels.required}:</strong> {document.requiredForRegistration ? labels.yes : labels.no}
             </p>
           </div>
 
           <p>{document.summary}</p>
 
           <div class="card card-strong" style="margin: 24px 0;">
-            <strong>Draft notice</strong>
+            <strong>{labels.draftNotice}</strong>
             <p class="muted" style="margin-bottom: 0;">{document.notice}</p>
           </div>
 
@@ -69,10 +103,10 @@ const jsonLd = {
         </article>
 
         <aside class="card" style="position: sticky; top: 96px;">
-          <span class="eyebrow">Legal center</span>
-          <h2 style="margin-top: 10px;">Documents</h2>
+          <span class="eyebrow">{labels.legalCenter}</span>
+          <h2 style="margin-top: 10px;">{labels.documents}</h2>
           <ul class="list">
-            {legalDocuments.map((item) => (
+            {documents.map((item) => (
               <li>
                 <a href={item.path} aria-current={item.path === document.path ? "page" : undefined}>
                   {item.shortTitle} — v{item.version}
@@ -82,8 +116,8 @@ const jsonLd = {
           </ul>
 
           <div style="margin-top: 24px;">
-            <a class="button button-secondary button-block" href="/legal/terms">Terms</a>
-            <a class="button button-secondary button-block" href="/legal/privacy" style="margin-top: 10px;">Privacy</a>
+            <a class="button button-secondary button-block" href={locale === "ru" ? "/ru/legal/terms" : "/legal/terms"}>{labels.terms}</a>
+            <a class="button button-secondary button-block" href={locale === "ru" ? "/ru/legal/privacy" : "/legal/privacy"} style="margin-top: 10px;">{labels.privacy}</a>
           </div>
         </aside>
       </div>

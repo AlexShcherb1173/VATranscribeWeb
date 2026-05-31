@@ -1,0 +1,33 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import PricingGrid from "../../components/PricingGrid.astro";
+---
+
+<MarketingLayout canonicalPath="/ru/pricing" locale="ru" title="Тарифы" description="Тарифы VATranscribe для media download и transcription workflows.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Тарифы</span>
+      <h1 class="h1">Планы для авторов, разработчиков и команд.</h1>
+      <p class="lead">
+        На Stage 3.4.1 тарифные карточки статические. Позже они будут связаны с backend plan catalog.
+      </p>
+      <PricingGrid locale="ru" />
+    </div>
+  </section>
+
+  <section class="section-tight" id="contact">
+    <div class="container">
+      <div class="card card-strong">
+        <span class="eyebrow">Business</span>
+        <h2 class="h2">Нужен командный workflow или private deployment?</h2>
+        <p class="lead">
+          Business план рассчитан на audit-heavy workflows, custom quotas и будущий admin control.
+        </p>
+        <div class="button-row">
+          <a class="button button-primary" href="/ru/docs">Подготовить требования</a>
+          <a class="button button-secondary" href="/ru/legal/privacy">Privacy baseline</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

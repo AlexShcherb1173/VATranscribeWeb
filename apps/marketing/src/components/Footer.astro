@@ -1,5 +1,16 @@
 ---
 import { siteConfig } from "../config/site";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { getLocaleContent, localizePath } from "../i18n/locales";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+  currentPath?: string;
+};
+
+const { locale = "en", currentPath = "/" } = Astro.props;
+const content = getLocaleContent(locale);
 const year = new Date().getFullYear();
 ---
 
@@ -7,22 +18,25 @@ const year = new Date().getFullYear();
   <div class="container grid" style="grid-template-columns: 1.4fr 1fr 1fr; gap: 28px;">
     <div>
       <strong>{siteConfig.productName}</strong>
-      <p class="muted" style="max-width: 420px;">{siteConfig.description}</p>
-      <p class="muted">© {year} {siteConfig.productName}. All rights reserved.</p>
+      <p class="muted" style="max-width: 420px;">{content.product.description}</p>
+      <LanguageSwitcher locale={locale} currentPath={currentPath} />
+      <p class="muted">© {year} {siteConfig.productName}. {content.footer.rights}</p>
     </div>
 
     <div>
-      <strong>Product</strong>
+      <strong>{content.footer.product}</strong>
       <ul class="list">
-        {siteConfig.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        {content.nav.map((item) => <li><a href={localizePath(item.href, locale)}>{item.label}</a></li>)}
       </ul>
     </div>
 
     <div>
-      <strong>Legal</strong>
-      <p class="muted" style="margin: 10px 0 0;"><a href="/legal">Legal center</a></p>
+      <strong>{content.footer.legal}</strong>
+      <p class="muted" style="margin: 10px 0 0;">
+        <a href={localizePath("/legal", locale)}>{content.footer.legalCenter}</a>
+      </p>
       <ul class="list">
-        {siteConfig.legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        {content.legal.map((item) => <li><a href={localizePath(item.href, locale)}>{item.label}</a></li>)}
       </ul>
     </div>
   </div>

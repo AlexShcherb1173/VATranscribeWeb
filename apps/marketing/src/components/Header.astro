@@ -1,21 +1,34 @@
 ---
 import { siteConfig } from "../config/site";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { getLocaleContent, localizePath } from "../i18n/locales";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+  currentPath?: string;
+};
+
+const { locale = "en", currentPath = "/" } = Astro.props;
+const content = getLocaleContent(locale);
+const homeHref = localizePath("/", locale);
 ---
 
 <header style="position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--border); background: rgba(7, 17, 31, 0.78); backdrop-filter: blur(18px);">
   <div class="container" style="display: flex; align-items: center; justify-content: space-between; min-height: 72px; gap: 24px;">
-    <a href="/" style="display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -0.04em;">
+    <a href={homeHref} style="display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -0.04em;">
       <span style="width: 34px; height: 34px; display: grid; place-items: center; border-radius: 12px; background: var(--accent-strong);">V</span>
       <span>{siteConfig.productName}</span>
     </a>
 
     <nav style="display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 0.94rem;">
-      {siteConfig.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      {content.nav.map((item) => <a href={localizePath(item.href, locale)}>{item.label}</a>)}
     </nav>
 
     <div style="display: flex; gap: 10px; align-items: center;">
-      <a class="button button-secondary" href={`${siteConfig.appUrl}/auth/login`}>Log in</a>
-      <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>Start free</a>
+      <LanguageSwitcher locale={locale} currentPath={currentPath} />
+      <a class="button button-secondary" href={`${siteConfig.appUrl}/auth/login`}>{content.actions.login}</a>
+      <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>{content.actions.startFree}</a>
     </div>
   </div>
 </header>

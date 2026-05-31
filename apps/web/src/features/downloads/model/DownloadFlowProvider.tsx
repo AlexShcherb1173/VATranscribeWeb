@@ -1,4 +1,4 @@
-import {
+﻿import {
   createContext,
   useCallback,
   useContext,
@@ -262,7 +262,7 @@ export function DownloadFlowProvider({ children }: { children: ReactNode }) {
 
       try {
         const job = await createDownloadJob(payload);
-        const message = t.downloads.jobCreated ?? t.common.success;
+        const message = t.downloads.created ?? t.common.success;
 
         setActiveJobId(job.id);
         setJobResultMessage(message);
@@ -373,3 +373,4 @@ export function useDownloadFlow() {
 
   return context;
 }
+

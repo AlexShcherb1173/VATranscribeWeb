@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+﻿import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import type { Job } from "@/entities/job/model/types";
@@ -407,7 +407,7 @@ export function DashboardPage() {
         <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-5 text-amber-950 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
           <div className="font-semibold">{t.dashboard.almostOut}</div>
           <div className="mt-1">
-            <MagicFlowNav variant="inline" />
+            <MagicFlowNav />
           </div>
         </div>
       ) : null}
@@ -709,3 +709,4 @@ function EmptyBox({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+

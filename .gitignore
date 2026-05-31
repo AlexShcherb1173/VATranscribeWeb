@@ -37,3 +37,13 @@ zip
 *.log
 .git_broken_backup/
 .git_broken*/
+
+_debug_packs/
+__pycache__/
+.pytest_cache/
+.idea/workspace.xml
+
+_debug_packs/
+__pycache__/
+.pytest_cache/
+.idea/workspace.xml

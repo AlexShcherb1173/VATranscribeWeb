@@ -1,4 +1,0 @@
-﻿ document_type | version | title | is_active | published_at 
----------------+---------+-------+-----------+--------------
-(0 rows)
-

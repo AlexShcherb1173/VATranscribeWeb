@@ -55,3 +55,5 @@ _migration_backup/
 apps/marketing/.astro/
 
 apps/marketing/.astro/
+
+.idea/

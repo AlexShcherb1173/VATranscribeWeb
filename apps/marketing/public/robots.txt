@@ -1,4 +1,0 @@
-﻿User-agent: *
-Allow: /
-
-Sitemap: https://vatranscribe.example.com/sitemap-index.xml

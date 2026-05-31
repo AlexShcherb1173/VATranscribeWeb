@@ -1,12 +1,18 @@
-﻿---
+---
 import BaseLayout from "./BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+
+type JsonLd = Record<string, unknown> | Record<string, unknown>[];
 
 type Props = {
   title?: string;
   description?: string;
   canonicalPath?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+  jsonLd?: JsonLd;
 };
 
 const props = Astro.props;

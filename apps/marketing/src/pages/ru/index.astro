@@ -1,6 +1,7 @@
 ---
 import MarketingLayout from "../../layouts/MarketingLayout.astro";
 import PricingGrid from "../../components/PricingGrid.astro";
+import { getSaasLink } from "../../config/links";
 ---
 
 <MarketingLayout canonicalPath="/ru" locale="ru" title="VATranscribe" description="Скачивание, транскрибация и организация медиафайлов в одном безопасном SaaS-ready рабочем пространстве.">
@@ -13,7 +14,7 @@ import PricingGrid from "../../components/PricingGrid.astro";
         quotas, privacy requests и audit logs в SaaS-ready продуктовой архитектуре.
       </p>
       <div class="button-row">
-        <a class="button button-primary" href="http://localhost:5175/auth/register">Начать бесплатно</a>
+        <a class="button button-primary" href={getSaasLink("register")}>Начать бесплатно</a>
         <a class="button button-secondary" href="/ru/download">Варианты скачивания</a>
         <a class="button button-secondary" href="/ru/features">Возможности</a>
       </div>

@@ -1,4 +1,4 @@
-﻿import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import { AppShell } from "@/widgets/app-shell/AppShell";
 import { ProtectedRoute } from "@/widgets/protected-route/ProtectedRoute";
@@ -17,8 +17,12 @@ import { PricingPage } from "@/pages/pricing/PricingPage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
-  { path: "/auth", element: <Navigate to="/" replace /> },
+  { path: "/auth", element: <Navigate to="/auth/login" replace /> },
+  { path: "/auth/login", element: <LandingPage /> },
+  { path: "/auth/register", element: <LandingPage /> },
   { path: "/pricing", element: <PricingPage /> },
+  { path: "/dashboard", element: <Navigate to="/app" replace /> },
+  { path: "/billing", element: <Navigate to="/app/billing" replace /> },
   {
     element: <ProtectedRoute />,
     children: [

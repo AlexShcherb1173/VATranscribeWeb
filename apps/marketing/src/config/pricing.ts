@@ -1,4 +1,5 @@
 import type { Locale } from "../i18n/locales";
+import { getSaasLink } from "./links";
 
 export type PlanCode = "free" | "pro" | "business";
 
@@ -109,7 +110,7 @@ export const pricingContentEn: PricingContent = {
         "Community-level support"
       ],
       cta: "Start free",
-      href: "http://localhost:5175/auth/register?plan=free",
+      href: getSaasLink("register", { plan: "free" }),
       highlighted: false
     },
     {
@@ -133,7 +134,7 @@ export const pricingContentEn: PricingContent = {
         "Priority processing foundation"
       ],
       cta: "Choose Pro",
-      href: "http://localhost:5175/auth/register?plan=pro",
+      href: getSaasLink("register", { plan: "pro" }),
       highlighted: true
     },
     {
@@ -157,7 +158,7 @@ export const pricingContentEn: PricingContent = {
         "Team workflow roadmap"
       ],
       cta: "Choose Business",
-      href: "http://localhost:5175/auth/register?plan=business",
+      href: getSaasLink("register", { plan: "business" }),
       highlighted: false
     }
   ],
@@ -244,7 +245,7 @@ export const pricingContentRu: PricingContent = {
         "Поддержка уровня community"
       ],
       cta: "Начать бесплатно",
-      href: "http://localhost:5175/auth/register?plan=free",
+      href: getSaasLink("register", { plan: "free" }),
       highlighted: false
     },
     {
@@ -268,7 +269,7 @@ export const pricingContentRu: PricingContent = {
         "Основа для приоритетной обработки"
       ],
       cta: "Выбрать Pro",
-      href: "http://localhost:5175/auth/register?plan=pro",
+      href: getSaasLink("register", { plan: "pro" }),
       highlighted: true
     },
     {
@@ -292,7 +293,7 @@ export const pricingContentRu: PricingContent = {
         "Roadmap командной работы"
       ],
       cta: "Выбрать Business",
-      href: "http://localhost:5175/auth/register?plan=business",
+      href: getSaasLink("register", { plan: "business" }),
       highlighted: false
     }
   ],

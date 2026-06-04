@@ -1,4 +1,5 @@
 import type { Locale } from "../i18n/locales";
+import { getSaasLink } from "./links";
 
 export type DownloadPlatform = {
   code: "web" | "windows" | "macos" | "linux" | "cli";
@@ -64,7 +65,7 @@ export const downloadContentEn: DownloadContent = {
   lead:
     "VATranscribe currently runs as a web dashboard with API-backed media workflows. The download page is prepared for future desktop installers, release notes, checksums and platform-specific builds.",
   primaryCta: "Open web app",
-  primaryHref: "http://localhost:5175/auth/register",
+  primaryHref: getSaasLink("register"),
   secondaryCta: "Read docs",
   secondaryHref: "/docs",
   trustBadges: [
@@ -102,7 +103,7 @@ export const downloadContentEn: DownloadContent = {
         "Use the browser-based SaaS dashboard for auth, downloads, files, transcripts, billing overview and privacy flows.",
       version: "dev",
       cta: "Open web app",
-      href: "http://localhost:5175/auth/register",
+      href: getSaasLink("register"),
       meta: ["No installer", "Works in modern browsers", "Connected to API"]
     },
     {
@@ -203,7 +204,7 @@ export const downloadContentRu: DownloadContent = {
   lead:
     "VATranscribe сейчас работает как web dashboard с API-backed media workflows. Страница скачивания подготовлена для будущих desktop installers, release notes, checksums и platform-specific builds.",
   primaryCta: "Открыть web app",
-  primaryHref: "http://localhost:5175/auth/register",
+  primaryHref: getSaasLink("register"),
   secondaryCta: "Документация",
   secondaryHref: "/ru/docs",
   trustBadges: [
@@ -241,7 +242,7 @@ export const downloadContentRu: DownloadContent = {
         "Browser-based SaaS dashboard для auth, downloads, files, transcripts, billing overview и privacy flows.",
       version: "dev",
       cta: "Открыть web app",
-      href: "http://localhost:5175/auth/register",
+      href: getSaasLink("register"),
       meta: ["Без installer", "Современные браузеры", "Связь с API"]
     },
     {

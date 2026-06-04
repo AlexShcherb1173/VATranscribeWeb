@@ -1,5 +1,6 @@
 ---
 import { siteConfig } from "../config/site";
+import { getSaasLink } from "../config/links";
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 import { getLocaleContent, localizePath } from "../i18n/locales";
 import type { Locale } from "../i18n/locales";
@@ -27,8 +28,8 @@ const homeHref = localizePath("/", locale);
 
     <div style="display: flex; gap: 10px; align-items: center;">
       <LanguageSwitcher locale={locale} currentPath={currentPath} />
-      <a class="button button-secondary" href={`${siteConfig.appUrl}/auth/login`}>{content.actions.login}</a>
-      <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>{content.actions.startFree}</a>
+      <a class="button button-secondary" href={getSaasLink("login")}>{content.actions.login}</a>
+      <a class="button button-primary" href={getSaasLink("register")}>{content.actions.startFree}</a>
     </div>
   </div>
 </header>

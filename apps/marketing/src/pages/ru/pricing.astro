@@ -5,6 +5,7 @@ import PricingQuotaMatrix from "../../components/PricingQuotaMatrix.astro";
 import PricingComparisonTable from "../../components/PricingComparisonTable.astro";
 import PricingFaq from "../../components/PricingFaq.astro";
 import { getPricingContent } from "../../config/pricing";
+import { getSaasLink } from "../../config/links";
 
 const content = getPricingContent("ru");
 ---
@@ -37,8 +38,8 @@ const content = getPricingContent("ru");
         <h2 class="h2">{content.finalTitle}</h2>
         <p class="lead">{content.finalLead}</p>
         <div class="button-row" style="justify-content: center;">
-          <a class="button button-primary" href="http://localhost:5175/auth/register?plan=pro">{content.finalPrimary}</a>
-          <a class="button button-secondary" href="http://localhost:5175/app/billing?plan=pro">{content.finalSecondary}</a>
+          <a class="button button-primary" href={getSaasLink("register", { plan: "pro" })}>{content.finalPrimary}</a>
+          <a class="button button-secondary" href={getSaasLink("billing", { plan: "pro" })}>{content.finalSecondary}</a>
         </div>
       </div>
     </div>

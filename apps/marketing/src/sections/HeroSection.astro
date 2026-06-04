@@ -1,5 +1,6 @@
 ---
-import { productStats, siteConfig } from "../config/site";
+import { productStats } from "../config/site";
+import { getSaasLink } from "../config/links";
 ---
 
 <section class="section hero-shell">
@@ -12,7 +13,7 @@ import { productStats, siteConfig } from "../config/site";
     </p>
 
     <div class="button-row">
-      <a class="button button-primary" href={`${siteConfig.appUrl}/auth/register`}>Start free</a>
+      <a class="button button-primary" href={getSaasLink("register")}>Start free</a>
       <a class="button button-secondary" href="/download">Download options</a>
       <a class="button button-secondary" href="/features">Explore features</a>
     </div>

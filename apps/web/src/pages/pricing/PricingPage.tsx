@@ -36,7 +36,7 @@ export function PricingPage() {
           VATranscribe
         </Link>
 
-        <Link to="/?plan=pro" className="premium-button">
+        <Link to="/auth/login" className="premium-button">
           {t.auth.login}
         </Link>
       </header>
@@ -88,7 +88,7 @@ export function PricingPage() {
                 </ul>
               </div>
 
-              <Link to={`/?plan=${plan.code}`} className="premium-button mt-8 text-center">
+              <Link to={`/auth/register?plan=${plan.code}`} className="premium-button mt-8 text-center">
                 {plan.code === "free" ? t.common.startFree : t.common.select}
               </Link>
             </div>

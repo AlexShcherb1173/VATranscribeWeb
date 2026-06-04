@@ -1,0 +1,23 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - "feature/**"
+  pull_request:
+
+jobs:
+  docker-api-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate docker compose config
+        run: docker compose config
+
+      - name: Build API image
+        run: docker compose build api

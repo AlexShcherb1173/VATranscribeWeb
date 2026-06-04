@@ -1,0 +1,21 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/web.Dockerfile
+      args:
+        PUBLIC_VATRANSCRIBE_MARKETING_URL: ${PUBLIC_VATRANSCRIBE_MARKETING_URL:-http://localhost:8080}
+        PUBLIC_VATRANSCRIBE_APP_URL: ${PUBLIC_VATRANSCRIBE_APP_URL:-http://localhost:8080}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-/app/}
+    container_name: vatranscribe-web
+    depends_on:
+      - api
+    ports:
+      - "${WEB_HTTP_PORT:-8080}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5

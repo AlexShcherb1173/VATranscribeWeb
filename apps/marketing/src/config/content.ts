@@ -524,12 +524,12 @@ export const changelogEn: ChangelogEntry[] = [
     version: "Stage 3.6",
     date: "2026-06-04",
     title: "Download and distribution page",
-    description: "Adds web app access, desktop roadmap and release-note placeholders.",
+    description: "Adds web app access, desktop roadmap and release-note structure.",
     items: [
       "Distribution channel cards.",
       "System requirements section.",
       "Release notes preview.",
-      "Checksum and signature placeholders."
+      "Checksum and signature sections."
     ]
   },
   {
@@ -567,12 +567,12 @@ export const changelogRu: ChangelogEntry[] = [
     version: "Stage 3.6",
     date: "2026-06-04",
     title: "Download и distribution page",
-    description: "Добавляет web app access, desktop roadmap и release-note placeholders.",
+    description: "Добавляет web app access, desktop roadmap и release-note structure.",
     items: [
       "Distribution channel cards.",
       "System requirements section.",
       "Release notes preview.",
-      "Checksum и signature placeholders."
+      "Checksum и signature sections."
     ]
   },
   {

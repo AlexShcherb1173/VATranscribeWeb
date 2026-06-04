@@ -1,4 +1,4 @@
-import { getSaasBaseUrl } from "./links";
+import { getMarketingBaseUrl, getSaasBaseUrl } from "./links";
 
 export const siteConfig = {
   name: "VATranscribe",
@@ -6,7 +6,7 @@ export const siteConfig = {
   tagline: "Download, transcribe and manage media files in one workspace.",
   description:
     "VATranscribe is a SaaS-ready media workflow platform for downloading, converting, transcribing and organizing video and audio files.",
-  baseUrl: "https://vatranscribe.example.com",
+  baseUrl: getMarketingBaseUrl(),
   appUrl: getSaasBaseUrl(),
   apiUrl: "http://localhost:8000",
   locale: "en",

@@ -98,7 +98,7 @@ export const legalDocuments: LegalDocumentConfig[] = [
       {
         title: "7. Contact",
         paragraphs: [
-          "Replace this placeholder with the official legal contact email, business name, registered address and jurisdiction before public launch."
+          "Production launch requires official legal contact email, business name, registered address and jurisdiction. Until then, legal contact details are managed through the deployment configuration and project owner records."
         ]
       }
     ]

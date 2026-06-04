@@ -71,7 +71,7 @@ export const downloadContentEn: DownloadContent = {
   trustBadges: [
     "Web dashboard available",
     "Desktop roadmap prepared",
-    "Checksums placeholder",
+    "Checksum section prepared",
     "Release notes structure"
   ],
   platformsTitle: "Distribution channels",
@@ -79,13 +79,13 @@ export const downloadContentEn: DownloadContent = {
     "The current production path is the web dashboard. Desktop and CLI distribution are prepared as a public product surface.",
   requirementsTitle: "System requirements",
   requirementsLead:
-    "Requirements are placeholders until real desktop builds are produced and tested.",
+    "Desktop requirements will be finalized when signed platform builds are produced and tested.",
   releaseTitle: "Release notes preview",
   releaseLead:
     "Use this section later for public version history, release channels and installer integrity data.",
   checksumTitle: "Integrity and signatures",
   checksumLead:
-    "Checksums and signatures are placeholders. Add real SHA256 values and signing details when installers are published.",
+    "Checksums and signatures are reserved for the first signed installer release. Add SHA256 values and signing details when installers are published.",
   faqTitle: "Download FAQ",
   faqLead:
     "Short answers about the current web app, future desktop builds and installer verification.",
@@ -112,7 +112,7 @@ export const downloadContentEn: DownloadContent = {
       status: "Planned",
       description:
         "Future Windows installer for local desktop workflows and bundled runtime integration.",
-      version: "not published",
+      version: "planned release",
       cta: "Coming later",
       href: "#release-notes",
       disabled: true,
@@ -124,11 +124,11 @@ export const downloadContentEn: DownloadContent = {
       status: "Planned",
       description:
         "Future macOS build for users who prefer a local desktop entry point.",
-      version: "not published",
+      version: "planned release",
       cta: "Coming later",
       href: "#release-notes",
       disabled: true,
-      meta: ["Apple Silicon / Intel TBD", "Not signed yet", "Not notarized yet"]
+      meta: ["Apple Silicon / Intel target", "Not signed yet", "Not notarized yet"]
     },
     {
       code: "linux",
@@ -136,11 +136,11 @@ export const downloadContentEn: DownloadContent = {
       status: "Planned",
       description:
         "Future Linux package for local workflows, testing and developer usage.",
-      version: "not published",
+      version: "planned release",
       cta: "Coming later",
       href: "#release-notes",
       disabled: true,
-      meta: ["AppImage/deb/rpm TBD", "Runtime TBD", "Checksum required"]
+      meta: ["AppImage/deb/rpm target", "Runtime packaging planned", "Checksum required"]
     },
     {
       code: "cli",
@@ -148,7 +148,7 @@ export const downloadContentEn: DownloadContent = {
       status: "Internal roadmap",
       description:
         "Developer-oriented tools for controlled local processing and worker diagnostics.",
-      version: "not published",
+      version: "planned release",
       cta: "Read docs",
       href: "/docs",
       meta: ["Developer workflow", "Not public yet", "Docs first"]
@@ -169,7 +169,7 @@ export const downloadContentEn: DownloadContent = {
       items: [
         "Web dashboard is the primary access path.",
         "Public download page structure added.",
-        "Desktop distribution placeholders added.",
+        "Desktop distribution roadmap added.",
         "Checksums and signatures reserved for real installers."
       ]
     }
@@ -178,7 +178,7 @@ export const downloadContentEn: DownloadContent = {
     {
       question: "Can I download the desktop app now?",
       answer:
-        "Not yet. The project has a desktop foundation, but public installers are not published in this stage."
+        "Not yet. The project has a desktop foundation, but public installers are scheduled for a later release stage."
     },
     {
       question: "Which option should I use today?",
@@ -210,7 +210,7 @@ export const downloadContentRu: DownloadContent = {
   trustBadges: [
     "Web dashboard доступен",
     "Desktop roadmap подготовлен",
-    "Checksum placeholder",
+    "Checksum section prepared",
     "Структура release notes"
   ],
   platformsTitle: "Каналы распространения",
@@ -218,13 +218,13 @@ export const downloadContentRu: DownloadContent = {
     "Текущий production path — web dashboard. Desktop и CLI distribution подготовлены как публичная продуктовая поверхность.",
   requirementsTitle: "Системные требования",
   requirementsLead:
-    "Требования являются placeholder-данными до появления реальных desktop builds и тестирования.",
+    "Требования будут финализированы после подготовки и тестирования подписанных desktop builds.",
   releaseTitle: "Release notes preview",
   releaseLead:
     "Позже этот блок будет использоваться для публичной истории версий, release channels и installer integrity data.",
   checksumTitle: "Integrity и подписи",
   checksumLead:
-    "Checksums и signatures пока placeholder. Реальные SHA256 и signing details добавляются при публикации installers.",
+    "Checksums и signatures зарезервированы для первого подписанного installer release. Реальные SHA256 и signing details добавляются при публикации installers.",
   faqTitle: "FAQ по скачиванию",
   faqLead:
     "Короткие ответы про текущий web app, будущие desktop builds и проверку installers.",
@@ -251,7 +251,7 @@ export const downloadContentRu: DownloadContent = {
       status: "Запланировано",
       description:
         "Будущий Windows installer для локальных desktop workflows и bundled runtime integration.",
-      version: "не опубликовано",
+      version: "запланированный release",
       cta: "Позже",
       href: "#release-notes",
       disabled: true,
@@ -263,11 +263,11 @@ export const downloadContentRu: DownloadContent = {
       status: "Запланировано",
       description:
         "Будущий macOS build для пользователей, которым нужен локальный desktop entry point.",
-      version: "не опубликовано",
+      version: "запланированный release",
       cta: "Позже",
       href: "#release-notes",
       disabled: true,
-      meta: ["Apple Silicon / Intel TBD", "Пока без подписи", "Notarization позже"]
+      meta: ["Apple Silicon / Intel target", "Пока без подписи", "Notarization позже"]
     },
     {
       code: "linux",
@@ -275,11 +275,11 @@ export const downloadContentRu: DownloadContent = {
       status: "Запланировано",
       description:
         "Будущий Linux package для локальных workflows, тестирования и developer usage.",
-      version: "не опубликовано",
+      version: "запланированный release",
       cta: "Позже",
       href: "#release-notes",
       disabled: true,
-      meta: ["AppImage/deb/rpm TBD", "Runtime TBD", "Нужен checksum"]
+      meta: ["AppImage/deb/rpm target", "Runtime packaging planned", "Нужен checksum"]
     },
     {
       code: "cli",
@@ -287,7 +287,7 @@ export const downloadContentRu: DownloadContent = {
       status: "В roadmap",
       description:
         "Developer-oriented tools для local processing и worker diagnostics.",
-      version: "не опубликовано",
+      version: "запланированный release",
       cta: "Документация",
       href: "/ru/docs",
       meta: ["Developer workflow", "Пока не public", "Сначала docs"]
@@ -308,7 +308,7 @@ export const downloadContentRu: DownloadContent = {
       items: [
         "Web dashboard — основной способ доступа.",
         "Добавлена структура публичной download page.",
-        "Добавлены placeholders для desktop distribution.",
+        "Добавлен desktop distribution roadmap.",
         "Checksums и signatures зарезервированы для реальных installers."
       ]
     }

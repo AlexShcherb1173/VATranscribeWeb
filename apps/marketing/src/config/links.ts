@@ -18,6 +18,7 @@ export type SaasLinkOptions = {
 };
 
 const DEFAULT_SAAS_BASE_URL = "http://127.0.0.1:5175";
+const DEFAULT_MARKETING_BASE_URL = "http://localhost:4321";
 
 const SAAS_PATHS: Record<SaasTarget, string> = {
   login: "/auth/login",
@@ -31,6 +32,11 @@ const SAAS_PATHS: Record<SaasTarget, string> = {
 
 export function getSaasBaseUrl(): string {
   const raw = import.meta.env.PUBLIC_VATRANSCRIBE_APP_URL || DEFAULT_SAAS_BASE_URL;
+  return String(raw).trim().replace(/\/+$/, "");
+}
+
+export function getMarketingBaseUrl(): string {
+  const raw = import.meta.env.PUBLIC_VATRANSCRIBE_MARKETING_URL || DEFAULT_MARKETING_BASE_URL;
   return String(raw).trim().replace(/\/+$/, "");
 }
 

@@ -1,0 +1,14 @@
+---
+import ContentCard from "./ContentCard.astro";
+import type { ContentItem } from "../config/content";
+
+type Props = {
+  items: ContentItem[];
+};
+
+const { items } = Astro.props;
+---
+
+<div class="grid grid-3 content-grid">
+  {items.map((item) => <ContentCard item={item} />)}
+</div>

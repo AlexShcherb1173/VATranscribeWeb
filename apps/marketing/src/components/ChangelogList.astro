@@ -1,0 +1,36 @@
+---
+import { getChangelogItems, getContentLanding } from "../config/content";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const items = getChangelogItems(locale);
+const landing = getContentLanding("changelog", locale);
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">{landing.eyebrow}</span>
+    <h1 class="h1">{landing.title}</h1>
+    <p class="lead">{landing.lead}</p>
+
+    <div class="changelog-list">
+      {items.map((entry) => (
+        <article class="card card-strong changelog-entry">
+          <div class="pricing-card-top">
+            <span class="badge badge-accent">{entry.version}</span>
+            <span class="pricing-plan-code">{entry.date}</span>
+          </div>
+          <h2 class="h3" style="margin-top: 18px;">{entry.title}</h2>
+          <p class="muted">{entry.description}</p>
+          <ul class="list">
+            {entry.items.map((item) => <li>✓ {item}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

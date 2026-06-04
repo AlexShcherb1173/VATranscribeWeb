@@ -1,13 +1,19 @@
 ---
 import MarketingLayout from "../../../layouts/MarketingLayout.astro";
+import ContentList from "../../../components/ContentList.astro";
+import { getResourceItems, getContentLanding } from "../../../config/content";
+
+const items = getResourceItems("ru");
+const landing = getContentLanding("resources", "ru");
 ---
 
-<MarketingLayout canonicalPath="/ru/resources" locale="ru" title="Ресурсы" description="Ресурсы VATranscribe.">
+<MarketingLayout canonicalPath="/ru/resources" locale="ru" title="Ресурсы" description="Ресурсы VATranscribe, чеклисты и практические материалы.">
   <section class="section">
-    <div class="container prose">
-      <span class="eyebrow">Ресурсы</span>
-      <h1>Ресурсы</h1>
-      <p>Гайды, чеклисты, сравнения и SEO resources будут размещены здесь.</p>
+    <div class="container">
+      <span class="eyebrow">{landing.eyebrow}</span>
+      <h1 class="h1">{landing.title}</h1>
+      <p class="lead">{landing.lead}</p>
+      <ContentList items={items} />
     </div>
   </section>
 </MarketingLayout>

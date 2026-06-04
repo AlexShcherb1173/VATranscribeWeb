@@ -1,20 +1,8 @@
 ---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
+import DocsHub from "../components/DocsHub.astro";
 ---
 
-<MarketingLayout canonicalPath="/docs" title="Documentation" description="VATranscribe documentation hub.">
-  <section class="section">
-    <div class="container prose">
-      <span class="eyebrow">Docs</span>
-      <h1>Documentation hub</h1>
-      <p>This section will contain product documentation, API notes, deployment guides and desktop setup instructions.</p>
-      <ul>
-        <li>Getting started</li>
-        <li>Downloader workflow</li>
-        <li>Transcription workflow</li>
-        <li>Security and privacy foundation</li>
-        <li>Billing and quotas</li>
-      </ul>
-    </div>
-  </section>
+<MarketingLayout canonicalPath="/docs" title="Documentation" description="VATranscribe documentation hub for workflows, billing, quotas, security and privacy.">
+  <DocsHub locale="en" />
 </MarketingLayout>

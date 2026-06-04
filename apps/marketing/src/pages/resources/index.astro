@@ -1,14 +1,19 @@
 ---
 import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import ContentList from "../../components/ContentList.astro";
+import { getResourceItems, getContentLanding } from "../../config/content";
+
+const items = getResourceItems("en");
+const landing = getContentLanding("resources", "en");
 ---
 
-<MarketingLayout canonicalPath="/resources" title="Resources" description="VATranscribe resources.">
+<MarketingLayout canonicalPath="/resources" title="Resources" description="VATranscribe resources, checklists and practical guides.">
   <section class="section">
-    <div class="container prose">
-      <span class="eyebrow">Resources</span>
-      <h1>Resources</h1>
-      <p>Guides, checklists, comparisons and landing SEO resources will be placed here.</p>
+    <div class="container">
+      <span class="eyebrow">{landing.eyebrow}</span>
+      <h1 class="h1">{landing.title}</h1>
+      <p class="lead">{landing.lead}</p>
+      <ContentList items={items} />
     </div>
   </section>
 </MarketingLayout>
-

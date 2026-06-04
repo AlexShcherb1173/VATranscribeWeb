@@ -1,4 +1,5 @@
 import { siteConfig } from "./site";
+import { getContentSeoPages } from "./content";
 import { getLocaleFromPath, localizePath, stripLocaleFromPath } from "../i18n/locales";
 import type { Locale } from "../i18n/locales";
 
@@ -231,7 +232,7 @@ const ruSeoPages: SeoPage[] = enSeoPages.map((page) => {
 });
 
 export const seoPages: SeoPage[] = enSeoPages;
-export const allSeoPages: SeoPage[] = [...enSeoPages, ...ruSeoPages];
+export const allSeoPages: SeoPage[] = [...enSeoPages, ...ruSeoPages, ...getContentSeoPages()];
 
 function normalizePath(path: string): string {
   if (!path || path === "/") {

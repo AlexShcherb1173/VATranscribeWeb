@@ -1,0 +1,43 @@
+---
+import { getDocsItems, getContentLanding } from "../config/content";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const items = getDocsItems(locale);
+const landing = getContentLanding("docs", locale);
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">{landing.eyebrow}</span>
+    <h1 class="h1">{landing.title}</h1>
+    <p class="lead">{landing.lead}</p>
+
+    <div class="grid grid-3 content-grid">
+      {items.map((item) => (
+        <a class="card content-card" href={item.href}>
+          <h2 class="h3">{item.title}</h2>
+          <p class="muted">{item.description}</p>
+          <div class="kicker-row">
+            {item.tags.map((tag) => <span class="badge">{tag}</span>)}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container prose">
+    {items.map((item) => (
+      <section id={item.href.split("#")[1]} style="margin-top: 34px;">
+        <h2>{item.title}</h2>
+        <p>{item.description}</p>
+      </section>
+    ))}
+  </div>
+</section>

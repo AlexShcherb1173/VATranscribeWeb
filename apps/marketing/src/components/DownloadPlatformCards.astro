@@ -1,0 +1,50 @@
+---
+import { getDownloadContent } from "../config/download";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const content = getDownloadContent(locale);
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">{content.platformsTitle}</span>
+    <h2 class="h2">{content.platformsTitle}</h2>
+    <p class="lead">{content.platformsLead}</p>
+
+    <div class="grid grid-3 download-platform-grid">
+      {content.platforms.map((platform) => (
+        <article class={`card download-platform-card ${platform.code === "web" ? "card-strong" : ""}`}>
+          <div class="pricing-card-top">
+            <span class={`badge ${platform.code === "web" ? "badge-accent" : ""}`}>{platform.status}</span>
+            <span class="pricing-plan-code">{platform.code}</span>
+          </div>
+
+          <h3 class="h3" style="margin-top: 18px;">{platform.title}</h3>
+          <p class="muted">{platform.description}</p>
+
+          <div class="download-version">
+            <strong>{platform.version}</strong>
+            <span>version</span>
+          </div>
+
+          <ul class="list">
+            {platform.meta.map((item) => <li>✓ {item}</li>)}
+          </ul>
+
+          <a
+            class={`button ${platform.disabled ? "button-secondary download-disabled" : "button-primary"} button-block`}
+            href={platform.href}
+            aria-disabled={platform.disabled ? "true" : "false"}
+          >
+            {platform.cta}
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

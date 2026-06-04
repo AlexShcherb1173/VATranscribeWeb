@@ -51,9 +51,9 @@ const enSeoPages: SeoPage[] = [
   },
   {
     path: "/download",
-    title: "Download VATranscribe — Web dashboard and future desktop builds",
+    title: "Download VATranscribe — Web app, desktop roadmap and release notes",
     description:
-      "Open the VATranscribe web dashboard and follow the future desktop download layer for installers, checksums and release notes.",
+      "Open the VATranscribe web app and follow the desktop distribution roadmap with installers, release notes, checksums and platform requirements.",
     priority: "0.8",
     changefreq: "weekly",
     locale: "en"
@@ -163,9 +163,9 @@ const ruSeoMap: Record<string, Pick<SeoPage, "title" | "description">> = {
       "Сравнение тарифов VATranscribe для скачивания, транскрибации, квот, истории медиа и team-ready архитектуры."
   },
   "/download": {
-    title: "Скачать VATranscribe — web dashboard и будущие desktop builds",
+    title: "Скачать VATranscribe — web app, desktop roadmap и release notes",
     description:
-      "Откройте web dashboard VATranscribe и следите за будущими desktop builds, installers, checksums и release notes."
+      "Откройте web app VATranscribe и следите за desktop distribution roadmap: installers, release notes, checksums и platform requirements."
   },
   "/docs": {
     title: "Документация VATranscribe",

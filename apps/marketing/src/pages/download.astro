@@ -1,47 +1,32 @@
 ---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
+import DownloadHero from "../components/DownloadHero.astro";
+import DownloadPlatformCards from "../components/DownloadPlatformCards.astro";
+import SystemRequirements from "../components/SystemRequirements.astro";
+import ReleaseNotesPreview from "../components/ReleaseNotesPreview.astro";
+import DownloadFaq from "../components/DownloadFaq.astro";
+import { getDownloadContent } from "../config/download";
 
-const downloadItems = [
-  {
-    title: "Web dashboard",
-    status: "Available in development",
-    description: "Use the SaaS dashboard for auth, jobs, files, transcripts, billing overview and privacy flows."
-  },
-  {
-    title: "Desktop app",
-    status: "Planned",
-    description: "Future desktop builds will be listed here with version, checksum and release notes."
-  },
-  {
-    title: "CLI / worker tools",
-    status: "Planned",
-    description: "Internal and developer tooling can be distributed from this page later."
-  }
-];
+const content = getDownloadContent("en");
 ---
 
-<MarketingLayout canonicalPath="/download" title="Download" description="VATranscribe download page for dashboard access, desktop installers and release resources.">
+<MarketingLayout canonicalPath="/download" title="Download" description="VATranscribe download page for web app access, future desktop installers, release notes and checksum placeholders.">
+  <DownloadHero locale="en" />
+  <DownloadPlatformCards locale="en" />
+  <SystemRequirements locale="en" />
+  <ReleaseNotesPreview locale="en" />
+  <DownloadFaq locale="en" />
+
   <section class="section">
     <div class="container">
-      <span class="eyebrow">Download</span>
-      <h1 class="h1">One place for dashboard access and future desktop builds.</h1>
-      <p class="lead">
-        Stage 3.2 defines the download surface. Real installers, checksums and release notes will be added later.
-      </p>
-
-      <div class="grid grid-3" style="margin-top: 32px;">
-        {downloadItems.map((item) => (
-          <article class="card">
-            <span class="badge badge-accent">{item.status}</span>
-            <h3 class="h3" style="margin-top: 16px;">{item.title}</h3>
-            <p class="muted">{item.description}</p>
-          </article>
-        ))}
-      </div>
-
-      <div class="button-row">
-        <a class="button button-primary" href="http://localhost:5175/auth/register">Open web app</a>
-        <a class="button button-secondary" href="/docs">Read documentation</a>
+      <div class="card card-strong text-center">
+        <span class="eyebrow">Distribution path</span>
+        <h2 class="h2">{content.finalTitle}</h2>
+        <p class="lead">{content.finalLead}</p>
+        <div class="button-row" style="justify-content: center;">
+          <a class="button button-primary" href={content.primaryHref}>{content.finalPrimary}</a>
+          <a class="button button-secondary" href="/pricing">{content.finalSecondary}</a>
+        </div>
       </div>
     </div>
   </section>

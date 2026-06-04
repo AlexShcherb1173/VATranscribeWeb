@@ -1,0 +1,42 @@
+---
+import { getDownloadContent } from "../config/download";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const content = getDownloadContent(locale);
+---
+
+<section class="section download-hero">
+  <div class="container">
+    <span class="eyebrow">{content.eyebrow}</span>
+    <h1 class="h1">{content.title}</h1>
+    <p class="lead">{content.lead}</p>
+
+    <div class="button-row">
+      <a class="button button-primary" href={content.primaryHref}>{content.primaryCta}</a>
+      <a class="button button-secondary" href={content.secondaryHref}>{content.secondaryCta}</a>
+    </div>
+
+    <div class="kicker-row">
+      {content.trustBadges.map((badge) => <span class="badge">{badge}</span>)}
+    </div>
+
+    <div class="download-console card">
+      <div class="hero-window-bar">
+        <span class="hero-dot"></span>
+        <span class="hero-dot"></span>
+        <span class="hero-dot"></span>
+      </div>
+      <div class="download-console-body">
+        <code>channel:web-dashboard</code>
+        <code>desktop:planned</code>
+        <code>checksums:pending-real-builds</code>
+        <code>release-notes:0.1.0-web</code>
+      </div>
+    </div>
+  </div>
+</section>

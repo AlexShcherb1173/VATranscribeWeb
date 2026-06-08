@@ -57,3 +57,6 @@ apps/marketing/.astro/
 apps/marketing/.astro/
 
 .idea/
+
+# Local patch backups
+.patch-backups/

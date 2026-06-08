@@ -119,6 +119,9 @@ class Settings(BaseSettings):
     cookie_httponly: bool = Field(True, alias="COOKIE_HTTPONLY")
     cookie_samesite: str = Field("lax", alias="COOKIE_SAMESITE")
     cookie_domain: str | None = Field(None, alias="COOKIE_DOMAIN")
+    refresh_cookie_name: str = Field("vatranscribe_refresh_token", alias="REFRESH_COOKIE_NAME")
+    csrf_cookie_name: str = Field("vatranscribe_csrf_token", alias="CSRF_COOKIE_NAME")
+    csrf_header_name: str = Field("X-CSRF-Token", alias="CSRF_HEADER_NAME")
 
     # --- CORS ---
     cors_origins: str = Field("*", alias="CORS_ORIGINS")
@@ -178,6 +181,14 @@ class Settings(BaseSettings):
         self.cookie_samesite = self.cookie_samesite.strip().lower()
         if self.cookie_domain == "":
             self.cookie_domain = None
+
+        self.refresh_cookie_name = self.refresh_cookie_name.strip()
+        self.csrf_cookie_name = self.csrf_cookie_name.strip()
+        self.csrf_header_name = self.csrf_header_name.strip()
+        if not self.refresh_cookie_name or not self.csrf_cookie_name or not self.csrf_header_name:
+            errors.append("AUTH cookie names must not be empty")
+        if self.refresh_cookie_name == self.csrf_cookie_name:
+            errors.append("REFRESH_COOKIE_NAME and CSRF_COOKIE_NAME must be different")
 
         if self.app_env not in ALLOWED_APP_ENVS:
             errors.append(

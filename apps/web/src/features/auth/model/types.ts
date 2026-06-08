@@ -1,4 +1,4 @@
-﻿export type LoginRequest = {
+export type LoginRequest = {
   email: string;
   password: string;
 };
@@ -17,7 +17,6 @@ export type RegisterRequest = {
 
 export type TokenResponse = {
   access_token: string;
-  refresh_token?: string | null;
   token_type: string;
 };
 
@@ -26,4 +25,3 @@ export type CurrentUser = {
   email: string;
   is_active: boolean;
 };
-

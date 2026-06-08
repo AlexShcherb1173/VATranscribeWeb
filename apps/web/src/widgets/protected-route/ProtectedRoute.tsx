@@ -1,38 +1,26 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import { hasAccessToken } from "@/shared/auth/token";
 import { saveRedirectAfterLogin } from "@/shared/auth/navigation";
 import { useCurrentUserQuery } from "@/shared/hooks/useCurrentUserQuery";
-import { Spinner } from "@/shared/ui/Spinner";
 
 export function ProtectedRoute() {
   const location = useLocation();
+  const { data: user, isLoading, isFetching } = useCurrentUserQuery();
 
-  if (!hasAccessToken()) {
-    const path = `${location.pathname}${location.search}${location.hash}`;
-    saveRedirectAfterLogin(path);
-
-    return <Navigate to="/auth" replace state={{ from: location }} />;
-  }
-
-  const { isLoading, isError } = useCurrentUserQuery();
-
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-200">
-        <div className="flex items-center gap-3">
-          <Spinner />
-          <span>Loading session...</span>
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-sm text-slate-300">
+        Loading secure session...
       </div>
     );
   }
 
-  if (isError) {
-    const path = `${location.pathname}${location.search}${location.hash}`;
-    saveRedirectAfterLogin(path);
-
-    return <Navigate to="/auth" replace state={{ from: location }} />;
+  if (!user) {
+    const currentPath = `${location.pathname || ""}${location.search || ""}${location.hash || ""}`;
+    if (currentPath && currentPath !== "/" && currentPath !== "/auth") {
+      saveRedirectAfterLogin(currentPath);
+    }
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

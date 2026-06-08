@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 
+import { logoutUser } from "@/features/auth/api/auth";
 import { destroySession } from "@/shared/auth/session";
 import { useBillingOverviewQuery } from "@/shared/hooks/useBillingOverviewQuery";
 import { useCurrentUserQuery } from "@/shared/hooks/useCurrentUserQuery";
@@ -47,6 +48,12 @@ export function Topbar() {
     : 0;
 
   async function handleLogout() {
+    try {
+      await logoutUser();
+    } catch {
+      // Local cleanup must still happen when the server session is already expired.
+    }
+
     destroySession();
     queryClient.clear();
     toastInfo(t.common.sessionClosed, t.common.signedOut);

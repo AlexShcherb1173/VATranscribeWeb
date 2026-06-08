@@ -40,28 +40,17 @@ export async function registerUser(
 export async function loginUser(
   payload: LoginRequest,
 ): Promise<TokenResponse> {
-  try {
-    const response = await apiClient.post<TokenResponse>("/auth/login", payload);
-    return response.data;
-  } catch (error: any) {
-    const status = error?.response?.status;
+  const response = await apiClient.post<TokenResponse>("/auth/login", payload);
+  return response.data;
+}
 
-    if (![400, 415, 422].includes(status)) {
-      throw error;
-    }
+export async function refreshSession(): Promise<TokenResponse> {
+  const response = await apiClient.post<TokenResponse>("/auth/refresh");
+  return response.data;
+}
 
-    const formData = new URLSearchParams();
-    formData.set("username", payload.email);
-    formData.set("password", payload.password);
-
-    const response = await apiClient.post<TokenResponse>("/auth/login", formData, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-
-    return response.data;
-  }
+export async function logoutUser(): Promise<void> {
+  await apiClient.post("/auth/logout");
 }
 
 export async function getCurrentUser(): Promise<CurrentUser> {

@@ -1,23 +1,28 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import User
 from apps.api.app.schemas import (
     LoginRequest,
-    LogoutRequest,
     LogoutResponse,
-    RefreshTokenRequest,
     RegisterRequest,
     TokenResponse,
     UserRead,
 )
 from apps.api.app.security import create_access_token
+from apps.api.app.security_foundation.auth_cookies import (
+    clear_auth_cookies,
+    get_refresh_token_from_cookie,
+    set_auth_cookies,
+    validate_csrf,
+)
 from apps.api.app.security_foundation.privacy import mask_email
 from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.security_foundation.password_policy import PasswordPolicyError, validate_password_strength
@@ -236,10 +241,11 @@ def register_user(
     return user
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login", response_model=TokenResponse, response_model_exclude_none=True)
 def login_user(
     payload: LoginRequest,
     request: Request,
+    response: Response,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
     email = normalize_email(payload.email)
@@ -309,21 +315,25 @@ def login_user(
         },
     )
 
+    set_auth_cookies(response, refresh_token)
+
     db.commit()
 
     return TokenResponse(
         access_token=create_access_token(subject=str(user.id)),
-        refresh_token=refresh_token,
         token_type="bearer",
     )
 
 
-@router.post("/refresh", response_model=TokenResponse)
+@router.post("/refresh", response_model=TokenResponse, response_model_exclude_none=True)
 def refresh_tokens(
-    payload: RefreshTokenRequest,
     request: Request,
+    response: Response,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
+    validate_csrf(request)
+    raw_refresh_token = get_refresh_token_from_cookie(request)
+
     check_auth_rate_limit(
         db=db,
         request=request,
@@ -334,7 +344,7 @@ def refresh_tokens(
     )
 
     try:
-        user, new_refresh_token, token_row = rotate_refresh_token(db, payload.refresh_token)
+        user, new_refresh_token, token_row = rotate_refresh_token(db, raw_refresh_token)
     except HTTPException:
         record_audit_event(
             db=db,
@@ -345,6 +355,7 @@ def refresh_tokens(
                 "reason": "invalid_revoked_or_expired",
             },
         )
+        clear_auth_cookies(response)
         db.commit()
         raise
 
@@ -357,25 +368,29 @@ def refresh_tokens(
         entity_id=str(token_row.id),
     )
 
+    set_auth_cookies(response, new_refresh_token)
     db.commit()
 
     return TokenResponse(
         access_token=create_access_token(subject=str(user.id)),
-        refresh_token=new_refresh_token,
         token_type="bearer",
     )
 
 
 @router.post("/logout", response_model=LogoutResponse)
 def logout_user(
-    payload: LogoutRequest,
     request: Request,
+    response: Response,
     db: Session = Depends(get_db),
 ) -> LogoutResponse:
+    validate_csrf(request)
+    refresh_token = request.cookies.get(settings.refresh_cookie_name)
     revoked = False
 
-    if payload.refresh_token:
-        revoked = revoke_refresh_token(db, payload.refresh_token)
+    if refresh_token:
+        revoked = revoke_refresh_token(db, refresh_token)
+
+    clear_auth_cookies(response)
 
     record_audit_event(
         db=db,
@@ -395,6 +410,7 @@ def logout_user(
 @router.post("/logout-all", response_model=LogoutResponse)
 def logout_all_user_sessions(
     request: Request,
+    response: Response,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> LogoutResponse:
@@ -411,6 +427,8 @@ def logout_all_user_sessions(
             "revoked_count": revoked_count,
         },
     )
+
+    clear_auth_cookies(response)
 
     db.commit()
 

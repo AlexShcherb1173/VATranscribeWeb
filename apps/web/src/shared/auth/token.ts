@@ -1,17 +1,17 @@
-const ACCESS_TOKEN_KEY = "vatranscribe_access_token";
+let accessToken: string | null = null;
 
 export function getAccessToken(): string | null {
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+  return accessToken;
 }
 
 export function setAccessToken(token: string): void {
-  localStorage.setItem(ACCESS_TOKEN_KEY, token);
+  accessToken = token;
 }
 
 export function clearAccessToken(): void {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  accessToken = null;
 }
 
 export function hasAccessToken(): boolean {
-  return Boolean(getAccessToken());
+  return Boolean(accessToken);
 }

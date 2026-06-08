@@ -1,7 +1,6 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
@@ -19,6 +18,7 @@ from apps.api.app.schemas import (
 )
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
 from apps.api.app.services.access_control import get_user_media_asset_or_404
+from packages.core.vatranscribe_core.storage import resolve_storage_path
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
@@ -131,10 +131,9 @@ def _serialize_media_asset(media_asset: MediaAsset | None) -> dict | None:
         "extension": media_asset.extension,
         "size_bytes": media_asset.size_bytes,
         "duration_sec": media_asset.duration_sec,
-        "path": media_asset.path,
         "checksum_sha256": media_asset.checksum_sha256,
         "created_at": _iso(media_asset.created_at),
-        "download_url": f"/api/v1/files/{media_asset.id}/download",
+        "download_url": f"/api/v1/media-assets/{media_asset.id}/download",
     }
 
 
@@ -196,7 +195,7 @@ def _remove_media_file_safely(media_asset: MediaAsset | None) -> None:
     if media_asset is None or not media_asset.path:
         return
 
-    path = Path(media_asset.path)
+    path = resolve_storage_path(media_asset.path)
 
     try:
         if path.exists() and path.is_file():

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
@@ -222,7 +222,6 @@ class MediaAssetResponse(BaseModel):
     extension: str | None = None
     size_bytes: int
     duration_sec: int | None = None
-    path: str
     checksum_sha256: str | None = None
     created_at: datetime | None = None
     download_url: str | None = None
@@ -345,7 +344,6 @@ class ExportArtifactResponse(BaseModel):
     id: str
     transcript_id: str
     format: str
-    path: str
     size_bytes: int
     created_at: datetime | None = None
     download_url: str | None = None

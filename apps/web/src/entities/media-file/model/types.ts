@@ -7,7 +7,6 @@ export type MediaFile = {
   extension: string | null;
   size_bytes: number;
   duration_sec: number | null;
-  path: string;
   checksum_sha256: string | null;
   created_at: string;
   download_url?: string | null;

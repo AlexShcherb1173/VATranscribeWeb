@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse
@@ -27,7 +26,6 @@ def _build_media_asset_response(item: MediaAsset) -> MediaAssetResponse:
         extension=item.extension,
         size_bytes=item.size_bytes,
         duration_sec=item.duration_sec,
-        path=item.path,
         checksum_sha256=item.checksum_sha256,
         created_at=item.created_at,
         download_url=f"/media-assets/{item.id}/download",

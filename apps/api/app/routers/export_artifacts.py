@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 from sqlalchemy import select
@@ -11,6 +9,7 @@ from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import ExportArtifact, MediaAsset, Transcript, User
 from apps.api.app.schemas import ExportArtifactResponse
+from packages.core.vatranscribe_core.storage import resolve_storage_path
 
 router = APIRouter(prefix="/export-artifacts")
 
@@ -54,7 +53,6 @@ def get_export_artifact(
         id=item.id,
         transcript_id=item.transcript_id,
         format=item.format,
-        path=item.path,
         size_bytes=item.size_bytes,
         created_at=item.created_at,
         download_url=f"/api/v1/export-artifacts/{item.id}/download",
@@ -72,7 +70,7 @@ def download_export_artifact(
 ):
     item = _get_export_artifact_or_404(artifact_id, db, current_user)
 
-    file_path = Path(item.path)
+    file_path = resolve_storage_path(item.path)
     if not file_path.exists() or not file_path.is_file():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -105,7 +103,7 @@ def delete_export_artifact(
 ) -> dict:
     item = _get_export_artifact_or_404(artifact_id, db, current_user)
 
-    file_path = Path(item.path)
+    file_path = resolve_storage_path(item.path)
     if file_path.exists() and file_path.is_file():
         file_path.unlink(missing_ok=True)
 

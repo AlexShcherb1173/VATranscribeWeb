@@ -243,8 +243,6 @@ function MediaAssetBox({ asset, title }: MediaAssetBoxProps) {
           label={t.files.size}
           value={asset.size_bytes ? formatBytes(asset.size_bytes) : null}
         />
-
-        <DetailItem label={t.jobs.storagePath} value={asset.path} wide />
       </div>
 
       <button

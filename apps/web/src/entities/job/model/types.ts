@@ -22,7 +22,6 @@ export type JobMediaAsset = {
   extension: string | null;
   size_bytes: number;
   duration_sec: number | null;
-  path: string;
   checksum_sha256: string | null;
   created_at: string | null;
   download_url: string | null;

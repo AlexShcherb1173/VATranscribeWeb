@@ -1,10 +1,9 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from apps.api.app.config import get_settings
 from apps.api.app.routers import router as api_router
@@ -45,7 +44,6 @@ app.add_middleware(
 )
 
 app.include_router(api_router, prefix=settings.api_prefix)
-app.mount('/storage', StaticFiles(directory='storage'), name='storage')
 
 
 @app.get('/', response_model=ApiInfoResponse, tags=['meta'])
@@ -91,6 +89,5 @@ def root() -> ApiInfoResponse:
             'legal_documents': f'{settings.api_prefix}/legal/documents',
             'privacy': f'{settings.api_prefix}/privacy/me',
             'security_ping': f'{settings.api_prefix}/security/ping-rate-limit',
-            'storage_static': '/storage/...',
         },
     )

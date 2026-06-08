@@ -147,10 +147,22 @@ class Settings(BaseSettings):
     )
 
     # --- COOKIES / YT-DLP ---
+    # Deprecated global cookie path is kept only for backward-compatible parsing.
+    # Production must use encrypted per-user YouTube cookies instead.
     cookies_dir: Path = Field(Path("storage/cookies"), alias="COOKIES_DIR")
 
     yt_dlp_cookies_file: Path | None = Field(
         None, alias="YT_DLP_COOKIES_FILE"
+    )
+
+    youtube_cookies_encryption_key: str | None = Field(
+        None, alias="YOUTUBE_COOKIES_ENCRYPTION_KEY"
+    )
+    youtube_cookies_max_bytes: int = Field(
+        1024 * 1024, alias="YOUTUBE_COOKIES_MAX_BYTES"
+    )
+    youtube_cookies_temp_dir: Path = Field(
+        Path("storage/tmp/ytdlp-cookies"), alias="YOUTUBE_COOKIES_TEMP_DIR"
     )
 
     yt_dlp_proxy_url: str | None = Field(
@@ -182,6 +194,9 @@ class Settings(BaseSettings):
         if self.cookie_domain == "":
             self.cookie_domain = None
 
+        if self.youtube_cookies_encryption_key == "":
+            self.youtube_cookies_encryption_key = None
+
         self.refresh_cookie_name = self.refresh_cookie_name.strip()
         self.csrf_cookie_name = self.csrf_cookie_name.strip()
         self.csrf_header_name = self.csrf_header_name.strip()
@@ -200,6 +215,9 @@ class Settings(BaseSettings):
 
         if self.cookie_samesite not in ALLOWED_COOKIE_SAMESITE:
             errors.append("COOKIE_SAMESITE must be lax or strict")
+
+        if self.youtube_cookies_max_bytes <= 0:
+            errors.append("YOUTUBE_COOKIES_MAX_BYTES must be positive")
 
         if self.is_production:
             errors.extend(self._validate_production_settings())
@@ -246,6 +264,26 @@ class Settings(BaseSettings):
             errors.append("COOKIE_HTTPONLY must be true in production")
 
         errors.extend(_validate_cookie_domain(self.cookie_domain))
+
+        if self.yt_dlp_cookies_file is not None:
+            errors.append(
+                "YT_DLP_COOKIES_FILE must not be set in production; "
+                "use encrypted per-user YouTube cookies"
+            )
+
+        if not self.youtube_cookies_encryption_key:
+            errors.append("YOUTUBE_COOKIES_ENCRYPTION_KEY is required in production")
+        else:
+            key_normalized = self.youtube_cookies_encryption_key.strip().lower()
+            if (
+                len(self.youtube_cookies_encryption_key.strip()) < 32
+                or "change_me" in key_normalized
+                or "change-me" in key_normalized
+                or "changeme" in key_normalized
+            ):
+                errors.append(
+                    "YOUTUBE_COOKIES_ENCRYPTION_KEY must be a real high-entropy key"
+                )
 
         cors_origins = self.cors_origins_list
         if not cors_origins:
@@ -304,7 +342,7 @@ class Settings(BaseSettings):
             self.uploads_dir,
             self.downloads_dir,
             self.temp_dir,
-            self.cookies_dir,
+            self.youtube_cookies_temp_dir,
             self.transcripts_txt_dir,
             self.transcripts_srt_dir,
             self.transcripts_vtt_dir,
@@ -312,15 +350,12 @@ class Settings(BaseSettings):
         ]
 
     @property
-    def resolved_cookies_file(self) -> Path:
+    def resolved_cookies_file(self) -> Path | None:
         """
-        Возвращает фактический путь cookies файла:
-        либо из .env, либо дефолт storage/cookies/youtube.txt.
+        Deprecated: global yt-dlp cookies are disabled.
+        Use encrypted per-user YouTube cookies and temporary per-job files.
         """
-        if self.yt_dlp_cookies_file:
-            return self.yt_dlp_cookies_file
-
-        return self.cookies_dir / "youtube.txt"
+        return None
 
 
 # ============================================================

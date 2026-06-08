@@ -14,6 +14,10 @@ from apps.api.app.schemas import (
     JobResponse,
 )
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
+from apps.api.app.services.youtube_cookies_service import (
+    create_temp_youtube_cookies_file_for_user,
+    delete_temp_youtube_cookies_file,
+)
 from packages.core.vatranscribe_core.download_engine import analyze_url
 
 router = APIRouter(prefix="/downloads")
@@ -67,16 +71,25 @@ def _normalize_download_error(exc: Exception) -> str:
 )
 def analyze_download_url(
     payload: DownloadAnalyzeRequest,
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DownloadAnalyzeResponse:
+    cookies_file = create_temp_youtube_cookies_file_for_user(
+        db,
+        user_id=current_user.id,
+        job_id=f"analyze-{current_user.id}",
+    )
+
     try:
-        result = analyze_url(payload.url)
+        result = analyze_url(payload.url, cookies_file=cookies_file)
         return DownloadAnalyzeResponse(**result)
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=_normalize_download_error(exc),
         ) from exc
+    finally:
+        delete_temp_youtube_cookies_file(cookies_file)
 
 
 @router.post(

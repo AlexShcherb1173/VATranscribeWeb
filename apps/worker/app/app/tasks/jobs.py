@@ -27,6 +27,10 @@ from apps.api.app.services.quota_service import (
     increment_storage_used,
     increment_transcription_seconds_used,
 )
+from apps.api.app.services.youtube_cookies_service import (
+    create_temp_youtube_cookies_file_for_user,
+    delete_temp_youtube_cookies_file,
+)
 from apps.worker.app.worker import celery
 from packages.core.vatranscribe_core.audio_tools import extract_audio_for_transcription
 from packages.core.vatranscribe_core.download_engine import download_media
@@ -813,15 +817,27 @@ def _run_download_job(db: Session, job: Job) -> dict[str, Any]:
 
     add_job_log(db, job.id, "INFO", f"Target path: {target_path}")
 
-    result = download_media(
-        url=job.input_url,
-        requested_format=requested_format,
-        output_path=target_path,
-        mp4_mode=download_mode,
-        video_format_id=job.selected_video_format_id,
-        audio_format_id=job.selected_audio_format_id,
-        progress_hook=_make_download_progress_hook(db, job),
+    youtube_cookies_file = create_temp_youtube_cookies_file_for_user(
+        db,
+        user_id=job.user_id,
+        job_id=job.id,
     )
+    if youtube_cookies_file is not None:
+        add_job_log(db, job.id, "INFO", "Using user-scoped YouTube cookies for this job")
+
+    try:
+        result = download_media(
+            url=job.input_url,
+            requested_format=requested_format,
+            output_path=target_path,
+            mp4_mode=download_mode,
+            video_format_id=job.selected_video_format_id,
+            audio_format_id=job.selected_audio_format_id,
+            progress_hook=_make_download_progress_hook(db, job),
+            cookies_file=youtube_cookies_file,
+        )
+    finally:
+        delete_temp_youtube_cookies_file(youtube_cookies_file)
 
     if requested_format == "mp4" and result.get("mp4_mode") == "compatible":
         video_path = resolve_storage_path(result["video_path"])

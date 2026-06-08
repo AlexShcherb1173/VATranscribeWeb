@@ -80,6 +80,15 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class YouTubeCookiesStatusResponse(BaseModel):
+    configured: bool
+    source_filename: str | None = None
+    cookie_format: str | None = None
+    size_bytes: int | None = None
+    updated_at: datetime | None = None
+
+
+
 class LogoutResponse(BaseModel):
     ok: bool
     detail: str
@@ -355,5 +364,3 @@ class TranscriptResponse(BaseModel):
     exports: list[ExportArtifactResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
-
-

@@ -30,9 +30,9 @@ app = FastAPI(
     title=settings.app_name,
     debug=settings.debug,
     lifespan=lifespan,
-    docs_url='/docs',
-    redoc_url='/redoc',
-    openapi_url='/openapi.json',
+    docs_url=settings.docs_url,
+    redoc_url=settings.redoc_url,
+    openapi_url=settings.openapi_url,
 )
 
 app.add_middleware(
@@ -52,7 +52,7 @@ def root() -> ApiInfoResponse:
         app=settings.app_name,
         env=settings.app_env,
         version='0.1.0',
-        docs_url='/docs',
+        docs_url=settings.docs_url,
         api_prefix=settings.api_prefix,
         endpoints={
             'health_live': f'{settings.api_prefix}/health/live',

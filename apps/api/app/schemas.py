@@ -106,7 +106,7 @@ class ApiInfoResponse(BaseModel):
     app: str
     env: str
     version: str
-    docs_url: str
+    docs_url: str | None = None
     api_prefix: str
     endpoints: dict[str, str]
 
@@ -364,4 +364,5 @@ class TranscriptResponse(BaseModel):
     exports: list[ExportArtifactResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
+
 

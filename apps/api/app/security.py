@@ -7,20 +7,22 @@ from jose import JWTError, jwt
 
 from apps.api.app.config import settings
 
-ALGORITHM = "HS256"
-
 
 def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
     expire = datetime.now(timezone.utc) + (
         expires_delta or timedelta(minutes=settings.access_token_expire_minutes)
     )
     payload: dict[str, Any] = {"sub": str(subject), "exp": expire}
-    return jwt.encode(payload, settings.secret_key, algorithm=ALGORITHM)
+    return jwt.encode(payload, settings.secret_key, algorithm=settings.jwt_algorithm)
 
 
 def get_subject_from_token(token: str) -> str:
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token,
+            settings.secret_key,
+            algorithms=[settings.jwt_algorithm],
+        )
     except JWTError as exc:
         raise ValueError("Invalid or expired token") from exc
 

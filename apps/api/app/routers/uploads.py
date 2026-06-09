@@ -19,6 +19,7 @@ from apps.api.app.services.quota_service import (
     increment_jobs_used,
     increment_storage_used,
 )
+from apps.api.app.services.storage_limits import assert_size_within_limit, parse_content_length
 from apps.api.app.services.upload_helpers import (
     build_upload_dir,
     detect_kind,
@@ -28,6 +29,15 @@ from apps.api.app.services.upload_helpers import (
 )
 
 router = APIRouter(prefix="/uploads")
+
+
+def _reject_upload_request_if_too_large(request: Request, known_size_bytes: int | None = None) -> None:
+    content_length = parse_content_length(request.headers)
+    if content_length is not None:
+        assert_size_within_limit(content_length, settings.max_upload_bytes, "Upload Content-Length")
+
+    if known_size_bytes is not None:
+        assert_size_within_limit(known_size_bytes, settings.max_upload_bytes, "Upload file")
 
 
 def build_media_asset_response(item: MediaAsset) -> MediaAssetResponse:
@@ -177,11 +187,14 @@ async def upload_media_file(
         ) from exc
 
     known_size_bytes = int(file.size) if file.size is not None else None
+    _reject_upload_request_if_too_large(request, known_size_bytes)
+
+    if known_size_bytes is not None:
+        assert_can_store_bytes(db, current_user, known_size_bytes)
+
     upload_job = _create_upload_job(db, current_user, original_name, extension, known_size_bytes)
 
     try:
-        if known_size_bytes is not None:
-            assert_can_store_bytes(db, current_user, known_size_bytes)
 
         upload_dir = build_upload_dir(kind)
         upload_dir.mkdir(parents=True, exist_ok=True)
@@ -195,7 +208,12 @@ async def upload_media_file(
         db.add(upload_job)
         db.commit()
 
-        size_bytes, checksum = await save_upload_file(file, target_path)
+        size_bytes, checksum = await save_upload_file(
+            file,
+            target_path,
+            max_bytes=settings.max_upload_bytes,
+            chunk_size=settings.upload_stream_chunk_bytes,
+        )
 
         try:
             assert_can_store_bytes(db, current_user, size_bytes)

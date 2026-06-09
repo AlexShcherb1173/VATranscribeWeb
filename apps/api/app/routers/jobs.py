@@ -18,7 +18,7 @@ from apps.api.app.schemas import (
     JobResponse,
 )
 from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
-from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
+from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used, sync_storage_usage_from_media_assets
 from apps.api.app.services.access_control import get_user_media_asset_or_404
 from packages.core.vatranscribe_core.storage import resolve_storage_path
 from packages.core.vatranscribe_core.url_guard import UnsafeUrlError, validate_external_url
@@ -500,6 +500,7 @@ def delete_job(
         _remove_media_file_safely(media_asset_to_delete)
         db.delete(media_asset_to_delete)
         db.commit()
+        sync_storage_usage_from_media_assets(db, current_user)
 
     return {
         "ok": True,

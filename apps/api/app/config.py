@@ -161,6 +161,20 @@ class Settings(BaseSettings):
     downloads_dir: Path = Field(Path("storage/downloads"), alias="DOWNLOADS_DIR")
     temp_dir: Path = Field(Path("storage/tmp"), alias="TEMP_DIR")
 
+
+    # --- UPLOAD / DOWNLOAD / RETENTION LIMITS ---
+    max_upload_bytes: int = Field(1024 * 1024 * 1024, alias="MAX_UPLOAD_BYTES")
+    upload_stream_chunk_bytes: int = Field(1024 * 1024, alias="UPLOAD_STREAM_CHUNK_BYTES")
+    max_external_download_bytes: int = Field(2 * 1024 * 1024 * 1024, alias="MAX_EXTERNAL_DOWNLOAD_BYTES")
+    max_export_artifact_bytes: int = Field(500 * 1024 * 1024, alias="MAX_EXPORT_ARTIFACT_BYTES")
+    max_media_download_bytes: int = Field(2 * 1024 * 1024 * 1024, alias="MAX_MEDIA_DOWNLOAD_BYTES")
+    temp_file_retention_hours: int = Field(24, alias="TEMP_FILE_RETENTION_HOURS")
+    failed_job_file_retention_days: int = Field(7, alias="FAILED_JOB_FILE_RETENTION_DAYS")
+    export_artifact_retention_days: int = Field(14, alias="EXPORT_ARTIFACT_RETENTION_DAYS")
+    media_asset_retention_days: int = Field(30, alias="MEDIA_ASSET_RETENTION_DAYS")
+    transcript_retention_days: int = Field(90, alias="TRANSCRIPT_RETENTION_DAYS")
+    cleanup_batch_size: int = Field(500, alias="CLEANUP_BATCH_SIZE")
+
     # --- TRANSCRIPTS ---
     transcripts_txt_dir: Path = Field(
         Path("storage/transcripts/txt"), alias="TRANSCRIPTS_TXT_DIR"
@@ -271,6 +285,27 @@ class Settings(BaseSettings):
         }.items():
             if value <= 0:
                 errors.append(f"{field_name} must be positive")
+
+
+
+        for field_name, value in {
+            "MAX_UPLOAD_BYTES": self.max_upload_bytes,
+            "UPLOAD_STREAM_CHUNK_BYTES": self.upload_stream_chunk_bytes,
+            "MAX_EXTERNAL_DOWNLOAD_BYTES": self.max_external_download_bytes,
+            "MAX_EXPORT_ARTIFACT_BYTES": self.max_export_artifact_bytes,
+            "MAX_MEDIA_DOWNLOAD_BYTES": self.max_media_download_bytes,
+            "TEMP_FILE_RETENTION_HOURS": self.temp_file_retention_hours,
+            "FAILED_JOB_FILE_RETENTION_DAYS": self.failed_job_file_retention_days,
+            "EXPORT_ARTIFACT_RETENTION_DAYS": self.export_artifact_retention_days,
+            "MEDIA_ASSET_RETENTION_DAYS": self.media_asset_retention_days,
+            "TRANSCRIPT_RETENTION_DAYS": self.transcript_retention_days,
+            "CLEANUP_BATCH_SIZE": self.cleanup_batch_size,
+        }.items():
+            if value <= 0:
+                errors.append(f"{field_name} must be positive")
+
+        if self.upload_stream_chunk_bytes > self.max_upload_bytes:
+            errors.append("UPLOAD_STREAM_CHUNK_BYTES must be <= MAX_UPLOAD_BYTES")
 
         if self.is_production:
             errors.extend(self._validate_production_settings())

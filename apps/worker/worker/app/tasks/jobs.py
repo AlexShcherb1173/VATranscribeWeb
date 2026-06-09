@@ -27,6 +27,8 @@ from apps.api.app.services.quota_service import (
     increment_storage_used,
     increment_transcription_seconds_used,
 )
+from apps.api.app.services.storage_limits import assert_path_size_within_limit
+from apps.api.app.services.storage_retention import cleanup_storage_retention
 from apps.api.app.services.youtube_cookies_service import (
     create_temp_youtube_cookies_file_for_user,
     delete_temp_youtube_cookies_file,
@@ -144,6 +146,22 @@ def _make_download_progress_hook(db: Session, job: Job):
 
     return hook
 
+
+
+def _make_limited_download_progress_hook(db: Session, job: Job, *, max_bytes: int):
+    inner_hook = _make_download_progress_hook(db, job)
+
+    def hook(event: dict[str, Any]) -> None:
+        downloaded = int(event.get("downloaded_bytes") or 0)
+        expected = int(event.get("total_bytes") or event.get("total_bytes_estimate") or 0)
+        observed = max(downloaded, expected)
+        if observed > max_bytes:
+            raise RuntimeError(
+                f"External download exceeds configured limit: {observed} bytes > {max_bytes} bytes"
+            )
+        inner_hook(event)
+
+    return hook
 
 def _transcription_progress_callback(db: Session, job: Job):
     last_percent = {"value": -1}
@@ -833,7 +851,7 @@ def _run_download_job(db: Session, job: Job) -> dict[str, Any]:
             mp4_mode=download_mode,
             video_format_id=job.selected_video_format_id,
             audio_format_id=job.selected_audio_format_id,
-            progress_hook=_make_download_progress_hook(db, job),
+            progress_hook=_make_limited_download_progress_hook(db, job, max_bytes=settings.max_external_download_bytes),
             cookies_file=youtube_cookies_file,
         )
     finally:
@@ -883,6 +901,12 @@ def _run_download_job(db: Session, job: Job) -> dict[str, Any]:
     final_extension = final_path.suffix.lower().lstrip(".") or requested_format
     metadata = extract_basic_media_metadata(final_path)
     size_bytes = int(metadata.get("size_bytes") or 0)
+    try:
+        assert_path_size_within_limit(final_path, settings.max_external_download_bytes, "External download result")
+    except Exception:
+        _remove_file_safely(final_path)
+        raise
+
 
     user = db.get(User, job.user_id) if job.user_id else None
 
@@ -1405,3 +1429,12 @@ def execute_job_task(job_id: str) -> None:
 
     finally:
         db.close()
+
+@celery.task(name="vatranscribe.storage.cleanup")
+def cleanup_storage_task() -> dict[str, int]:
+    db = SessionLocal()
+    try:
+        return cleanup_storage_retention(db)
+    finally:
+        db.close()
+

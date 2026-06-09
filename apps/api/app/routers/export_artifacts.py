@@ -5,10 +5,13 @@ from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import ExportArtifact, MediaAsset, Transcript, User
 from apps.api.app.schemas import ExportArtifactResponse
+from apps.api.app.services.quota_service import sync_storage_usage_from_media_assets
+from apps.api.app.services.storage_limits import assert_path_size_within_limit
 from packages.core.vatranscribe_core.storage import resolve_storage_path
 
 router = APIRouter(prefix="/export-artifacts")
@@ -77,6 +80,8 @@ def download_export_artifact(
             detail=f"Export artifact file for '{artifact_id}' not found on disk",
         )
 
+    assert_path_size_within_limit(file_path, settings.max_export_artifact_bytes, "Export artifact download")
+
     media_type_map = {
         "txt": "text/plain",
         "srt": "application/x-subrip",
@@ -109,6 +114,8 @@ def delete_export_artifact(
 
     db.delete(item)
     db.commit()
+
+    sync_storage_usage_from_media_assets(db, current_user)
 
     return {
         "status": "ok",

@@ -4,15 +4,35 @@ services:
       context: .
       dockerfile: infra/docker/web.Dockerfile
       args:
-        PUBLIC_VATRANSCRIBE_MARKETING_URL: ${PUBLIC_VATRANSCRIBE_MARKETING_URL:-http://localhost:8080}
-        PUBLIC_VATRANSCRIBE_APP_URL: ${PUBLIC_VATRANSCRIBE_APP_URL:-http://localhost:8080}
+        PUBLIC_VATRANSCRIBE_MARKETING_URL: ${PUBLIC_VATRANSCRIBE_MARKETING_URL:-https://vatranscribe.ru}
+        PUBLIC_VATRANSCRIBE_APP_URL: ${PUBLIC_VATRANSCRIBE_APP_URL:-https://app.vatranscribe.ru}
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
         VITE_BASE_PATH: ${VITE_BASE_PATH:-/app/}
     container_name: vatranscribe-web
     depends_on:
       - api
     ports:
-      - "${WEB_HTTP_PORT:-8080}:80"
+      - "${WEB_HTTP_PORT:-80}:80"
+      - "${WEB_HTTPS_PORT:-443}:443"
+    environment:
+      NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-vatranscribe.ru app.vatranscribe.ru api.vatranscribe.ru admin.vatranscribe.ru}
+      NGINX_SSL_CERTIFICATE: ${NGINX_SSL_CERTIFICATE:-/etc/letsencrypt/live/vatranscribe.ru/fullchain.pem}
+      NGINX_SSL_CERTIFICATE_KEY: ${NGINX_SSL_CERTIFICATE_KEY:-/etc/letsencrypt/live/vatranscribe.ru/privkey.pem}
+      NGINX_HSTS_MAX_AGE: ${NGINX_HSTS_MAX_AGE:-31536000}
+      NGINX_GENERAL_API_RATE: ${NGINX_GENERAL_API_RATE:-120r/m}
+      NGINX_AUTH_RATE: ${NGINX_AUTH_RATE:-10r/m}
+      NGINX_AUTH_STRICT_RATE: ${NGINX_AUTH_STRICT_RATE:-5r/m}
+      NGINX_UPLOAD_RATE: ${NGINX_UPLOAD_RATE:-10r/m}
+      NGINX_DOWNLOAD_RATE: ${NGINX_DOWNLOAD_RATE:-30r/m}
+      NGINX_GLOBAL_BODY_LIMIT: ${NGINX_GLOBAL_BODY_LIMIT:-20m}
+      NGINX_AUTH_BODY_LIMIT: ${NGINX_AUTH_BODY_LIMIT:-1m}
+      NGINX_ANALYZE_BODY_LIMIT: ${NGINX_ANALYZE_BODY_LIMIT:-2m}
+      NGINX_UPLOAD_BODY_LIMIT: ${NGINX_UPLOAD_BODY_LIMIT:-1024m}
+      PUBLIC_API_ORIGIN: ${PUBLIC_API_ORIGIN:-https://api.vatranscribe.ru}
+    volumes:
+      - ./infra/docker/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./infra/certbot/conf:/etc/letsencrypt:ro
+      - ./infra/certbot/www:/var/www/certbot:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/healthz || exit 1"]

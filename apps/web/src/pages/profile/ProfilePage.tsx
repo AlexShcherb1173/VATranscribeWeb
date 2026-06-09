@@ -1,4 +1,4 @@
-import { AccountSummaryCard } from "@/features/profile/ui/AccountSummaryCard";
+﻿import { AccountSummaryCard } from "@/features/profile/ui/AccountSummaryCard";
 import { PlanCard } from "@/features/profile/ui/PlanCard";
 import { ProfileForm } from "@/features/profile/ui/ProfileForm";
 import { QuotaWarningBanner } from "@/features/profile/ui/QuotaWarningBanner";
@@ -43,7 +43,7 @@ export function ProfilePage() {
 
       <div className="grid gap-6">
         <QuotaWarningBanner quota={quotaQuery.data} />
-        <PlanCard quota={quotaQuery.data} />
+        <PlanCard quota={{ plan_code: "free", ...quotaQuery.data }} />
         <QuotaGrid quota={quotaQuery.data} />
 
         <AccountSummaryCard user={userQuery.data} profile={profileQuery.data} />

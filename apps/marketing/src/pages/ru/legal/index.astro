@@ -1,0 +1,33 @@
+---
+import MarketingLayout from "../../../layouts/MarketingLayout.astro";
+import { legalDocumentsRu } from "../../../config/legal.ru";
+---
+
+<MarketingLayout
+  title="Юридический центр"
+  description="Юридический центр VATranscribe: условия, политика конфиденциальности, персональные данные, cookies и возвраты."
+  canonicalPath="/ru/legal"
+  locale="ru"
+>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Юридический центр</span>
+      <h1 class="h1">Юридические документы и политики продукта.</h1>
+      <p class="lead">
+        Ознакомьтесь с текущими черновиками документов, которые используются в marketing pages,
+        registration flow и будущих billing flows.
+      </p>
+
+      <div class="grid grid-3" style="margin-top: 32px;">
+        {legalDocumentsRu.map((document) => (
+          <a class="card" href={document.path}>
+            <span class="badge">{document.requiredForRegistration ? "Обязательно" : "Политика"}</span>
+            <h2 class="h3" style="margin-top: 16px;">{document.title}</h2>
+            <p class="muted">Версия {document.version} · Дата {document.effectiveDate}</p>
+            <p class="muted">{document.summary}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

@@ -1,0 +1,12 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release-roadmap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Release pipeline is deferred
+        run: echo "Production release pipeline will be completed in Stage 4."

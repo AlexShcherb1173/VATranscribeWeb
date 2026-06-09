@@ -15,7 +15,6 @@ export type ExportArtifact = {
   id: string;
   transcript_id: string;
   format: string;
-  path: string;
   size_bytes: number;
   created_at: string;
   download_url?: string | null;

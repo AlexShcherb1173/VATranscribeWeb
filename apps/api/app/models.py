@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import uuid
 from datetime import datetime
@@ -116,6 +116,14 @@ class User(Base):
         foreign_keys="RefreshToken.user_id",
     )
 
+    youtube_cookies: Mapped["UserYoutubeCookies | None"] = relationship(
+        "UserYoutubeCookies",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+        foreign_keys="UserYoutubeCookies.user_id",
+    )
+
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
@@ -158,6 +166,47 @@ class RefreshToken(Base):
     user: Mapped["User"] = relationship(
         "User",
         back_populates="refresh_tokens",
+    )
+
+
+class UserYoutubeCookies(Base):
+    __tablename__ = "user_youtube_cookies"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+    encrypted_cookie_blob: Mapped[str] = mapped_column(Text, nullable=False)
+    cookie_format: Mapped[str] = mapped_column(String(32), nullable=False, default="netscape")
+    source_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    checksum_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="youtube_cookies",
+        foreign_keys=[user_id],
     )
 
 
@@ -800,4 +849,3 @@ class UsageSnapshot(Base):
     )
 
     user: Mapped["User"] = relationship("User", back_populates="usage_snapshots")
-

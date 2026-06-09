@@ -1,0 +1,61 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import PricingGrid from "../../components/PricingGrid.astro";
+import { getSaasLink } from "../../config/links";
+---
+
+<MarketingLayout canonicalPath="/ru" locale="ru" title="VATranscribe" description="Скачивание, транскрибация и организация медиафайлов в одном безопасном SaaS-ready рабочем пространстве.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Media workflow SaaS</span>
+      <h1 class="h1">Скачивайте, транскрибируйте и управляйте медиа в одном безопасном workspace.</h1>
+      <p class="lead">
+        VATranscribe объединяет download jobs, MP3/MP4 conversion, transcription history, user-owned files,
+        quotas, privacy requests и audit logs в SaaS-ready продуктовой архитектуре.
+      </p>
+      <div class="button-row">
+        <a class="button button-primary" href={getSaasLink("register")}>Начать бесплатно</a>
+        <a class="button button-secondary" href="/ru/download">Варианты скачивания</a>
+        <a class="button button-secondary" href="/ru/features">Возможности</a>
+      </div>
+      <div class="kicker-row">
+        <span class="badge">Refresh token rotation</span>
+        <span class="badge">Юридические согласия</span>
+        <span class="badge">Privacy requests</span>
+        <span class="badge">File ownership checks</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2">
+      <div>
+        <span class="eyebrow">Проблема</span>
+        <h2 class="h2">Медиа-автоматизация ломается, когда продуктовые слои смешаны.</h2>
+        <ul class="list">
+          <li>— Ссылки, скачивания и транскрипты обычно лежат в разных инструментах.</li>
+          <li>— Ownership, auditability и privacy flows часто добавляются слишком поздно.</li>
+          <li>— Desktop downloads, SaaS quotas и billing трудно связать после запуска.</li>
+        </ul>
+      </div>
+      <div class="card card-strong">
+        <span class="eyebrow">Решение</span>
+        <h2 class="h2">Чистый SaaS-слой вокруг реальных media jobs.</h2>
+        <ul class="list">
+          <li>✓ URL analysis, downloads, media assets и transcripts в одном workflow.</li>
+          <li>✓ Auth hardening, consents, audit logs и privacy requests с раннего этапа.</li>
+          <li>✓ Marketing, dashboard, API и будущая admin panel разделены архитектурно.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Тарифы</span>
+      <h2 class="h2">Начать просто. Масштабировать до SaaS.</h2>
+      <p class="lead">Тарифные карточки подготовлены для будущей синхронизации с backend billing plans.</p>
+      <PricingGrid locale="ru" />
+    </div>
+  </section>
+</MarketingLayout>

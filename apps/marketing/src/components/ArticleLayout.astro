@@ -1,0 +1,62 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import type { ContentItem } from "../config/content";
+
+type Props = {
+  item: ContentItem;
+};
+
+const { item } = Astro.props;
+
+const backHref = item.kind === "blog"
+  ? item.locale === "ru" ? "/ru/blog" : "/blog"
+  : item.locale === "ru" ? "/ru/resources" : "/resources";
+
+const backLabel = item.locale === "ru"
+  ? item.kind === "blog" ? "Назад в блог" : "Назад к ресурсам"
+  : item.kind === "blog" ? "Back to blog" : "Back to resources";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": item.kind === "blog" ? "Article" : "CreativeWork",
+  headline: item.title,
+  name: item.title,
+  description: item.description,
+  datePublished: item.date,
+  dateModified: item.date,
+  inLanguage: item.locale,
+  url: item.path
+};
+---
+
+<MarketingLayout
+  canonicalPath={item.path}
+  locale={item.locale}
+  title={item.title}
+  description={item.description}
+  ogType={item.kind === "blog" ? "article" : "website"}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="container">
+      <article class="prose article-shell">
+        <a class="badge" href={backHref}>{backLabel}</a>
+        <p class="content-meta" style="margin-top: 24px;">{item.category} · {item.date} · {item.readTime}</p>
+        <h1>{item.title}</h1>
+        <p class="lead">{item.description}</p>
+
+        {item.sections.map((section) => (
+          <section style="margin-top: 36px;">
+            <h2>{section.title}</h2>
+            {section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+            {section.bullets ? (
+              <ul>
+                {section.bullets.map((bullet) => <li>{bullet}</li>)}
+              </ul>
+            ) : null}
+          </section>
+        ))}
+      </article>
+    </div>
+  </section>
+</MarketingLayout>

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from apps.api.app.celery_client import celery_client
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import Job, JobLog, JobStatus, JobType, SourceType, User
@@ -14,7 +15,13 @@ from apps.api.app.schemas import (
     JobResponse,
 )
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
+from apps.api.app.services.youtube_cookies_service import (
+    create_temp_youtube_cookies_file_for_user,
+    delete_temp_youtube_cookies_file,
+)
 from packages.core.vatranscribe_core.download_engine import analyze_url
+from packages.core.vatranscribe_core.url_guard import UnsafeUrlError, validate_external_url
 
 router = APIRouter(prefix="/downloads")
 
@@ -25,6 +32,16 @@ ALLOWED_DOWNLOAD_MODES = {
     "selected_original",
     "best_available",
 }
+
+
+def _validate_user_url_or_422(url: str) -> str:
+    try:
+        return validate_external_url(url)
+    except UnsafeUrlError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unsafe or unsupported external URL: {exc}",
+        ) from exc
 
 
 def _normalize_download_error(exc: Exception) -> str:
@@ -67,16 +84,33 @@ def _normalize_download_error(exc: Exception) -> str:
 )
 def analyze_download_url(
     payload: DownloadAnalyzeRequest,
+    request: Request,
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DownloadAnalyzeResponse:
+    rate_limiter.check(
+        key=build_rate_limit_key("downloads:analyze", request),
+        limit=settings.rate_limit_analyze_per_minute,
+        window_seconds=60,
+    )
+    clean_url = _validate_user_url_or_422(payload.url)
+
+    cookies_file = create_temp_youtube_cookies_file_for_user(
+        db,
+        user_id=current_user.id,
+        job_id=f"analyze-{current_user.id}",
+    )
+
     try:
-        result = analyze_url(payload.url)
+        result = analyze_url(clean_url, cookies_file=cookies_file)
         return DownloadAnalyzeResponse(**result)
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=_normalize_download_error(exc),
         ) from exc
+    finally:
+        delete_temp_youtube_cookies_file(cookies_file)
 
 
 @router.post(
@@ -87,10 +121,17 @@ def analyze_download_url(
 )
 def create_download_job(
     payload: DownloadJobCreateRequest,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> JobResponse:
+    rate_limiter.check(
+        key=build_rate_limit_key("downloads:create", request),
+        limit=settings.rate_limit_download_per_minute,
+        window_seconds=60,
+    )
     assert_can_create_job(db, current_user, jobs_to_add=1)
+    clean_url = _validate_user_url_or_422(payload.url)
 
     download_mode = payload.download_mode.lower().strip()
     requested_format = payload.requested_format.lower().strip().lstrip(".")
@@ -146,7 +187,7 @@ def create_download_job(
         status=JobStatus.QUEUED.value,
         source_type=SourceType.URL.value,
         title=f"Download {payload.requested_file_name}",
-        input_url=payload.url.strip(),
+        input_url=clean_url,
         requested_format=requested_format,
         requested_file_name=payload.requested_file_name,
         mp4_mode=download_mode,

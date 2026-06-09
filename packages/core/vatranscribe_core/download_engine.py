@@ -11,6 +11,7 @@ from urllib.parse import urljoin, urlparse
 from yt_dlp import YoutubeDL
 
 from apps.api.app.config import get_settings
+from packages.core.vatranscribe_core.url_guard import build_safe_urllib_opener, validate_external_url
 
 
 MEDIA_URL_RE = re.compile(
@@ -316,10 +317,14 @@ def _youtube_extractor_args() -> dict[str, dict[str, list[str]]] | None:
     return {"youtube": youtube_args}
 
 
-def _base_ydl_options(*, use_cookies: bool = True) -> dict[str, Any]:
+def _base_ydl_options(
+    *,
+    use_cookies: bool = True,
+    cookies_file: str | Path | None = None,
+) -> dict[str, Any]:
     settings = get_settings()
 
-    cookies_file = settings.resolved_cookies_file
+    selected_cookies_file = cookies_file
     proxy_url = getattr(settings, "yt_dlp_proxy_url", None)
     extractor_args = _youtube_extractor_args()
 
@@ -348,8 +353,8 @@ def _base_ydl_options(*, use_cookies: bool = True) -> dict[str, Any]:
     if extractor_args:
         options["extractor_args"] = extractor_args
 
-    if use_cookies and cookies_file and Path(cookies_file).exists():
-        options["cookiefile"] = str(cookies_file)
+    if use_cookies and selected_cookies_file and Path(selected_cookies_file).exists():
+        options["cookiefile"] = str(selected_cookies_file)
 
     if proxy_url:
         options["proxy"] = proxy_url
@@ -382,7 +387,7 @@ def _is_probably_direct_media_url(url: str) -> bool:
 
 def _fetch_html_page(url: str) -> str:
     request = urllib.request.Request(
-        url,
+        clean_url,
         headers={
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -395,7 +400,8 @@ def _fetch_html_page(url: str) -> str:
     )
 
     try:
-        with urllib.request.urlopen(request, timeout=20) as response:
+        opener = build_safe_urllib_opener(max_redirects=5)
+        with opener.open(request, timeout=20) as response:
             content_type = response.headers.get("content-type", "")
             raw = response.read(3 * 1024 * 1024)
 
@@ -459,7 +465,7 @@ def _choose_best_media_candidate(candidates: list[str]) -> str | None:
 
 
 def resolve_media_url_from_http_page(url: str) -> str:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     if _is_probably_direct_media_url(clean_url):
         return clean_url
@@ -474,7 +480,8 @@ def resolve_media_url_from_http_page(url: str) -> str:
             "Если это личный кабинет, нужна прямая .mp4/.m3u8 ссылка или загрузка файла вручную."
         )
 
-    return media_url
+    safe_media_url = validate_external_url(media_url)
+    return safe_media_url
 
 
 def _extract_info_once(
@@ -483,10 +490,11 @@ def _extract_info_once(
     download: bool,
     use_cookies: bool,
     options: dict[str, Any] | None = None,
+    cookies_file: str | Path | None = None,
 ) -> tuple[dict[str, Any], str]:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
     ydl_options = {
-        **_base_ydl_options(use_cookies=use_cookies),
+        **_base_ydl_options(use_cookies=use_cookies, cookies_file=cookies_file),
         **(options or {}),
     }
 
@@ -500,8 +508,9 @@ def _extract_info_with_http_page_fallback(
     download: bool,
     use_cookies: bool,
     options: dict[str, Any] | None = None,
+    cookies_file: str | Path | None = None,
 ) -> tuple[dict[str, Any], str]:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     try:
         return _extract_info_once(
@@ -509,6 +518,7 @@ def _extract_info_with_http_page_fallback(
             download=download,
             use_cookies=use_cookies,
             options=options,
+            cookies_file=cookies_file,
         )
     except Exception as exc:
         message = str(exc)
@@ -523,6 +533,7 @@ def _extract_info_with_http_page_fallback(
             download=download,
             use_cookies=use_cookies,
             options=options,
+            cookies_file=cookies_file,
         )
 
 
@@ -531,8 +542,9 @@ def _extract_info_with_fallback(
     *,
     download: bool = False,
     options: dict[str, Any] | None = None,
+    cookies_file: str | Path | None = None,
 ) -> tuple[dict[str, Any], str]:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     try:
         return _extract_info_with_http_page_fallback(
@@ -540,6 +552,7 @@ def _extract_info_with_fallback(
             download=download,
             use_cookies=True,
             options=options,
+            cookies_file=cookies_file,
         )
     except Exception as cookies_exc:
         cookies_message = str(cookies_exc)
@@ -554,6 +567,7 @@ def _extract_info_with_fallback(
                 download=download,
                 use_cookies=False,
                 options=options,
+                cookies_file=cookies_file,
             )
         except Exception as without_cookies_exc:
             without_cookies_message = str(without_cookies_exc)
@@ -568,9 +582,17 @@ def _extract_info_with_fallback(
             raise
 
 
-def analyze_url(url: str) -> dict[str, Any]:
-    clean_url = url.strip()
-    info, resolved_url = _extract_info_with_fallback(clean_url, download=False)
+def analyze_url(
+    url: str,
+    *,
+    cookies_file: str | Path | None = None,
+) -> dict[str, Any]:
+    clean_url = validate_external_url(url)
+    info, resolved_url = _extract_info_with_fallback(
+        clean_url,
+        download=False,
+        cookies_file=cookies_file,
+    )
 
     formats = info.get("formats", []) or []
     analyzed_formats: list[dict[str, Any]] = []
@@ -665,6 +687,7 @@ def _download_single_file(
     extra_options: dict[str, Any] | None = None,
     progress_hook: Callable[[dict[str, Any]], None] | None = None,
     fallback_formats: list[str] | None = None,
+    cookies_file: str | Path | None = None,
 ) -> dict[str, Any]:
     formats_to_try = _unique_formats([fmt, *(fallback_formats or [])])
     last_exception: Exception | None = None
@@ -686,6 +709,7 @@ def _download_single_file(
                 url.strip(),
                 download=True,
                 options=options,
+                cookies_file=cookies_file,
             )
             final_path = _resolve_final_file(output_path, requested_format)
 
@@ -718,11 +742,16 @@ def _safe_selected_format_id(
     url: str,
     selected_format_id: str | None,
     expected_kind: str,
+    cookies_file: str | Path | None = None,
 ) -> str | None:
     if not selected_format_id:
         return None
 
-    info, _ = _extract_info_with_fallback(url.strip(), download=False)
+    info, _ = _extract_info_with_fallback(
+        url.strip(),
+        download=False,
+        cookies_file=cookies_file,
+    )
     formats = info.get("formats", []) or []
 
     for item in formats:
@@ -752,12 +781,13 @@ def download_media(
     video_format_id: str | None = None,
     audio_format_id: str | None = None,
     progress_hook: Callable[[dict[str, Any]], None] | None = None,
+    cookies_file: str | Path | None = None,
 ) -> dict[str, Any]:
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     requested_format = requested_format.lower().strip().lstrip(".")
     mp4_mode = (mp4_mode or "compatible").lower().strip()
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     allowed_modes = {
         "compatible",
@@ -794,6 +824,7 @@ def download_media(
             url=clean_url,
             selected_format_id=video_format_id or audio_format_id,
             expected_kind="media",
+            cookies_file=cookies_file,
         )
 
         if not selected_format_id:
@@ -805,6 +836,7 @@ def download_media(
             output_path=output_path,
             requested_format=requested_format,
             progress_hook=progress_hook,
+            cookies_file=cookies_file,
             fallback_formats=[
                 "bv*+ba/best",
                 "best",
@@ -824,6 +856,7 @@ def download_media(
             output_path=output_path,
             requested_format=requested_format,
             progress_hook=progress_hook,
+            cookies_file=cookies_file,
             extra_options={
                 "merge_output_format": requested_format
                 if requested_format in {"mp4", "webm", "mkv"}
@@ -846,6 +879,7 @@ def download_media(
             url=clean_url,
             selected_format_id=audio_format_id,
             expected_kind="audio",
+            cookies_file=cookies_file,
         )
 
         result = _download_single_file(
@@ -854,6 +888,7 @@ def download_media(
             output_path=output_path,
             requested_format="mp3",
             progress_hook=progress_hook,
+            cookies_file=cookies_file,
             extra_options={
                 "postprocessors": [
                     {
@@ -880,11 +915,13 @@ def download_media(
             url=clean_url,
             selected_format_id=video_format_id,
             expected_kind="video",
+            cookies_file=cookies_file,
         )
         safe_audio_format_id = _safe_selected_format_id(
             url=clean_url,
             selected_format_id=audio_format_id,
             expected_kind="audio",
+            cookies_file=cookies_file,
         )
 
         if safe_video_format_id and safe_audio_format_id:
@@ -900,6 +937,7 @@ def download_media(
             output_path=output_path,
             requested_format="mp4",
             progress_hook=progress_hook,
+            cookies_file=cookies_file,
             extra_options={
                 "merge_output_format": "mp4",
             },
@@ -927,11 +965,13 @@ def download_media(
             url=clean_url,
             selected_format_id=video_format_id,
             expected_kind="video",
+            cookies_file=cookies_file,
         )
         safe_audio_format_id = _safe_selected_format_id(
             url=clean_url,
             selected_format_id=audio_format_id,
             expected_kind="audio",
+            cookies_file=cookies_file,
         )
 
         video_result = _download_single_file(
@@ -940,6 +980,7 @@ def download_media(
             output_path=video_base,
             requested_format="mp4",
             progress_hook=progress_hook,
+            cookies_file=cookies_file,
             fallback_formats=[
                 "bv*/bestvideo/best",
                 "best[ext=mp4]/best",
@@ -952,6 +993,7 @@ def download_media(
             output_path=audio_base,
             requested_format="m4a",
             progress_hook=progress_hook,
+            cookies_file=cookies_file,
             fallback_formats=[
                 "ba/bestaudio/best",
                 "best",
@@ -978,6 +1020,7 @@ def download_media(
         output_path=output_path,
         requested_format=requested_format,
         progress_hook=progress_hook,
+            cookies_file=cookies_file,
         fallback_formats=[
             "bv*+ba/best",
             "best",

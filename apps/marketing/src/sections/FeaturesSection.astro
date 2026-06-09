@@ -1,0 +1,50 @@
+---
+import FeatureCard from "../components/FeatureCard.astro";
+
+const features = [
+  {
+    badge: "Downloader",
+    title: "MP3 and MP4 workflows",
+    description: "Prepare compatible audio/video downloads with job state, progress and logs."
+  },
+  {
+    badge: "Transcription",
+    title: "Transcript pipeline foundation",
+    description: "Connect media assets to transcription jobs, transcript history and export artifacts."
+  },
+  {
+    badge: "Security",
+    title: "Security and privacy baseline",
+    description: "Refresh token rotation, rate limits, backend password policy, consents and audit logs."
+  },
+  {
+    badge: "Ownership",
+    title: "User-owned files",
+    description: "Jobs, media assets, transcripts and exports are scoped by authenticated ownership."
+  },
+  {
+    badge: "Billing",
+    title: "Billing-ready model",
+    description: "Plans, quotas, subscriptions and usage history are prepared for payment integration."
+  },
+  {
+    badge: "Marketing",
+    title: "SEO-ready public layer",
+    description: "Astro marketing pages stay separate from the authenticated SaaS dashboard."
+  }
+];
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Features</span>
+    <h2 class="h2">Built as a product, not a script collection.</h2>
+    <p class="lead">
+      VATranscribe is structured around real application layers: marketing, web dashboard, API,
+      worker, future desktop app and monetization foundations.
+    </p>
+    <div class="grid grid-3" style="margin-top: 28px;">
+      {features.map((feature) => <FeatureCard {...feature} />)}
+    </div>
+  </div>
+</section>

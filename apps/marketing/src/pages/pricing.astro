@@ -1,0 +1,47 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import PricingGrid from "../components/PricingGrid.astro";
+import PricingQuotaMatrix from "../components/PricingQuotaMatrix.astro";
+import PricingComparisonTable from "../components/PricingComparisonTable.astro";
+import PricingFaq from "../components/PricingFaq.astro";
+import { getPricingContent } from "../config/pricing";
+import { getSaasLink } from "../config/links";
+
+const content = getPricingContent("en");
+---
+
+<MarketingLayout canonicalPath="/pricing" title="Pricing" description="VATranscribe pricing plans for media download and transcription workflows.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">{content.eyebrow}</span>
+      <h1 class="h1">{content.title}</h1>
+      <p class="lead">{content.lead}</p>
+
+      <div class="card" style="margin-top: 28px;">
+        <strong>Backend-aligned pricing</strong>
+        <p class="muted" style="margin-bottom: 0;">{content.sourceNote}</p>
+      </div>
+
+      <h2 class="h2" style="margin-top: 52px;">{content.cardsTitle}</h2>
+      <PricingGrid locale="en" />
+    </div>
+  </section>
+
+  <PricingQuotaMatrix locale="en" />
+  <PricingComparisonTable locale="en" />
+  <PricingFaq locale="en" />
+
+  <section class="section">
+    <div class="container">
+      <div class="card card-strong text-center">
+        <span class="eyebrow">Next step</span>
+        <h2 class="h2">{content.finalTitle}</h2>
+        <p class="lead">{content.finalLead}</p>
+        <div class="button-row" style="justify-content: center;">
+          <a class="button button-primary" href={getSaasLink("register", { plan: "pro" })}>{content.finalPrimary}</a>
+          <a class="button button-secondary" href={getSaasLink("billing", { plan: "pro" })}>{content.finalSecondary}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

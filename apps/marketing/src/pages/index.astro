@@ -1,0 +1,31 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import HeroSection from "../sections/HeroSection.astro";
+import ProblemSolutionSection from "../sections/ProblemSolutionSection.astro";
+import WorkflowSection from "../sections/WorkflowSection.astro";
+import FeaturesSection from "../sections/FeaturesSection.astro";
+import TrustSection from "../sections/TrustSection.astro";
+import PricingGrid from "../components/PricingGrid.astro";
+import DownloadCtaSection from "../sections/DownloadCtaSection.astro";
+import FaqSection from "../sections/FaqSection.astro";
+import FinalCtaSection from "../sections/FinalCtaSection.astro";
+---
+
+<MarketingLayout canonicalPath="/" title="VATranscribe" description="Download, transcribe and organize media files in one secure SaaS-ready workspace.">
+  <HeroSection />
+  <ProblemSolutionSection />
+  <WorkflowSection />
+  <FeaturesSection />
+  <TrustSection />
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Pricing preview</span>
+      <h2 class="h2">Start simple. Scale into SaaS.</h2>
+      <p class="lead">Pricing cards are prepared for future synchronization with backend billing plans.</p>
+      <PricingGrid />
+    </div>
+  </section>
+  <DownloadCtaSection />
+  <FaqSection />
+  <FinalCtaSection />
+</MarketingLayout>

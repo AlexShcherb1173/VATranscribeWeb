@@ -1,1 +1,0 @@
-﻿"""VATranscribe core package."""

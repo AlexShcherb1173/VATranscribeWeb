@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -23,11 +23,12 @@ def test_auth_router_has_refresh_logout_endpoints():
     assert_route_exists(text, "/logout-all")
 
 
-def test_login_returns_refresh_token():
+def test_login_creates_db_refresh_token_and_sets_cookie_without_returning_refresh_body():
     text = read("apps/api/app/routers/auth.py")
 
     assert "create_refresh_token_for_user" in text
-    assert "refresh_token=refresh_token" in text
+    assert "set_auth_cookies(response, refresh_token)" in text
+    assert "refresh_token=refresh_token" not in text
 
 
 def test_refresh_rotates_refresh_token():

@@ -4,19 +4,22 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile, status
 from sqlalchemy.orm import Session
 
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import Job, JobLog, JobStatus, JobType, MediaAsset, SourceType, User
 from apps.api.app.schemas import MediaAssetResponse
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.services.quota_service import (
     assert_can_create_job,
     assert_can_store_bytes,
     increment_jobs_used,
     increment_storage_used,
 )
+from apps.api.app.services.storage_limits import assert_size_within_limit, parse_content_length
 from apps.api.app.services.upload_helpers import (
     build_upload_dir,
     detect_kind,
@@ -26,6 +29,15 @@ from apps.api.app.services.upload_helpers import (
 )
 
 router = APIRouter(prefix="/uploads")
+
+
+def _reject_upload_request_if_too_large(request: Request, known_size_bytes: int | None = None) -> None:
+    content_length = parse_content_length(request.headers)
+    if content_length is not None:
+        assert_size_within_limit(content_length, settings.max_upload_bytes, "Upload Content-Length")
+
+    if known_size_bytes is not None:
+        assert_size_within_limit(known_size_bytes, settings.max_upload_bytes, "Upload file")
 
 
 def build_media_asset_response(item: MediaAsset) -> MediaAssetResponse:
@@ -138,10 +150,17 @@ def _mark_upload_job_succeeded(db: Session, job: Job, media_asset: MediaAsset) -
     summary="Upload local media file",
 )
 async def upload_media_file(
+    request: Request,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> MediaAssetResponse:
+    rate_limiter.check(
+        key=build_rate_limit_key("uploads:create", request),
+        limit=settings.rate_limit_upload_per_minute,
+        window_seconds=60,
+    )
+
     upload_job: Job | None = None
 
     if not file.filename:
@@ -168,11 +187,14 @@ async def upload_media_file(
         ) from exc
 
     known_size_bytes = int(file.size) if file.size is not None else None
+    _reject_upload_request_if_too_large(request, known_size_bytes)
+
+    if known_size_bytes is not None:
+        assert_can_store_bytes(db, current_user, known_size_bytes)
+
     upload_job = _create_upload_job(db, current_user, original_name, extension, known_size_bytes)
 
     try:
-        if known_size_bytes is not None:
-            assert_can_store_bytes(db, current_user, known_size_bytes)
 
         upload_dir = build_upload_dir(kind)
         upload_dir.mkdir(parents=True, exist_ok=True)
@@ -186,7 +208,12 @@ async def upload_media_file(
         db.add(upload_job)
         db.commit()
 
-        size_bytes, checksum = await save_upload_file(file, target_path)
+        size_bytes, checksum = await save_upload_file(
+            file,
+            target_path,
+            max_bytes=settings.max_upload_bytes,
+            chunk_size=settings.upload_stream_chunk_bytes,
+        )
 
         try:
             assert_can_store_bytes(db, current_user, size_bytes)

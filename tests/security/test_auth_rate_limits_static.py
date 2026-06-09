@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -15,6 +15,8 @@ def test_rate_limit_helper_has_stable_key_builder():
     assert "def stable_hash(" in text
     assert "def build_rate_limit_key(" in text
     assert "class InMemoryRateLimiter" in text
+    assert "class RedisBackedRateLimiter" in text
+    assert "class ConfiguredRateLimiter" in text
 
 
 def test_auth_router_imports_rate_limiter():
@@ -34,8 +36,8 @@ def test_register_endpoint_is_rate_limited():
 
     assert 'action="auth.register"' in register_block
     assert 'build_rate_limit_key("auth:register", request)' in register_block
-    assert "limit=5" in register_block
-    assert "window_seconds=600" in register_block
+    assert "settings.rate_limit_auth_strict_per_minute" in register_block
+    assert "window_seconds=60" in register_block
 
 
 def test_login_endpoint_is_rate_limited():
@@ -47,8 +49,8 @@ def test_login_endpoint_is_rate_limited():
 
     assert 'action="auth.login"' in login_block
     assert 'build_rate_limit_key("auth:login", request, subject=email)' in login_block
-    assert "limit=10" in login_block
-    assert "window_seconds=300" in login_block
+    assert "settings.rate_limit_auth_strict_per_minute" in login_block
+    assert "window_seconds=60" in login_block
 
 
 def test_refresh_endpoint_is_rate_limited():
@@ -60,5 +62,5 @@ def test_refresh_endpoint_is_rate_limited():
 
     assert 'action="auth.refresh"' in refresh_block
     assert 'build_rate_limit_key("auth:refresh", request)' in refresh_block
-    assert "limit=30" in refresh_block
-    assert "window_seconds=300" in refresh_block
+    assert "settings.rate_limit_auth_per_minute" in refresh_block
+    assert "window_seconds=60" in refresh_block

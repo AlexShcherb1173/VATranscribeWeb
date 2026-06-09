@@ -1,16 +1,19 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from apps.api.app.config import get_settings
+from apps.api.app.observability import configure_logging, init_sentry
 from apps.api.app.routers import router as api_router
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.schemas import ApiInfoResponse
 
 settings = get_settings()
+configure_logging(settings)
+init_sentry(settings)
 
 
 def ensure_storage_dirs() -> None:
@@ -31,9 +34,9 @@ app = FastAPI(
     title=settings.app_name,
     debug=settings.debug,
     lifespan=lifespan,
-    docs_url='/docs',
-    redoc_url='/redoc',
-    openapi_url='/openapi.json',
+    docs_url=settings.docs_url,
+    redoc_url=settings.redoc_url,
+    openapi_url=settings.openapi_url,
 )
 
 app.add_middleware(
@@ -44,8 +47,25 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+
+
+@app.middleware("http")
+async def api_rate_limit_middleware(request: Request, call_next):
+    path = request.url.path
+    is_api_path = path.startswith(settings.api_prefix)
+    is_health_path = path.startswith(f"{settings.api_prefix}/health/")
+
+    if is_api_path and not is_health_path:
+        rate_limiter.check(
+            key=build_rate_limit_key("api:general", request),
+            limit=settings.rate_limit_general_api_per_minute,
+            window_seconds=60,
+        )
+
+    return await call_next(request)
+
+
 app.include_router(api_router, prefix=settings.api_prefix)
-app.mount('/storage', StaticFiles(directory='storage'), name='storage')
 
 
 @app.get('/', response_model=ApiInfoResponse, tags=['meta'])
@@ -54,7 +74,7 @@ def root() -> ApiInfoResponse:
         app=settings.app_name,
         env=settings.app_env,
         version='0.1.0',
-        docs_url='/docs',
+        docs_url=settings.docs_url,
         api_prefix=settings.api_prefix,
         endpoints={
             'health_live': f'{settings.api_prefix}/health/live',
@@ -91,6 +111,5 @@ def root() -> ApiInfoResponse:
             'legal_documents': f'{settings.api_prefix}/legal/documents',
             'privacy': f'{settings.api_prefix}/privacy/me',
             'security_ping': f'{settings.api_prefix}/security/ping-rate-limit',
-            'storage_static': '/storage/...',
         },
     )

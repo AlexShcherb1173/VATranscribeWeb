@@ -1,0 +1,17 @@
+---
+type Props = {
+  title: string;
+  description: string;
+  href?: string;
+  badge?: string;
+};
+
+const { title, description, href, badge } = Astro.props;
+const Tag = href ? "a" : "div";
+---
+
+<Tag class="card" href={href}>
+  {badge ? <span class="badge badge-accent">{badge}</span> : null}
+  <h3 class="h3" style="margin-top: 14px;">{title}</h3>
+  <p class="muted" style="margin: 12px 0 0; line-height: 1.65;">{description}</p>
+</Tag>

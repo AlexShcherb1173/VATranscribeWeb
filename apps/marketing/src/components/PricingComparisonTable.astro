@@ -1,0 +1,45 @@
+---
+import { getPricingContent } from "../config/pricing";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const content = getPricingContent(locale);
+const labels = locale === "ru"
+  ? { feature: "Возможность", free: "Free", pro: "Pro", business: "Business" }
+  : { feature: "Feature", free: "Free", pro: "Pro", business: "Business" };
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">{content.comparisonTitle}</span>
+    <h2 class="h2">{content.comparisonTitle}</h2>
+    <p class="lead">{content.comparisonLead}</p>
+
+    <div class="table-card">
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>{labels.feature}</th>
+            <th>{labels.free}</th>
+            <th>{labels.pro}</th>
+            <th>{labels.business}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {content.comparison.map((row) => (
+            <tr>
+              <td><strong>{row.label}</strong></td>
+              <td>{row.free}</td>
+              <td>{row.pro}</td>
+              <td>{row.business}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,39 @@
+---
+const faqs = [
+  {
+    question: "Is this only a downloader?",
+    answer:
+      "No. The product direction combines download jobs, transcription jobs, user-owned media assets, quotas, billing and compliance-oriented workflows."
+  },
+  {
+    question: "Why split marketing from the SaaS dashboard?",
+    answer:
+      "The public website must be SEO-oriented and static. The dashboard remains an authenticated Vite application focused on product workflows."
+  },
+  {
+    question: "Are the legal pages final?",
+    answer:
+      "No. They are structured product legal drafts. Final production legal texts must be reviewed and completed before launch."
+  },
+  {
+    question: "Is the desktop app ready?",
+    answer:
+      "The download layer is prepared as a route and content model. Real installers and release management come in a later stage."
+  }
+];
+---
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">FAQ</span>
+    <h2 class="h2">Questions before launch.</h2>
+    <div style="margin-top: 24px;">
+      {faqs.map((faq) => (
+        <details class="faq-item">
+          <summary>{faq.question}</summary>
+          <p>{faq.answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

@@ -47,3 +47,25 @@ _debug_packs/
 __pycache__/
 .pytest_cache/
 .idea/workspace.xml
+
+_migration_backup/
+
+_migration_backup/
+
+apps/marketing/.astro/
+
+apps/marketing/.astro/
+
+.idea/
+
+# Local patch backups
+.patch-backups/
+
+# Local patch artifacts
+.patch-backups/
+apply_P0-*.ps1
+VATranscribeWeb_P0-*_context.zip
+
+# Local audit exports
+VATranscribeWeb_Stage4_Production_Readiness_Audit_*.docx
+VATranscribeWeb_Stage4_Production_Readiness_Audit_*.md

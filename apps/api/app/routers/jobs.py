@@ -1,13 +1,13 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from apps.api.app.celery_client import celery_client
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import Job, JobLog, JobStatus, MediaAsset, User
@@ -17,10 +17,23 @@ from apps.api.app.schemas import (
     JobLogResponse,
     JobResponse,
 )
-from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
+from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used, sync_storage_usage_from_media_assets
 from apps.api.app.services.access_control import get_user_media_asset_or_404
+from packages.core.vatranscribe_core.storage import resolve_storage_path
+from packages.core.vatranscribe_core.url_guard import UnsafeUrlError, validate_external_url
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
+
+
+def _validate_user_url_or_422(url: str) -> str:
+    try:
+        return validate_external_url(url)
+    except UnsafeUrlError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unsafe or unsupported external URL: {exc}",
+        ) from exc
 
 
 def _normalize_transcription_language(value: str | None) -> str | None:
@@ -131,10 +144,9 @@ def _serialize_media_asset(media_asset: MediaAsset | None) -> dict | None:
         "extension": media_asset.extension,
         "size_bytes": media_asset.size_bytes,
         "duration_sec": media_asset.duration_sec,
-        "path": media_asset.path,
         "checksum_sha256": media_asset.checksum_sha256,
         "created_at": _iso(media_asset.created_at),
-        "download_url": f"/api/v1/files/{media_asset.id}/download",
+        "download_url": f"/api/v1/media-assets/{media_asset.id}/download",
     }
 
 
@@ -196,7 +208,7 @@ def _remove_media_file_safely(media_asset: MediaAsset | None) -> None:
     if media_asset is None or not media_asset.path:
         return
 
-    path = Path(media_asset.path)
+    path = resolve_storage_path(media_asset.path)
 
     try:
         if path.exists() and path.is_file():
@@ -266,9 +278,17 @@ def get_job(
 )
 def create_job(
     payload: JobCreateRequest,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Job:
+    if payload.input_url:
+        rate_limiter.check(
+            key=build_rate_limit_key("jobs:url_create", request),
+            limit=settings.rate_limit_download_per_minute,
+            window_seconds=60,
+        )
+
     assert_can_create_job(db, current_user, jobs_to_add=1)
 
     if payload.transcription_media_asset_id:
@@ -278,13 +298,17 @@ def create_job(
             media_asset_id=payload.transcription_media_asset_id,
         )
 
+    input_url = None
+    if payload.input_url:
+        input_url = _validate_user_url_or_422(payload.input_url)
+
     job = Job(
         user_id=current_user.id,
         type=payload.type,
         status=JobStatus.PENDING.value,
         source_type=payload.source_type,
         title=payload.title,
-        input_url=payload.input_url,
+        input_url=input_url,
         requested_format=payload.requested_format,
         requested_file_name=payload.requested_file_name,
         mp4_mode=payload.mp4_mode,
@@ -476,6 +500,7 @@ def delete_job(
         _remove_media_file_safely(media_asset_to_delete)
         db.delete(media_asset_to_delete)
         db.commit()
+        sync_storage_usage_from_media_assets(db, current_user)
 
     return {
         "ok": True,

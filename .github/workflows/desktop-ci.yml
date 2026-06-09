@@ -1,0 +1,12 @@
+name: Desktop CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  desktop-roadmap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Desktop build is deferred
+        run: echo "Desktop packaging is planned for a later stage."

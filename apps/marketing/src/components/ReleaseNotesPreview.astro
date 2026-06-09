@@ -1,0 +1,43 @@
+---
+import { getDownloadContent } from "../config/download";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale?: Locale;
+};
+
+const { locale = "en" } = Astro.props;
+const content = getDownloadContent(locale);
+---
+
+<section class="section" id="release-notes">
+  <div class="container">
+    <span class="eyebrow">{content.releaseTitle}</span>
+    <h2 class="h2">{content.releaseTitle}</h2>
+    <p class="lead">{content.releaseLead}</p>
+
+    <div class="grid" style="margin-top: 28px;">
+      {content.releaseNotes.map((release) => (
+        <article class="card card-strong">
+          <div class="pricing-card-top">
+            <span class="badge badge-accent">{release.status}</span>
+            <span class="pricing-plan-code">{release.date}</span>
+          </div>
+          <h3 class="h3" style="margin-top: 18px;">{release.version}</h3>
+          <ul class="list">
+            {release.items.map((item) => <li>✓ {item}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+      <h3 class="h3">{content.checksumTitle}</h3>
+      <p class="muted">{content.checksumLead}</p>
+      <div class="download-checksum-box">
+        <code>SHA256: set-on-first-signed-build</code>
+        <code>Signature: planned-code-signing</code>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,10 +1,12 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from fastapi import APIRouter
 
 from apps.api.app.routers.auth import router as auth_router
 from apps.api.app.routers.billing import router as billing_router
+from apps.api.app.routers.plans import router as plans_router
 from apps.api.app.routers.downloads import router as downloads_router
+from apps.api.app.routers.youtube_cookies import router as youtube_cookies_router
 from apps.api.app.routers.export_artifacts import router as export_artifacts_router
 from apps.api.app.routers.health import router as health_router
 from apps.api.app.routers.jobs import router as jobs_router
@@ -31,8 +33,10 @@ router.include_router(auth_router)
 router.include_router(profile_router)
 router.include_router(quota_router)
 router.include_router(billing_router)
+router.include_router(plans_router)
 router.include_router(jobs_router)
 router.include_router(downloads_router)
+router.include_router(youtube_cookies_router)
 router.include_router(uploads_router)
 router.include_router(media_assets_router)
 router.include_router(transcriptions_router)

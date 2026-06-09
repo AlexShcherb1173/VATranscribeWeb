@@ -1,5 +1,5 @@
-import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { FormEvent, useEffect, useState } from "react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 
 import { RegisterForm } from "@/features/auth/ui/RegisterForm";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
@@ -8,10 +8,31 @@ import { useI18n } from "@/shared/i18n";
 
 export function LandingPage() {
   const { language, setLanguage, t } = useI18n();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const requestedPlan = searchParams.get("plan");
+  const initialTab =
+    location.pathname.includes("/auth/register") || requestedPlan ? "register" : "login";
+
   const [url, setUrl] = useState("");
-  const [tab, setTab] = useState<"login" | "register">("login");
+  const [tab, setTab] = useState<"login" | "register">(initialTab);
   const [showAuthNotice, setShowAuthNotice] = useState(false);
   const [showAuthTabs, setShowAuthTabs] = useState(true);
+
+  const registerRedirectTo = requestedPlan
+    ? `/app/billing?plan=${encodeURIComponent(requestedPlan)}`
+    : "/app/downloads";
+
+  useEffect(() => {
+    if (location.pathname.includes("/auth/register") || requestedPlan) {
+      setTab("register");
+      return;
+    }
+
+    if (location.pathname.includes("/auth/login")) {
+      setTab("login");
+    }
+  }, [location.pathname, requestedPlan]);
 
   function handleStart(event?: FormEvent) {
     event?.preventDefault();
@@ -250,7 +271,7 @@ export function LandingPage() {
               {tab === "login" ? (
                 <LoginForm />
               ) : (
-                <RegisterForm redirectTo="/app/downloads" />
+                <RegisterForm redirectTo={registerRedirectTo} />
               )}
             </div>
           ) : null}

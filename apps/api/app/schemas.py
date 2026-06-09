@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
@@ -77,16 +77,16 @@ class LoginRequest(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
-    refresh_token: str | None = None
     token_type: str = "bearer"
 
 
-class RefreshTokenRequest(BaseModel):
-    refresh_token: str = Field(min_length=32, max_length=2048)
+class YouTubeCookiesStatusResponse(BaseModel):
+    configured: bool
+    source_filename: str | None = None
+    cookie_format: str | None = None
+    size_bytes: int | None = None
+    updated_at: datetime | None = None
 
-
-class LogoutRequest(BaseModel):
-    refresh_token: str | None = Field(default=None, min_length=32, max_length=2048)
 
 
 class LogoutResponse(BaseModel):
@@ -106,7 +106,7 @@ class ApiInfoResponse(BaseModel):
     app: str
     env: str
     version: str
-    docs_url: str
+    docs_url: str | None = None
     api_prefix: str
     endpoints: dict[str, str]
 
@@ -222,7 +222,6 @@ class MediaAssetResponse(BaseModel):
     extension: str | None = None
     size_bytes: int
     duration_sec: int | None = None
-    path: str
     checksum_sha256: str | None = None
     created_at: datetime | None = None
     download_url: str | None = None
@@ -345,7 +344,6 @@ class ExportArtifactResponse(BaseModel):
     id: str
     transcript_id: str
     format: str
-    path: str
     size_bytes: int
     created_at: datetime | None = None
     download_url: str | None = None
@@ -366,4 +364,3 @@ class TranscriptResponse(BaseModel):
     exports: list[ExportArtifactResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
-

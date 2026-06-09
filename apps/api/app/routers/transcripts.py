@@ -11,10 +11,12 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import ExportArtifact, MediaAsset, Transcript, User
-from apps.api.app.services.quota_service import sync_storage_usage_from_media_assets
+from apps.api.app.services.quota_service import assert_can_store_bytes, sync_storage_usage_from_media_assets
+from apps.api.app.services.storage_limits import assert_path_size_within_limit, assert_size_within_limit
 from packages.core.vatranscribe_core.storage import resolve_storage_path, to_storage_relative_path
 
 router = APIRouter(prefix="/transcripts", tags=["Transcripts"])
@@ -40,7 +42,6 @@ def _media_asset_payload(item: MediaAsset | None) -> dict[str, Any] | None:
         "extension": item.extension,
         "size_bytes": item.size_bytes,
         "duration_sec": item.duration_sec,
-        "path": item.path,
         "checksum_sha256": item.checksum_sha256,
         "created_at": item.created_at,
         "download_url": f"/media-assets/{item.id}/download",
@@ -87,7 +88,6 @@ def _export_payload(item: ExportArtifact) -> dict[str, Any]:
         "id": item.id,
         "transcript_id": item.transcript_id,
         "format": item.format,
-        "path": item.path,
         "size_bytes": item.size_bytes,
         "created_at": item.created_at,
         "download_url": f"/transcripts/export-artifacts/{item.id}/download",
@@ -341,6 +341,7 @@ def _upsert_export_artifact(
 
     relative_path = to_storage_relative_path(path)
     size_bytes = path.stat().st_size
+    assert_size_within_limit(size_bytes, settings.max_export_artifact_bytes, "Export artifact")
 
     if existing is not None and overwrite:
         old_path = resolve_storage_path(existing.path)
@@ -435,9 +436,13 @@ def generate_subtitles(
         )
         artifacts.append(artifact)
 
+    assert_can_store_bytes(db, current_user, sum(int(artifact.size_bytes or 0) for artifact in artifacts))
+    sync_storage_usage_from_media_assets(db, current_user)
+
     db.commit()
 
     stmt = (
+
         select(Transcript)
         .options(
             selectinload(Transcript.media_asset),
@@ -471,6 +476,8 @@ def download_export_artifact(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Export artifact file for '{artifact_id}' not found on disk",
         )
+
+    assert_path_size_within_limit(file_path, settings.max_export_artifact_bytes, "Transcript export artifact download")
 
     media_type = _subtitle_media_type((item.format or "").lower())
 

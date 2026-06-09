@@ -1,0 +1,110 @@
+x-default-json-logging: &default-json-logging
+  driver: "json-file"
+  options:
+    max-size: ${DOCKER_LOG_MAX_SIZE:-50m}
+    max-file: "${DOCKER_LOG_MAX_FILE:-5}"
+
+services:
+  web:
+    logging: *default-json-logging
+    build:
+      context: .
+      dockerfile: infra/docker/web.Dockerfile
+      args:
+        PUBLIC_VATRANSCRIBE_MARKETING_URL: ${PUBLIC_VATRANSCRIBE_MARKETING_URL:-https://vatranscribe.ru}
+        PUBLIC_VATRANSCRIBE_APP_URL: ${PUBLIC_VATRANSCRIBE_APP_URL:-https://app.vatranscribe.ru}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-/app/}
+    container_name: vatranscribe-web
+    depends_on:
+      - api
+    ports:
+      - "${WEB_HTTP_PORT:-80}:80"
+      - "${WEB_HTTPS_PORT:-443}:443"
+    environment:
+      NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-vatranscribe.ru app.vatranscribe.ru api.vatranscribe.ru admin.vatranscribe.ru}
+      NGINX_SSL_CERTIFICATE: ${NGINX_SSL_CERTIFICATE:-/etc/letsencrypt/live/vatranscribe.ru/fullchain.pem}
+      NGINX_SSL_CERTIFICATE_KEY: ${NGINX_SSL_CERTIFICATE_KEY:-/etc/letsencrypt/live/vatranscribe.ru/privkey.pem}
+      NGINX_HSTS_MAX_AGE: ${NGINX_HSTS_MAX_AGE:-31536000}
+      NGINX_GENERAL_API_RATE: ${NGINX_GENERAL_API_RATE:-120r/m}
+      NGINX_AUTH_RATE: ${NGINX_AUTH_RATE:-10r/m}
+      NGINX_AUTH_STRICT_RATE: ${NGINX_AUTH_STRICT_RATE:-5r/m}
+      NGINX_UPLOAD_RATE: ${NGINX_UPLOAD_RATE:-10r/m}
+      NGINX_DOWNLOAD_RATE: ${NGINX_DOWNLOAD_RATE:-30r/m}
+      NGINX_GLOBAL_BODY_LIMIT: ${NGINX_GLOBAL_BODY_LIMIT:-20m}
+      NGINX_AUTH_BODY_LIMIT: ${NGINX_AUTH_BODY_LIMIT:-1m}
+      NGINX_ANALYZE_BODY_LIMIT: ${NGINX_ANALYZE_BODY_LIMIT:-2m}
+      NGINX_UPLOAD_BODY_LIMIT: ${NGINX_UPLOAD_BODY_LIMIT:-1024m}
+      PUBLIC_API_ORIGIN: ${PUBLIC_API_ORIGIN:-https://api.vatranscribe.ru}
+    volumes:
+      - ./infra/docker/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./infra/certbot/conf:/etc/letsencrypt:ro
+      - ./infra/certbot/www:/var/www/certbot:ro
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  api:
+    logging: *default-json-logging
+    ports: !reset []
+    volumes: !override
+      - vatranscribe_storage:/app/storage
+    expose:
+      - "8000"
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=256m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      XDG_CACHE_HOME: /app/storage/cache
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live', timeout=3).read()\" || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    logging: *default-json-logging
+    volumes: !override
+      - vatranscribe_storage:/app/storage
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=512m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      C_FORCE_ROOT: "false"
+      XDG_CACHE_HOME: /app/storage/cache
+      TORCH_HOME: /app/storage/cache/torch
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A apps.worker.app.worker:celery inspect ping -d celery@$$HOSTNAME --timeout=10 >/dev/null || exit 1"]
+      interval: 60s
+      timeout: 15s
+      retries: 5
+
+  db:
+    logging: *default-json-logging
+    ports: !reset []
+    expose:
+      - "5432"
+
+  redis:
+    logging: *default-json-logging
+    ports: !reset []
+    expose:
+      - "6379"
+
+volumes:
+  vatranscribe_storage:

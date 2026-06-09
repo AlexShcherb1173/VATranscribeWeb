@@ -1,0 +1,95 @@
+---
+import "../styles/global.css";
+import { siteConfig } from "../config/site";
+import { absoluteUrl, getDefaultJsonLd, getSeoForPath } from "../config/seo";
+import { getAlternateLinks, getLocaleFromPath } from "../i18n/locales";
+import type { Locale } from "../i18n/locales";
+
+type JsonLd = Record<string, unknown> | Record<string, unknown>[];
+
+type Props = {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+  jsonLd?: JsonLd;
+  locale?: Locale;
+};
+
+const routePath = Astro.props.canonicalPath ?? Astro.url.pathname;
+const routeSeo = getSeoForPath(routePath);
+
+const locale = Astro.props.locale ?? routeSeo?.locale ?? getLocaleFromPath(routePath);
+const title = Astro.props.title ?? routeSeo?.title ?? siteConfig.name;
+const description = Astro.props.description ?? routeSeo?.description ?? siteConfig.description;
+const canonicalPath = Astro.props.canonicalPath ?? routeSeo?.path ?? Astro.url.pathname;
+const ogImage = Astro.props.ogImage ?? "/og-image.svg";
+const ogType = Astro.props.ogType ?? "website";
+const noindex = Astro.props.noindex ?? routeSeo?.noindex ?? false;
+
+const pageTitle = title === siteConfig.name ? title : title.includes(siteConfig.name) ? title : `${title} | ${siteConfig.name}`;
+const canonical = absoluteUrl(canonicalPath);
+const absoluteOgImage = absoluteUrl(ogImage);
+const alternateLinks = getAlternateLinks(canonicalPath);
+
+const defaultJsonLd = getDefaultJsonLd({
+  canonical,
+  pageTitle,
+  description
+});
+
+const customJsonLd = Astro.props.jsonLd
+  ? Array.isArray(Astro.props.jsonLd)
+    ? Astro.props.jsonLd
+    : [Astro.props.jsonLd]
+  : [];
+
+const jsonLdItems = [...defaultJsonLd, ...customJsonLd];
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {noindex ? <meta name="robots" content="noindex,nofollow" /> : <meta name="robots" content="index,follow" />}
+
+    <link rel="canonical" href={canonical} />
+    {alternateLinks.map((link) => (
+      <link rel="alternate" hreflang={link.locale} href={absoluteUrl(link.href)} />
+    ))}
+    <link rel="icon" href="/favicon.svg" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={siteConfig.productName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:locale" content={locale === "ru" ? "ru_RU" : "en_US"} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+
+    <meta name="theme-color" content="#07111f" />
+
+    {jsonLdItems.map((item) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
+
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <slot name="header" />
+    <main>
+      <slot />
+    </main>
+    <slot name="footer" />
+  </body>
+</html>

@@ -5,8 +5,10 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   const apiTarget = env.VITE_API_PROXY_TARGET || "http://127.0.0.1:8000";
+  const webBasePath = env.VITE_BASE_PATH || "/";
 
   return {
+    base: webBasePath,
     plugins: [react()],
 
     resolve: {
@@ -22,11 +24,6 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         "/api": {
-          target: apiTarget,
-          changeOrigin: true,
-          secure: false,
-        },
-        "/storage": {
           target: apiTarget,
           changeOrigin: true,
           secure: false,

@@ -1,0 +1,12 @@
+---
+import LegalDocumentLayout from "../../../components/LegalDocumentLayout.astro";
+import { getLegalDocumentRuBySlug } from "../../../config/legal.ru";
+
+const legalDocument = getLegalDocumentRuBySlug("refund");
+
+if (!legalDocument) {
+  throw new Error("Legal document not found: refund");
+}
+---
+
+<LegalDocumentLayout document={legalDocument} locale="ru" />

@@ -6,6 +6,7 @@ from pathlib import Path
 from fastapi import UploadFile
 
 from apps.api.app.config import get_settings
+from apps.api.app.services.storage_limits import FileSizeLimitExceeded
 
 settings = get_settings()
 
@@ -60,21 +61,39 @@ def generate_stored_name(original_name: str) -> str:
 async def save_upload_file(
     upload_file: UploadFile,
     target_path: Path,
+    *,
+    max_bytes: int | None = None,
+    chunk_size: int = 1024 * 1024,
 ) -> tuple[int, str]:
     sha256 = hashlib.sha256()
     total_size = 0
+    safe_chunk_size = max(1, int(chunk_size or 1024 * 1024))
 
-    with target_path.open("wb") as output:
-        while True:
-            chunk = await upload_file.read(1024 * 1024)
-            if not chunk:
-                break
+    try:
+        with target_path.open("wb") as output:
+            while True:
+                chunk = await upload_file.read(safe_chunk_size)
+                if not chunk:
+                    break
 
-            output.write(chunk)
-            sha256.update(chunk)
-            total_size += len(chunk)
+                total_size += len(chunk)
+                if max_bytes is not None and total_size > max_bytes:
+                    raise FileSizeLimitExceeded(
+                        label="Upload stream",
+                        size_bytes=total_size,
+                        limit_bytes=max_bytes,
+                    )
 
-    await upload_file.close()
+                output.write(chunk)
+                sha256.update(chunk)
+    except FileSizeLimitExceeded:
+        try:
+            target_path.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
+    finally:
+        await upload_file.close()
 
     return total_size, sha256.hexdigest()
 

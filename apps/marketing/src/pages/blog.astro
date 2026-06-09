@@ -1,0 +1,19 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import ContentList from "../components/ContentList.astro";
+import { getBlogItems, getContentLanding } from "../config/content";
+
+const items = getBlogItems("en");
+const landing = getContentLanding("blog", "en");
+---
+
+<MarketingLayout canonicalPath="/blog" title="Blog" description="VATranscribe blog and product updates.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">{landing.eyebrow}</span>
+      <h1 class="h1">{landing.title}</h1>
+      <p class="lead">{landing.lead}</p>
+      <ContentList items={items} />
+    </div>
+  </section>
+</MarketingLayout>

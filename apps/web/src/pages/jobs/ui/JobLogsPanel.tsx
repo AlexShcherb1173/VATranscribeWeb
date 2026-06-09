@@ -1,4 +1,4 @@
-import { useI18n } from "@/shared/i18n";
+﻿import { useI18n } from "@/shared/i18n";
 import { formatDate } from "@/shared/lib/format";
 import { Card } from "@/shared/ui/Card";
 
@@ -13,7 +13,7 @@ type JobLogsPanelProps = {
   logs: JobLog[];
 };
 
-function translateLogMessage(message: string | null | undefined, t: ReturnType<typeof useI18n>["t"]) {
+function translateLogMessage(message: string | null | undefined, t: ReturnType<typeof useI18n>["t"]): string {
   const raw = message || "—";
 
   const exact: Array<[RegExp, string]> = [
@@ -46,7 +46,7 @@ function translateLogMessage(message: string | null | undefined, t: ReturnType<t
 
   if (/^Job failed:/i.test(raw)) {
     const reason = raw.replace(/^Job failed:\s*/i, "");
-    const translatedReason = translateLogMessage(reason, t);
+    const translatedReason: string = translateLogMessage(reason, t);
     return `${t.jobs.logJobFailed}: ${translatedReason}`;
   }
 
@@ -109,3 +109,4 @@ export function JobLogsPanel({ logs }: JobLogsPanelProps) {
     </Card>
   );
 }
+

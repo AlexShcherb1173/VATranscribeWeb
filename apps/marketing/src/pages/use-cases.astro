@@ -1,0 +1,69 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import { primaryUseCases } from "../config/site";
+
+const detailedCases = [
+  {
+    id: "creators",
+    title: "Creators and editors",
+    points: [
+      "Collect source videos and audio assets.",
+      "Prepare MP3/MP4 outputs for editing or reuse.",
+      "Generate transcripts for subtitles, notes and content repurposing."
+    ]
+  },
+  {
+    id: "developers",
+    title: "Developers and testers",
+    points: [
+      "Validate downloader and transcription jobs through observable logs.",
+      "Test quota, ownership and auth flows in a SaaS-like architecture.",
+      "Use the app as a production-grade portfolio project foundation."
+    ]
+  },
+  {
+    id: "teams",
+    title: "Teams and operators",
+    points: [
+      "Prepare audit-friendly media processing workflows.",
+      "Track privacy requests and consent versions.",
+      "Move toward billing, admin and collaboration layers."
+    ]
+  }
+];
+---
+
+<MarketingLayout canonicalPath="/use-cases" title="Use cases" description="VATranscribe use cases for creators, developers and teams.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Use cases</span>
+      <h1 class="h1">A media workflow platform for several product paths.</h1>
+      <p class="lead">
+        VATranscribe can be positioned as a creator tool, developer workflow product or team SaaS foundation.
+      </p>
+
+      <div class="grid grid-3" style="margin-top: 32px;">
+        {primaryUseCases.map((item) => (
+          <a class="card" href={item.href}>
+            <h3 class="h3">{item.title}</h3>
+            <p class="muted">{item.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid">
+      {detailedCases.map((item) => (
+        <article class="card" id={item.id}>
+          <span class="eyebrow">{item.id}</span>
+          <h2 class="h2">{item.title}</h2>
+          <ul class="list">
+            {item.points.map((point) => <li>✓ {point}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+</MarketingLayout>

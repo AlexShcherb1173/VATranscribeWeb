@@ -1,0 +1,126 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import { legalDocuments } from "../config/legal";
+import { legalDocumentsRu } from "../config/legal.ru";
+import type { LegalDocumentConfig } from "../config/legal";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  document: LegalDocumentConfig;
+  locale?: Locale;
+};
+
+const { document, locale = "en" } = Astro.props;
+const documents = locale === "ru" ? legalDocumentsRu : legalDocuments;
+
+const labels = locale === "ru"
+  ? {
+      eyebrow: "Юридический документ",
+      version: "Версия",
+      effectiveDate: "Дата вступления в силу",
+      required: "Обязательно при регистрации",
+      yes: "Да",
+      no: "Нет",
+      documentNotice: "Важно",
+      legalCenter: "Юридический центр",
+      documents: "Документы",
+      terms: "Условия",
+      privacy: "Конфиденциальность"
+    }
+  : {
+      eyebrow: "Legal document",
+      version: "Version",
+      effectiveDate: "Effective date",
+      required: "Required for registration",
+      yes: "Yes",
+      no: "No",
+      documentNotice: "Document notice",
+      legalCenter: "Legal center",
+      documents: "Documents",
+      terms: "Terms",
+      privacy: "Privacy"
+    };
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: document.title,
+  version: document.version,
+  datePublished: document.effectiveDate,
+  dateModified: document.effectiveDate,
+  url: document.path,
+  description: document.summary,
+  inLanguage: locale
+};
+---
+
+<MarketingLayout
+  title={document.title}
+  description={document.summary}
+  canonicalPath={document.path}
+  locale={locale}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2" style="align-items: start;">
+        <article class="prose">
+          <span class="eyebrow">{labels.eyebrow}</span>
+          <h1>{document.title}</h1>
+
+          <div class="card" style="margin: 24px 0;">
+            <p style="margin: 0;"><strong>{labels.version}:</strong> {document.version}</p>
+            <p style="margin: 8px 0 0;"><strong>{labels.effectiveDate}:</strong> {document.effectiveDate}</p>
+            <p style="margin: 8px 0 0;">
+              <strong>{labels.required}:</strong> {document.requiredForRegistration ? labels.yes : labels.no}
+            </p>
+          </div>
+
+          <p>{document.summary}</p>
+
+          <div class="card card-strong" style="margin: 24px 0;">
+            <strong>{labels.documentNotice}</strong>
+            <p class="muted" style="margin-bottom: 0;">{document.notice}</p>
+          </div>
+
+          {document.sections.map((section) => (
+            <section style="margin-top: 34px;">
+              <h2>{section.title}</h2>
+
+              {section.paragraphs?.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+
+              {section.bullets ? (
+                <ul>
+                  {section.bullets.map((bullet) => (
+                    <li>{bullet}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          ))}
+        </article>
+
+        <aside class="card" style="position: sticky; top: 96px;">
+          <span class="eyebrow">{labels.legalCenter}</span>
+          <h2 style="margin-top: 10px;">{labels.documents}</h2>
+          <ul class="list">
+            {documents.map((item) => (
+              <li>
+                <a href={item.path} aria-current={item.path === document.path ? "page" : undefined}>
+                  {item.shortTitle} — v{item.version}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div style="margin-top: 24px;">
+            <a class="button button-secondary button-block" href={locale === "ru" ? "/ru/legal/terms" : "/legal/terms"}>{labels.terms}</a>
+            <a class="button button-secondary button-block" href={locale === "ru" ? "/ru/legal/privacy" : "/legal/privacy"} style="margin-top: 10px;">{labels.privacy}</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

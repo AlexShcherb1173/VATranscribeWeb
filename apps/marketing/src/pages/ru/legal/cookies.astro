@@ -1,0 +1,12 @@
+---
+import LegalDocumentLayout from "../../../components/LegalDocumentLayout.astro";
+import { getLegalDocumentRuBySlug } from "../../../config/legal.ru";
+
+const legalDocument = getLegalDocumentRuBySlug("cookies");
+
+if (!legalDocument) {
+  throw new Error("Legal document not found: cookies");
+}
+---
+
+<LegalDocumentLayout document={legalDocument} locale="ru" />

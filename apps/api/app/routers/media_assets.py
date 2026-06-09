@@ -1,17 +1,18 @@
 from __future__ import annotations
 
-from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import MediaAsset, Transcript, User
 from apps.api.app.schemas import MediaAssetResponse
 from apps.api.app.services.quota_service import sync_storage_usage_from_media_assets
+from apps.api.app.services.storage_limits import assert_path_size_within_limit
 from packages.core.vatranscribe_core.storage import resolve_storage_path
 
 router = APIRouter(prefix="/media-assets", tags=["Media assets"])
@@ -27,7 +28,6 @@ def _build_media_asset_response(item: MediaAsset) -> MediaAssetResponse:
         extension=item.extension,
         size_bytes=item.size_bytes,
         duration_sec=item.duration_sec,
-        path=item.path,
         checksum_sha256=item.checksum_sha256,
         created_at=item.created_at,
         download_url=f"/media-assets/{item.id}/download",
@@ -92,6 +92,8 @@ def download_media_asset(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Media asset file for '{media_asset_id}' not found on disk",
         )
+
+    assert_path_size_within_limit(file_path, settings.max_media_download_bytes, "Media asset download")
 
     return FileResponse(
         path=file_path,

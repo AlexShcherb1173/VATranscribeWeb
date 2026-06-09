@@ -1,29 +1,35 @@
 .git
 .gitignore
+.github
+.idea
+.vscode
+.DS_Store
 
 .venv
-venv
 __pycache__
-*.pyc
-*.pyo
-*.pyd
-
 .pytest_cache
 .mypy_cache
 .ruff_cache
+.coverage
+htmlcov
 
 node_modules
 **/node_modules
-
+.turbo
+.vite
 dist
-build
-coverage
+**/dist
+apps/marketing/.astro
 
-apps/web/dist
-apps/web/node_modules
+_debug_packs
+_migration_backup
+.git_broken_backup
+.git_broken*
 
 storage
+storage/**
+*.zip
 *.log
-
 .env
 .env.local
+.env.*.local

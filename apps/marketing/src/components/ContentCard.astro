@@ -1,0 +1,19 @@
+---
+import type { ContentItem } from "../config/content";
+
+type Props = {
+  item: ContentItem;
+};
+
+const { item } = Astro.props;
+---
+
+<a class="content-card card" href={item.path}>
+  <div class="pricing-card-top">
+    <span class="badge badge-accent">{item.category}</span>
+    <span class="pricing-plan-code">{item.readTime}</span>
+  </div>
+  <h2 class="h3" style="margin-top: 18px;">{item.title}</h2>
+  <p class="muted">{item.description}</p>
+  <p class="content-meta">{item.date}</p>
+</a>

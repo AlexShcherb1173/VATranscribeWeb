@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+﻿import { FormEvent, useEffect, useState } from "react";
 
 import type { UserProfile } from "@/entities/profile/model/types";
 import { useUpdateProfileMutation } from "@/shared/hooks/useUpdateProfileMutation";
@@ -131,11 +131,11 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           disabled={mutation.isPending}
           className="premium-button disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {mutation.isPending ? t.common.processing : t.profile.saveChanges}
+          {mutation.isPending ? t.common.processing : "Save changes"}
         </button>
 
         <div className="text-xs text-slate-500">
-          {t.profile.updated}: {new Date(profile.updated_at).toLocaleString()}
+          {"Updated"}: {new Date(profile.updated_at).toLocaleString()}
         </div>
       </div>
     </form>

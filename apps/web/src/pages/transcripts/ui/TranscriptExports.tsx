@@ -84,7 +84,7 @@ export function TranscriptExports({
                 </div>
 
                 <div className="mt-2 min-w-0 break-words text-sm font-semibold text-white [overflow-wrap:anywhere]">
-                  {artifact.path}
+                  {(artifact.format || "file").toUpperCase()}
                 </div>
 
                 <div className="mt-1 truncate text-xs text-slate-600">

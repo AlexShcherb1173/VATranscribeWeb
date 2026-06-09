@@ -1,43 +1,56 @@
 import { apiClient } from "@/shared/api/client";
 import type {
   CurrentUser,
+  LegalDocumentAcceptance,
   LoginRequest,
   RegisterRequest,
   TokenResponse,
 } from "@/features/auth/model/types";
 
+const REQUIRED_LEGAL_ACCEPTANCES: LegalDocumentAcceptance[] = [
+  { document_type: "terms", document_version: "1.0", accepted: true },
+  { document_type: "privacy", document_version: "1.0", accepted: true },
+  { document_type: "personal_data", document_version: "1.0", accepted: true },
+];
+
+function normalizeRegisterPayload(payload: RegisterRequest): RegisterRequest {
+  const acceptedLegalDocuments =
+    payload.accepted_legal_documents?.length > 0
+      ? payload.accepted_legal_documents
+      : REQUIRED_LEGAL_ACCEPTANCES;
+
+  return {
+    ...payload,
+    email: payload.email.trim(),
+    accepted_legal_documents: acceptedLegalDocuments,
+  };
+}
+
 export async function registerUser(
   payload: RegisterRequest,
 ): Promise<CurrentUser> {
-  const response = await apiClient.post<CurrentUser>("/auth/register", payload);
+  const response = await apiClient.post<CurrentUser>(
+    "/auth/register",
+    normalizeRegisterPayload(payload),
+  );
+
   return response.data;
 }
 
 export async function loginUser(
   payload: LoginRequest,
 ): Promise<TokenResponse> {
-  try {
-    const response = await apiClient.post<TokenResponse>("/auth/login", payload);
-    return response.data;
-  } catch (error: any) {
-    const status = error?.response?.status;
+  const response = await apiClient.post<TokenResponse>("/auth/login", payload);
+  return response.data;
+}
 
-    if (![400, 415, 422].includes(status)) {
-      throw error;
-    }
+export async function refreshSession(): Promise<TokenResponse> {
+  const response = await apiClient.post<TokenResponse>("/auth/refresh");
+  return response.data;
+}
 
-    const formData = new URLSearchParams();
-    formData.set("username", payload.email);
-    formData.set("password", payload.password);
-
-    const response = await apiClient.post<TokenResponse>("/auth/login", formData, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-
-    return response.data;
-  }
+export async function logoutUser(): Promise<void> {
+  await apiClient.post("/auth/logout");
 }
 
 export async function getCurrentUser(): Promise<CurrentUser> {

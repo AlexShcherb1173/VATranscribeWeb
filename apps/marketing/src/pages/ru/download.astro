@@ -1,0 +1,33 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import DownloadHero from "../../components/DownloadHero.astro";
+import DownloadPlatformCards from "../../components/DownloadPlatformCards.astro";
+import SystemRequirements from "../../components/SystemRequirements.astro";
+import ReleaseNotesPreview from "../../components/ReleaseNotesPreview.astro";
+import DownloadFaq from "../../components/DownloadFaq.astro";
+import { getDownloadContent } from "../../config/download";
+
+const content = getDownloadContent("ru");
+---
+
+<MarketingLayout canonicalPath="/ru/download" locale="ru" title="Скачать" description="Страница скачивания VATranscribe: web app, будущие desktop installers, release notes и checksum verification.">
+  <DownloadHero locale="ru" />
+  <DownloadPlatformCards locale="ru" />
+  <SystemRequirements locale="ru" />
+  <ReleaseNotesPreview locale="ru" />
+  <DownloadFaq locale="ru" />
+
+  <section class="section">
+    <div class="container">
+      <div class="card card-strong text-center">
+        <span class="eyebrow">Distribution path</span>
+        <h2 class="h2">{content.finalTitle}</h2>
+        <p class="lead">{content.finalLead}</p>
+        <div class="button-row" style="justify-content: center;">
+          <a class="button button-primary" href={content.primaryHref}>{content.finalPrimary}</a>
+          <a class="button button-secondary" href="/ru/pricing">{content.finalSecondary}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

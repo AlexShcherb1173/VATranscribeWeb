@@ -1,0 +1,15 @@
+---
+import ArticleLayout from "../../components/ArticleLayout.astro";
+import { getBlogItems } from "../../config/content";
+
+export function getStaticPaths() {
+  return getBlogItems("en").map((item) => ({
+    params: { slug: item.slug },
+    props: { item }
+  }));
+}
+
+const { item } = Astro.props;
+---
+
+<ArticleLayout item={item} />

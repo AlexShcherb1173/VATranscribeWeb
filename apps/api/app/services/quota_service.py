@@ -8,7 +8,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from apps.api.app.models import MediaAsset, UsageSnapshot, User, UserQuota
+from apps.api.app.models import ExportArtifact, MediaAsset, Transcript, UsageSnapshot, User, UserQuota
 from apps.api.app.services.account_bootstrap import ensure_user_quota
 
 
@@ -155,18 +155,30 @@ def increment_transcription_seconds_used(
     return quota
 
 
+def calculate_storage_usage_bytes(db: Session, user: User) -> int:
+    media_total = sum(
+        int(value or 0)
+        for value in db.scalars(
+            select(MediaAsset.size_bytes).where(MediaAsset.user_id == str(user.id))
+        ).all()
+    )
+
+    export_total = sum(
+        int(value or 0)
+        for value in db.scalars(
+            select(ExportArtifact.size_bytes)
+            .join(Transcript, ExportArtifact.transcript_id == Transcript.id)
+            .join(MediaAsset, Transcript.media_asset_id == MediaAsset.id)
+            .where(MediaAsset.user_id == str(user.id))
+        ).all()
+    )
+
+    return media_total + export_total
+
+
 def sync_storage_usage_from_media_assets(db: Session, user: User) -> UserQuota:
     quota = get_or_create_quota(db, user)
-
-    assets = db.scalars(
-        select(MediaAsset).where(MediaAsset.user_id == str(user.id))
-    ).all()
-
-    total_bytes = 0
-    for asset in assets:
-        total_bytes += asset.size_bytes or 0
-
-    quota.storage_bytes_used = total_bytes
+    quota.storage_bytes_used = calculate_storage_usage_bytes(db, user)
     db.add(quota)
     db.commit()
     db.refresh(quota)

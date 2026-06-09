@@ -1,0 +1,64 @@
+---
+import { productStats } from "../config/site";
+import { getSaasLink } from "../config/links";
+---
+
+<section class="section hero-shell">
+  <div class="container">
+    <span class="eyebrow">Media workflow SaaS</span>
+    <h1 class="h1">Download, transcribe and organize media workflows in one secure workspace.</h1>
+    <p class="lead">
+      VATranscribe connects downloader jobs, MP3/MP4 conversion, transcription history, user-owned files,
+      quotas, privacy requests and audit logs into one SaaS-ready product foundation.
+    </p>
+
+    <div class="button-row">
+      <a class="button button-primary" href={getSaasLink("register")}>Start free</a>
+      <a class="button button-secondary" href="/download">Download options</a>
+      <a class="button button-secondary" href="/features">Explore features</a>
+    </div>
+
+    <div class="kicker-row">
+      <span class="badge">Refresh token rotation</span>
+      <span class="badge">Legal consents</span>
+      <span class="badge">Privacy requests</span>
+      <span class="badge">File ownership checks</span>
+    </div>
+
+    <div class="hero-panel">
+      <div class="hero-window">
+        <div class="hero-window-bar">
+          <span class="hero-dot"></span>
+          <span class="hero-dot"></span>
+          <span class="hero-dot"></span>
+        </div>
+        <div class="hero-window-body">
+          <div class="pipeline-row">
+            <strong>Analyze URL</strong>
+            <div class="pipeline-progress"><span style="width: 92%;"></span></div>
+            <span class="badge">formats ready</span>
+          </div>
+          <div class="pipeline-row">
+            <strong>Download media</strong>
+            <div class="pipeline-progress"><span style="width: 76%;"></span></div>
+            <span class="badge">MP4 / MP3</span>
+          </div>
+          <div class="pipeline-row">
+            <strong>Transcribe</strong>
+            <div class="pipeline-progress"><span style="width: 61%;"></span></div>
+            <span class="badge">queued</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-4" style="margin-top: 20px;">
+      {productStats.map((item) => (
+        <div class="stat">
+          <div class="stat-value">{item.value}</div>
+          <div class="muted">{item.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

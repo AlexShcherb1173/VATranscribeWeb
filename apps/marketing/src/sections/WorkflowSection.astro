@@ -1,0 +1,40 @@
+---
+const steps = [
+  {
+    title: "Add a source",
+    description: "Paste a media URL or prepare an upload workflow for processing."
+  },
+  {
+    title: "Analyze formats",
+    description: "Inspect available audio/video formats before creating a job."
+  },
+  {
+    title: "Create a job",
+    description: "Queue download or transcription work with logs and status tracking."
+  },
+  {
+    title: "Store the result",
+    description: "Keep media assets, transcripts and exports scoped to the authenticated user."
+  }
+];
+---
+
+<section class="section">
+  <div class="container">
+    <div class="text-center">
+      <span class="eyebrow">Workflow</span>
+      <h2 class="h2">From source link to controlled media asset.</h2>
+      <p class="lead">The marketing site explains the workflow while the dashboard executes it.</p>
+    </div>
+
+    <div class="grid grid-4" style="margin-top: 32px;">
+      {steps.map((step, index) => (
+        <article class="card">
+          <div class="step-number">{index + 1}</div>
+          <h3 class="h3" style="margin-top: 18px;">{step.title}</h3>
+          <p class="muted" style="line-height: 1.65;">{step.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

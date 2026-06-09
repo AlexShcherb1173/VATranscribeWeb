@@ -1,0 +1,30 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { getLocaleFromPath } from "../i18n/locales";
+import type { Locale } from "../i18n/locales";
+
+type JsonLd = Record<string, unknown> | Record<string, unknown>[];
+
+type Props = {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+  jsonLd?: JsonLd;
+  locale?: Locale;
+};
+
+const props = Astro.props;
+const currentPath = props.canonicalPath ?? Astro.url.pathname;
+const locale = props.locale ?? getLocaleFromPath(currentPath);
+---
+
+<BaseLayout {...props} locale={locale}>
+  <Header slot="header" locale={locale} currentPath={currentPath} />
+  <slot />
+  <Footer slot="footer" locale={locale} currentPath={currentPath} />
+</BaseLayout>

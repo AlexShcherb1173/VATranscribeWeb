@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useBillingOverviewQuery } from "@/shared/hooks/useBillingOverviewQuery";
 import { useUpgradePlanMutation } from "@/shared/hooks/useUpgradePlanMutation";
@@ -8,7 +9,7 @@ import { toastSuccess } from "@/shared/ui/toast";
 
 const plans = [
   { code: "free", price: "$0" },
-  { code: "pro", price: "$15" },
+  { code: "pro", price: "$12" },
   { code: "business", price: "$49" },
 ] as const;
 
@@ -36,6 +37,7 @@ function BillingUsageCard({
   pct: number;
 }) {
   const { t } = useI18n();
+  const [searchParams] = useSearchParams();
 
   return (
     <div className="premium-card card-border-strong p-6">
@@ -58,13 +60,26 @@ function BillingUsageCard({
 
 export function BillingPage() {
   const { t } = useI18n();
+  const [searchParams] = useSearchParams();
   const { data } = useBillingOverviewQuery();
   const upgradeMutation = useUpgradePlanMutation();
 
   const quota = data?.quota;
   const currentPlan = normalizePlanCode(data?.current_plan?.code);
 
-  const [selectedPlan, setSelectedPlan] = useState<PlanCode>(currentPlan);
+    const requestedPlan = normalizePlanCode(searchParams.get("plan"));
+  const [selectedPlan, setSelectedPlan] = useState<PlanCode>(requestedPlan);
+
+  useEffect(() => {
+    const planFromQuery = searchParams.get("plan");
+
+    if (planFromQuery) {
+      setSelectedPlan(normalizePlanCode(planFromQuery));
+      return;
+    }
+
+    setSelectedPlan(currentPlan);
+  }, [currentPlan, searchParams]);
   const [fakePaymentOpen, setFakePaymentOpen] = useState(false);
 
   const featuresByCode = useMemo(

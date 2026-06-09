@@ -1,0 +1,12 @@
+---
+import LegalDocumentLayout from "../../components/LegalDocumentLayout.astro";
+import { getLegalDocumentBySlug } from "../../config/legal";
+
+const legalDocument = getLegalDocumentBySlug("privacy");
+
+if (!legalDocument) {
+  throw new Error("Legal document not found: privacy");
+}
+---
+
+<LegalDocumentLayout document={legalDocument} />

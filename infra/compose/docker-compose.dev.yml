@@ -1,0 +1,14 @@
+# Development compose overlay placeholder.
+#
+# Local development currently uses the root docker-compose.yml for:
+# - api
+# - worker
+# - db
+# - redis
+#
+# Frontend dev servers are started directly:
+# - npm run dev:marketing
+# - npm run dev:web
+#
+# Production-like static routing is defined in:
+# - infra/compose/docker-compose.prod.yml

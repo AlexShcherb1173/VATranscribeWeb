@@ -1,0 +1,24 @@
+---
+import { localeLabels, locales, localizePath, stripLocaleFromPath } from "../i18n/locales";
+import type { Locale } from "../i18n/locales";
+
+type Props = {
+  locale: Locale;
+  currentPath: string;
+};
+
+const { locale, currentPath } = Astro.props;
+const basePath = stripLocaleFromPath(currentPath);
+---
+
+<div class="language-switcher" aria-label="Language switcher">
+  {locales.map((item) => (
+    <a
+      href={localizePath(basePath, item)}
+      aria-current={item === locale ? "page" : undefined}
+      class={item === locale ? "language-link active" : "language-link"}
+    >
+      {localeLabels[item]}
+    </a>
+  ))}
+</div>

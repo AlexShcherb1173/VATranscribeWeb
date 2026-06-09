@@ -4,7 +4,7 @@ import { useI18n } from "@/shared/i18n";
 
 const plans = [
   { code: "free", price: "$0" },
-  { code: "pro", price: "$15" },
+  { code: "pro", price: "$12" },
   { code: "business", price: "$49" },
 ] as const;
 
@@ -36,7 +36,7 @@ export function PricingPage() {
           VATranscribe
         </Link>
 
-        <Link to="/auth" className="premium-button">
+        <Link to="/auth/login" className="premium-button">
           {t.auth.login}
         </Link>
       </header>
@@ -88,8 +88,8 @@ export function PricingPage() {
                 </ul>
               </div>
 
-              <Link to="/auth" className="premium-button mt-8 text-center">
-                {t.common.startFree}
+              <Link to={`/auth/register?plan=${plan.code}`} className="premium-button mt-8 text-center">
+                {plan.code === "free" ? t.common.startFree : t.common.select}
               </Link>
             </div>
           ))}

@@ -1,0 +1,24 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+import FeaturesSection from "../sections/FeaturesSection.astro";
+import TrustSection from "../sections/TrustSection.astro";
+import WorkflowSection from "../sections/WorkflowSection.astro";
+import FinalCtaSection from "../sections/FinalCtaSection.astro";
+---
+
+<MarketingLayout canonicalPath="/features" title="Features" description="VATranscribe features for media downloads, transcription, SaaS security and billing-ready workflows.">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Features</span>
+      <h1 class="h1">A full media workflow surface, not just a utility.</h1>
+      <p class="lead">
+        Public marketing pages explain the product while the dashboard handles authenticated jobs,
+        files, transcripts, quotas and account state.
+      </p>
+    </div>
+  </section>
+  <FeaturesSection />
+  <WorkflowSection />
+  <TrustSection />
+  <FinalCtaSection />
+</MarketingLayout>

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from apps.api.app.celery_client import celery_client
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import Job, JobLog, JobStatus, JobType, SourceType, User
@@ -14,6 +15,7 @@ from apps.api.app.schemas import (
     JobResponse,
 )
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.services.youtube_cookies_service import (
     create_temp_youtube_cookies_file_for_user,
     delete_temp_youtube_cookies_file,
@@ -82,9 +84,15 @@ def _normalize_download_error(exc: Exception) -> str:
 )
 def analyze_download_url(
     payload: DownloadAnalyzeRequest,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DownloadAnalyzeResponse:
+    rate_limiter.check(
+        key=build_rate_limit_key("downloads:analyze", request),
+        limit=settings.rate_limit_analyze_per_minute,
+        window_seconds=60,
+    )
     clean_url = _validate_user_url_or_422(payload.url)
 
     cookies_file = create_temp_youtube_cookies_file_for_user(
@@ -113,9 +121,15 @@ def analyze_download_url(
 )
 def create_download_job(
     payload: DownloadJobCreateRequest,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> JobResponse:
+    rate_limiter.check(
+        key=build_rate_limit_key("downloads:create", request),
+        limit=settings.rate_limit_download_per_minute,
+        window_seconds=60,
+    )
     assert_can_create_job(db, current_user, jobs_to_add=1)
     clean_url = _validate_user_url_or_422(payload.url)
 

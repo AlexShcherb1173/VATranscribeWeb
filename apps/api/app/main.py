@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.app.config import get_settings
 from apps.api.app.routers import router as api_router
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.schemas import ApiInfoResponse
 
 settings = get_settings()
@@ -42,6 +43,24 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*'],
 )
+
+
+
+@app.middleware("http")
+async def api_rate_limit_middleware(request: Request, call_next):
+    path = request.url.path
+    is_api_path = path.startswith(settings.api_prefix)
+    is_health_path = path.startswith(f"{settings.api_prefix}/health/")
+
+    if is_api_path and not is_health_path:
+        rate_limiter.check(
+            key=build_rate_limit_key("api:general", request),
+            limit=settings.rate_limit_general_api_per_minute,
+            window_seconds=60,
+        )
+
+    return await call_next(request)
+
 
 app.include_router(api_router, prefix=settings.api_prefix)
 

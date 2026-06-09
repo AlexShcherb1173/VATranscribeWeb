@@ -4,13 +4,15 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile, status
 from sqlalchemy.orm import Session
 
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import Job, JobLog, JobStatus, JobType, MediaAsset, SourceType, User
 from apps.api.app.schemas import MediaAssetResponse
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.services.quota_service import (
     assert_can_create_job,
     assert_can_store_bytes,
@@ -138,10 +140,17 @@ def _mark_upload_job_succeeded(db: Session, job: Job, media_asset: MediaAsset) -
     summary="Upload local media file",
 )
 async def upload_media_file(
+    request: Request,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> MediaAssetResponse:
+    rate_limiter.check(
+        key=build_rate_limit_key("uploads:create", request),
+        limit=settings.rate_limit_upload_per_minute,
+        window_seconds=60,
+    )
+
     upload_job: Job | None = None
 
     if not file.filename:

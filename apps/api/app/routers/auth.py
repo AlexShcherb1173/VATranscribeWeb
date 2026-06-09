@@ -106,8 +106,8 @@ def register_user(
         request=request,
         action="auth.register",
         key=build_rate_limit_key("auth:register", request),
-        limit=5,
-        window_seconds=600,
+        limit=settings.rate_limit_auth_strict_per_minute,
+        window_seconds=60,
         email=email,
     )
 
@@ -255,8 +255,8 @@ def login_user(
         request=request,
         action="auth.login",
         key=build_rate_limit_key("auth:login", request, subject=email),
-        limit=10,
-        window_seconds=300,
+        limit=settings.rate_limit_auth_strict_per_minute,
+        window_seconds=60,
         email=email,
     )
 
@@ -339,8 +339,8 @@ def refresh_tokens(
         request=request,
         action="auth.refresh",
         key=build_rate_limit_key("auth:refresh", request),
-        limit=30,
-        window_seconds=300,
+        limit=settings.rate_limit_auth_per_minute,
+        window_seconds=60,
     )
 
     try:

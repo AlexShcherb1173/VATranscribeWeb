@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from apps.api.app.celery_client import celery_client
+from apps.api.app.config import settings
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import get_current_user
 from apps.api.app.models import Job, JobLog, JobStatus, MediaAsset, User
@@ -16,6 +17,7 @@ from apps.api.app.schemas import (
     JobLogResponse,
     JobResponse,
 )
+from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
 from apps.api.app.services.access_control import get_user_media_asset_or_404
 from packages.core.vatranscribe_core.storage import resolve_storage_path
@@ -276,9 +278,17 @@ def get_job(
 )
 def create_job(
     payload: JobCreateRequest,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Job:
+    if payload.input_url:
+        rate_limiter.check(
+            key=build_rate_limit_key("jobs:url_create", request),
+            limit=settings.rate_limit_download_per_minute,
+            window_seconds=60,
+        )
+
     assert_can_create_job(db, current_user, jobs_to_add=1)
 
     if payload.transcription_media_asset_id:

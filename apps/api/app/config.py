@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from ipaddress import ip_network
 from urllib.parse import urlparse
 
 from pydantic import Field, model_validator
@@ -29,6 +30,21 @@ LOCALHOST_VALUES = {
 def _split_csv(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
+
+
+def _validate_cidr_list(value: str, field_name: str) -> list[str]:
+    errors: list[str] = []
+    for item in _split_csv(value):
+        try:
+            network = ip_network(item, strict=False)
+        except ValueError:
+            errors.append(f"{field_name} contains invalid CIDR: {item}")
+            continue
+
+        if network.prefixlen == 0:
+            errors.append(f"{field_name} must not contain a catch-all CIDR: {item}")
+
+    return errors
 
 def _origin_host(origin: str) -> str:
     parsed = urlparse(origin)
@@ -105,6 +121,19 @@ class Settings(BaseSettings):
     # --- DATABASE / REDIS ---
     database_url: str = Field(..., alias="DATABASE_URL")
     redis_url: str = Field("redis://redis:6379/0", alias="REDIS_URL")
+
+
+    # --- RATE LIMITING / TRUSTED PROXY ---
+    rate_limit_backend: str = Field("memory", alias="RATE_LIMIT_BACKEND")
+    rate_limit_redis_url: str | None = Field(None, alias="RATE_LIMIT_REDIS_URL")
+    rate_limit_fail_open: bool = Field(False, alias="RATE_LIMIT_FAIL_OPEN")
+    trusted_proxy_cidrs: str = Field("127.0.0.1/32,::1/128", alias="TRUSTED_PROXY_CIDRS")
+    rate_limit_general_api_per_minute: int = Field(120, alias="RATE_LIMIT_GENERAL_API_PER_MINUTE")
+    rate_limit_auth_per_minute: int = Field(10, alias="RATE_LIMIT_AUTH_PER_MINUTE")
+    rate_limit_auth_strict_per_minute: int = Field(5, alias="RATE_LIMIT_AUTH_STRICT_PER_MINUTE")
+    rate_limit_upload_per_minute: int = Field(10, alias="RATE_LIMIT_UPLOAD_PER_MINUTE")
+    rate_limit_download_per_minute: int = Field(30, alias="RATE_LIMIT_DOWNLOAD_PER_MINUTE")
+    rate_limit_analyze_per_minute: int = Field(10, alias="RATE_LIMIT_ANALYZE_PER_MINUTE")
 
     # --- AUTH / JWT ---
     secret_key: str = Field(..., alias="SECRET_KEY")
@@ -191,6 +220,11 @@ class Settings(BaseSettings):
         self.app_env = self.app_env.strip().lower()
         self.jwt_algorithm = self.jwt_algorithm.strip().upper()
         self.cookie_samesite = self.cookie_samesite.strip().lower()
+
+        self.rate_limit_backend = self.rate_limit_backend.strip().lower()
+        self.trusted_proxy_cidrs = ",".join(_split_csv(self.trusted_proxy_cidrs))
+        if self.rate_limit_redis_url == "":
+            self.rate_limit_redis_url = None
         if self.cookie_domain == "":
             self.cookie_domain = None
 
@@ -218,6 +252,25 @@ class Settings(BaseSettings):
 
         if self.youtube_cookies_max_bytes <= 0:
             errors.append("YOUTUBE_COOKIES_MAX_BYTES must be positive")
+
+        if self.rate_limit_backend not in {"memory", "redis"}:
+            errors.append("RATE_LIMIT_BACKEND must be memory or redis")
+
+        if not self.trusted_proxy_cidrs_list:
+            errors.append("TRUSTED_PROXY_CIDRS must not be empty")
+
+        errors.extend(_validate_cidr_list(self.trusted_proxy_cidrs, "TRUSTED_PROXY_CIDRS"))
+
+        for field_name, value in {
+            "RATE_LIMIT_GENERAL_API_PER_MINUTE": self.rate_limit_general_api_per_minute,
+            "RATE_LIMIT_AUTH_PER_MINUTE": self.rate_limit_auth_per_minute,
+            "RATE_LIMIT_AUTH_STRICT_PER_MINUTE": self.rate_limit_auth_strict_per_minute,
+            "RATE_LIMIT_UPLOAD_PER_MINUTE": self.rate_limit_upload_per_minute,
+            "RATE_LIMIT_DOWNLOAD_PER_MINUTE": self.rate_limit_download_per_minute,
+            "RATE_LIMIT_ANALYZE_PER_MINUTE": self.rate_limit_analyze_per_minute,
+        }.items():
+            if value <= 0:
+                errors.append(f"{field_name} must be positive")
 
         if self.is_production:
             errors.extend(self._validate_production_settings())
@@ -256,6 +309,16 @@ class Settings(BaseSettings):
             errors.append(
                 "REFRESH_TOKEN_EXPIRE_DAYS must be <= 30 in production"
             )
+
+
+        if self.rate_limit_backend != "redis":
+            errors.append("RATE_LIMIT_BACKEND=redis is required in production")
+
+        if not self.rate_limit_redis_url_resolved:
+            errors.append("RATE_LIMIT_REDIS_URL or REDIS_URL is required for production rate limiting")
+
+        if self.rate_limit_fail_open:
+            errors.append("RATE_LIMIT_FAIL_OPEN must be false in production")
 
         if not self.cookie_secure:
             errors.append("COOKIE_SECURE must be true in production")
@@ -334,6 +397,15 @@ class Settings(BaseSettings):
     @property
     def cors_origins_list(self) -> list[str]:
         return _split_csv(self.cors_origins)
+
+
+    @property
+    def rate_limit_redis_url_resolved(self) -> str:
+        return self.rate_limit_redis_url or self.redis_url
+
+    @property
+    def trusted_proxy_cidrs_list(self) -> list[str]:
+        return _split_csv(self.trusted_proxy_cidrs)
 
     @property
     def storage_dirs(self) -> list[Path]:

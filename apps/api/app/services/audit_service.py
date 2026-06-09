@@ -6,6 +6,7 @@ from typing import Any
 from fastapi import Request
 from sqlalchemy.orm import Session
 
+from apps.api.app.security_foundation.rate_limits import get_client_ip
 from apps.api.app.models import AuditLog
 
 
@@ -18,15 +19,7 @@ def _hash_optional(value: str | None) -> str | None:
 def _get_client_ip(request: Request | None) -> str | None:
     if request is None:
         return None
-
-    forwarded_for = request.headers.get("x-forwarded-for")
-    if forwarded_for:
-        return forwarded_for.split(",", 1)[0].strip()
-
-    if request.client:
-        return request.client.host
-
-    return None
+    return get_client_ip(request)
 
 
 def _get_user_agent(request: Request | None) -> str | None:

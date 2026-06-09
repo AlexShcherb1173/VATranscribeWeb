@@ -33,9 +33,67 @@ services:
       - ./infra/docker/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./infra/certbot/conf:/etc/letsencrypt:ro
       - ./infra/certbot/www:/var/www/certbot:ro
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/healthz || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
+
+  api:
+    ports: !reset []
+    volumes: !override
+      - vatranscribe_storage:/app/storage
+    expose:
+      - "8000"
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=256m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      XDG_CACHE_HOME: /app/storage/cache
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live', timeout=3).read()\" || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    volumes: !override
+      - vatranscribe_storage:/app/storage
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=512m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      C_FORCE_ROOT: "false"
+      XDG_CACHE_HOME: /app/storage/cache
+      TORCH_HOME: /app/storage/cache/torch
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A apps.worker.app.worker:celery inspect ping -d celery@$$HOSTNAME --timeout=10 >/dev/null || exit 1"]
+      interval: 60s
+      timeout: 15s
+      retries: 5
+
+  db:
+    ports: !reset []
+    expose:
+      - "5432"
+
+  redis:
+    ports: !reset []
+    expose:
+      - "6379"
+
+volumes:
+  vatranscribe_storage:

@@ -5,7 +5,6 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DEFAULT_TIMEOUT=300 \
-    C_FORCE_ROOT=true \
     DENO_INSTALL=/usr/local \
     XDG_CACHE_HOME=/app/storage/cache \
     TORCH_HOME=/app/storage/cache/torch
@@ -60,5 +59,21 @@ RUN python -m pip install --upgrade pip setuptools wheel \
     && python -c "import torch, torchaudio, demucs; print('Demucs permanent build OK:', torch.__version__)"
 
 COPY . .
+
+RUN groupadd --system --gid 10001 appuser \
+    && useradd --system --uid 10001 --gid appuser --home-dir /app --shell /usr/sbin/nologin appuser \
+    && mkdir -p \
+        /app/storage \
+        /app/storage/cache \
+        /app/storage/cache/torch \
+        /app/storage/cookies \
+        /app/storage/downloads \
+        /app/storage/logs \
+        /app/storage/temp \
+        /app/storage/transcripts \
+        /app/storage/uploads \
+    && chown -R 10001:10001 /app/storage
+
+USER 10001:10001
 
 CMD ["celery", "-A", "apps.worker.app.worker:celery", "worker", "--loglevel=info", "--pool=solo", "--concurrency=1"]

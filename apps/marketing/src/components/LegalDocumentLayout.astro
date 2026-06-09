@@ -21,7 +21,7 @@ const labels = locale === "ru"
       required: "Обязательно при регистрации",
       yes: "Да",
       no: "Нет",
-      draftNotice: "Важно",
+      documentNotice: "Важно",
       legalCenter: "Юридический центр",
       documents: "Документы",
       terms: "Условия",
@@ -34,7 +34,7 @@ const labels = locale === "ru"
       required: "Required for registration",
       yes: "Yes",
       no: "No",
-      draftNotice: "Draft notice",
+      documentNotice: "Document notice",
       legalCenter: "Legal center",
       documents: "Documents",
       terms: "Terms",
@@ -79,7 +79,7 @@ const jsonLd = {
           <p>{document.summary}</p>
 
           <div class="card card-strong" style="margin: 24px 0;">
-            <strong>{labels.draftNotice}</strong>
+            <strong>{labels.documentNotice}</strong>
             <p class="muted" style="margin-bottom: 0;">{document.notice}</p>
           </div>
 

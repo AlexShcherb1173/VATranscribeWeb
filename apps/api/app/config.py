@@ -26,6 +26,68 @@ LOCALHOST_VALUES = {
     "::1",
 }
 
+LEGAL_PLACEHOLDER_VALUES = {
+    "",
+    "change_me",
+    "change-me",
+    "changeme",
+    "change me",
+    "vatrascribe operator",
+    "vatranscribe operator",
+    "legal@example.com",
+    "privacy@example.com",
+    "support@example.com",
+    "example.com",
+    "localhost",
+    "not specified",
+    "not configured",
+}
+
+LEGAL_UNDECIDED_VALUES = {
+    "",
+    "not_decided",
+    "not decided",
+    "not-decided",
+    "unknown",
+    "todo",
+    "tbd",
+}
+
+def _is_legal_placeholder(value: str | None) -> bool:
+    if value is None:
+        return True
+
+    normalized = value.strip().lower()
+    return (
+        normalized in LEGAL_PLACEHOLDER_VALUES
+        or "change_me" in normalized
+        or "change-me" in normalized
+        or "changeme" in normalized
+    )
+
+
+def _is_unmonitored_example_email(value: str | None) -> bool:
+    if _is_legal_placeholder(value):
+        return True
+
+    normalized = value.strip().lower()
+    return (
+        "@" not in normalized
+        or normalized.endswith("@example.com")
+        or normalized.endswith("@example.org")
+        or normalized.endswith("@localhost")
+    )
+
+
+def _split_domains(value: str) -> list[str]:
+    return [item.strip().lower() for item in value.split(",") if item.strip()]
+
+
+def _is_undecided_legal_value(value: str | None) -> bool:
+    if value is None:
+        return True
+    return value.strip().lower() in LEGAL_UNDECIDED_VALUES
+
 
 def _split_csv(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
@@ -128,6 +190,38 @@ class Settings(BaseSettings):
     log_level: str = Field("INFO", alias="LOG_LEVEL")
     log_json: bool = Field(True, alias="LOG_JSON")
     release_version: str | None = Field(None, alias="RELEASE_VERSION")
+
+    # --- LEGAL / COMPLIANCE ---
+    legal_document_version: str = Field("2.0", alias="LEGAL_DOCUMENT_VERSION")
+    legal_operator_type: str = Field("pre-release", alias="LEGAL_OPERATOR_TYPE")
+    legal_operator_name: str = Field("VATranscribe Operator", alias="LEGAL_OPERATOR_NAME")
+    legal_operator_inn: str | None = Field(None, alias="LEGAL_OPERATOR_INN")
+    legal_operator_ogrn: str | None = Field(None, alias="LEGAL_OPERATOR_OGRN")
+    legal_operator_address: str | None = Field(None, alias="LEGAL_OPERATOR_ADDRESS")
+    legal_contact_email: str = Field("legal@example.com", alias="LEGAL_CONTACT_EMAIL")
+    privacy_contact_email: str = Field("privacy@example.com", alias="PRIVACY_CONTACT_EMAIL")
+    support_email: str = Field("legal@example.com", alias="SUPPORT_EMAIL")
+    legal_production_domains: str = Field("vatranscribe.ru,app.vatranscribe.ru,api.vatranscribe.ru", alias="LEGAL_PRODUCTION_DOMAINS")
+    legal_target_users: str = Field("pre-release", alias="LEGAL_TARGET_USERS")
+    legal_main_db_country: str = Field("not_decided", alias="LEGAL_MAIN_DB_COUNTRY")
+    legal_backup_country: str = Field("not_decided", alias="LEGAL_BACKUP_COUNTRY")
+    legal_hosting_provider: str = Field("disabled", alias="LEGAL_HOSTING_PROVIDER")
+    legal_cdn_provider: str = Field("disabled", alias="LEGAL_CDN_PROVIDER")
+    legal_analytics_provider: str = Field("disabled", alias="LEGAL_ANALYTICS_PROVIDER")
+    legal_apm_provider: str = Field("disabled", alias="LEGAL_APM_PROVIDER")
+    legal_payment_provider: str = Field("disabled", alias="LEGAL_PAYMENT_PROVIDER")
+    legal_email_provider: str = Field("disabled", alias="LEGAL_EMAIL_PROVIDER")
+    legal_youtube_cookies_upload_enabled: bool = Field(True, alias="LEGAL_YOUTUBE_COOKIES_UPLOAD_ENABLED")
+    legal_analytics_cookies_enabled: bool = Field(False, alias="LEGAL_ANALYTICS_COOKIES_ENABLED")
+    legal_marketing_pixels_enabled: bool = Field(False, alias="LEGAL_MARKETING_PIXELS_ENABLED")
+    legal_crm_ad_pixels_enabled: bool = Field(False, alias="LEGAL_CRM_AD_PIXELS_ENABLED")
+    legal_audit_logs_retention_days: int = Field(180, alias="LEGAL_AUDIT_LOGS_RETENTION_DAYS")
+    legal_account_deletion_grace_days: int = Field(30, alias="LEGAL_ACCOUNT_DELETION_GRACE_DAYS")
+    legal_backup_retention_policy: str = Field("7 daily / 4 weekly / 6 monthly", alias="LEGAL_BACKUP_RETENTION_POLICY")
+    legal_billing_records_retention: str = Field("not enabled", alias="LEGAL_BILLING_RECORDS_RETENTION")
+    legal_152fz_russian_pd: bool = Field(False, alias="LEGAL_152FZ_RUSSIAN_PD")
+    legal_152fz_rkn_notification_status: str = Field("not_decided", alias="LEGAL_152FZ_RKN_NOTIFICATION_STATUS")
+    legal_152fz_pd_localization_status: str = Field("not_decided", alias="LEGAL_152FZ_PD_LOCALIZATION_STATUS")
 
 
     # --- RATE LIMITING / TRUSTED PROXY ---
@@ -246,6 +340,42 @@ class Settings(BaseSettings):
             self.release_version = None
         if self.sentry_dsn == "":
             self.sentry_dsn = None
+
+        for attr_name in (
+            "legal_document_version",
+            "legal_operator_type",
+            "legal_operator_name",
+            "legal_operator_inn",
+            "legal_operator_ogrn",
+            "legal_operator_address",
+            "legal_contact_email",
+            "privacy_contact_email",
+            "support_email",
+            "legal_production_domains",
+            "legal_target_users",
+            "legal_main_db_country",
+            "legal_backup_country",
+            "legal_hosting_provider",
+            "legal_cdn_provider",
+            "legal_analytics_provider",
+            "legal_apm_provider",
+            "legal_payment_provider",
+            "legal_email_provider",
+            "legal_backup_retention_policy",
+            "legal_billing_records_retention",
+            "legal_152fz_rkn_notification_status",
+            "legal_152fz_pd_localization_status",
+        ):
+            value = getattr(self, attr_name)
+            if isinstance(value, str):
+                value = value.strip()
+                setattr(self, attr_name, value if value else None)
+
+        if self.legal_operator_type:
+            self.legal_operator_type = self.legal_operator_type.lower()
+        self.legal_production_domains = ",".join(_split_domains(self.legal_production_domains or ""))
+        self.legal_152fz_rkn_notification_status = (self.legal_152fz_rkn_notification_status or "not_decided").strip().lower()
+        self.legal_152fz_pd_localization_status = (self.legal_152fz_pd_localization_status or "not_decided").strip().lower()
 
         self.rate_limit_backend = self.rate_limit_backend.strip().lower()
         self.trusted_proxy_cidrs = ",".join(_split_csv(self.trusted_proxy_cidrs))
@@ -421,6 +551,42 @@ class Settings(BaseSettings):
                 continue
             errors.extend(_validate_https_origin(origin, field_name))
 
+        if _is_legal_placeholder(self.legal_operator_name):
+            errors.append("LEGAL_OPERATOR_NAME must be a real production value")
+
+        if self.legal_operator_type in {"pre-release", "prerelease", "development", "dev", "test"}:
+            errors.append("LEGAL_OPERATOR_TYPE must be final for production")
+
+        for field_name, value in {
+            "LEGAL_CONTACT_EMAIL": self.legal_contact_email,
+            "PRIVACY_CONTACT_EMAIL": self.privacy_contact_email,
+            "SUPPORT_EMAIL": self.support_email,
+        }.items():
+            if _is_unmonitored_example_email(value):
+                errors.append(f"{field_name} must be a real monitored email")
+
+        if not self.legal_production_domains_list:
+            errors.append("LEGAL_PRODUCTION_DOMAINS must be configured in production")
+
+        for domain in self.legal_production_domains_list:
+            if domain in {"localhost", "127.0.0.1", "example.com"} or domain.endswith(".localhost"):
+                errors.append(f"LEGAL_PRODUCTION_DOMAINS contains non-production domain: {domain}")
+
+        if self.legal_document_version in {"", "1.0"}:
+            errors.append("LEGAL_DOCUMENT_VERSION must identify the finalized legal document set")
+
+        if self.legal_audit_logs_retention_days <= 0:
+            errors.append("LEGAL_AUDIT_LOGS_RETENTION_DAYS must be positive")
+
+        if self.legal_account_deletion_grace_days <= 0:
+            errors.append("LEGAL_ACCOUNT_DELETION_GRACE_DAYS must be positive")
+
+        if self.legal_152fz_russian_pd and _is_undecided_legal_value(self.legal_152fz_pd_localization_status):
+            errors.append("LEGAL_152FZ_PD_LOCALIZATION_STATUS must be decided when Russian personal data is processed")
+
+        if self.legal_152fz_russian_pd and self.legal_152fz_rkn_notification_status == "not_done":
+            errors.append("LEGAL_152FZ_RKN_NOTIFICATION_STATUS must not be not_done in production")
+
         return errors
 
     # ============================================================
@@ -465,6 +631,10 @@ class Settings(BaseSettings):
     @property
     def trusted_proxy_cidrs_list(self) -> list[str]:
         return _split_csv(self.trusted_proxy_cidrs)
+
+    @property
+    def legal_production_domains_list(self) -> list[str]:
+        return _split_domains(self.legal_production_domains or "")
 
     @property
     def storage_dirs(self) -> list[Path]:

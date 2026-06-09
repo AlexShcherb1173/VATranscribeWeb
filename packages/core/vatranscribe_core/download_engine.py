@@ -11,6 +11,7 @@ from urllib.parse import urljoin, urlparse
 from yt_dlp import YoutubeDL
 
 from apps.api.app.config import get_settings
+from packages.core.vatranscribe_core.url_guard import build_safe_urllib_opener, validate_external_url
 
 
 MEDIA_URL_RE = re.compile(
@@ -386,7 +387,7 @@ def _is_probably_direct_media_url(url: str) -> bool:
 
 def _fetch_html_page(url: str) -> str:
     request = urllib.request.Request(
-        url,
+        clean_url,
         headers={
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -399,7 +400,8 @@ def _fetch_html_page(url: str) -> str:
     )
 
     try:
-        with urllib.request.urlopen(request, timeout=20) as response:
+        opener = build_safe_urllib_opener(max_redirects=5)
+        with opener.open(request, timeout=20) as response:
             content_type = response.headers.get("content-type", "")
             raw = response.read(3 * 1024 * 1024)
 
@@ -463,7 +465,7 @@ def _choose_best_media_candidate(candidates: list[str]) -> str | None:
 
 
 def resolve_media_url_from_http_page(url: str) -> str:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     if _is_probably_direct_media_url(clean_url):
         return clean_url
@@ -478,7 +480,8 @@ def resolve_media_url_from_http_page(url: str) -> str:
             "Если это личный кабинет, нужна прямая .mp4/.m3u8 ссылка или загрузка файла вручную."
         )
 
-    return media_url
+    safe_media_url = validate_external_url(media_url)
+    return safe_media_url
 
 
 def _extract_info_once(
@@ -489,7 +492,7 @@ def _extract_info_once(
     options: dict[str, Any] | None = None,
     cookies_file: str | Path | None = None,
 ) -> tuple[dict[str, Any], str]:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
     ydl_options = {
         **_base_ydl_options(use_cookies=use_cookies, cookies_file=cookies_file),
         **(options or {}),
@@ -507,7 +510,7 @@ def _extract_info_with_http_page_fallback(
     options: dict[str, Any] | None = None,
     cookies_file: str | Path | None = None,
 ) -> tuple[dict[str, Any], str]:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     try:
         return _extract_info_once(
@@ -541,7 +544,7 @@ def _extract_info_with_fallback(
     options: dict[str, Any] | None = None,
     cookies_file: str | Path | None = None,
 ) -> tuple[dict[str, Any], str]:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     try:
         return _extract_info_with_http_page_fallback(
@@ -584,7 +587,7 @@ def analyze_url(
     *,
     cookies_file: str | Path | None = None,
 ) -> dict[str, Any]:
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
     info, resolved_url = _extract_info_with_fallback(
         clean_url,
         download=False,
@@ -784,7 +787,7 @@ def download_media(
 
     requested_format = requested_format.lower().strip().lstrip(".")
     mp4_mode = (mp4_mode or "compatible").lower().strip()
-    clean_url = url.strip()
+    clean_url = validate_external_url(url)
 
     allowed_modes = {
         "compatible",

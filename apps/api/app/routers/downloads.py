@@ -19,6 +19,7 @@ from apps.api.app.services.youtube_cookies_service import (
     delete_temp_youtube_cookies_file,
 )
 from packages.core.vatranscribe_core.download_engine import analyze_url
+from packages.core.vatranscribe_core.url_guard import UnsafeUrlError, validate_external_url
 
 router = APIRouter(prefix="/downloads")
 
@@ -29,6 +30,16 @@ ALLOWED_DOWNLOAD_MODES = {
     "selected_original",
     "best_available",
 }
+
+
+def _validate_user_url_or_422(url: str) -> str:
+    try:
+        return validate_external_url(url)
+    except UnsafeUrlError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unsafe or unsupported external URL: {exc}",
+        ) from exc
 
 
 def _normalize_download_error(exc: Exception) -> str:
@@ -74,6 +85,8 @@ def analyze_download_url(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DownloadAnalyzeResponse:
+    clean_url = _validate_user_url_or_422(payload.url)
+
     cookies_file = create_temp_youtube_cookies_file_for_user(
         db,
         user_id=current_user.id,
@@ -81,7 +94,7 @@ def analyze_download_url(
     )
 
     try:
-        result = analyze_url(payload.url, cookies_file=cookies_file)
+        result = analyze_url(clean_url, cookies_file=cookies_file)
         return DownloadAnalyzeResponse(**result)
     except Exception as exc:
         raise HTTPException(
@@ -104,6 +117,7 @@ def create_download_job(
     current_user: User = Depends(get_current_user),
 ) -> JobResponse:
     assert_can_create_job(db, current_user, jobs_to_add=1)
+    clean_url = _validate_user_url_or_422(payload.url)
 
     download_mode = payload.download_mode.lower().strip()
     requested_format = payload.requested_format.lower().strip().lstrip(".")
@@ -159,7 +173,7 @@ def create_download_job(
         status=JobStatus.QUEUED.value,
         source_type=SourceType.URL.value,
         title=f"Download {payload.requested_file_name}",
-        input_url=payload.url.strip(),
+        input_url=clean_url,
         requested_format=requested_format,
         requested_file_name=payload.requested_file_name,
         mp4_mode=download_mode,

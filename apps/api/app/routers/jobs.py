@@ -19,8 +19,19 @@ from apps.api.app.schemas import (
 from apps.api.app.services.quota_service import assert_can_create_job, increment_jobs_used
 from apps.api.app.services.access_control import get_user_media_asset_or_404
 from packages.core.vatranscribe_core.storage import resolve_storage_path
+from packages.core.vatranscribe_core.url_guard import UnsafeUrlError, validate_external_url
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
+
+
+def _validate_user_url_or_422(url: str) -> str:
+    try:
+        return validate_external_url(url)
+    except UnsafeUrlError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unsafe or unsupported external URL: {exc}",
+        ) from exc
 
 
 def _normalize_transcription_language(value: str | None) -> str | None:
@@ -277,13 +288,17 @@ def create_job(
             media_asset_id=payload.transcription_media_asset_id,
         )
 
+    input_url = None
+    if payload.input_url:
+        input_url = _validate_user_url_or_422(payload.input_url)
+
     job = Job(
         user_id=current_user.id,
         type=payload.type,
         status=JobStatus.PENDING.value,
         source_type=payload.source_type,
         title=payload.title,
-        input_url=payload.input_url,
+        input_url=input_url,
         requested_format=payload.requested_format,
         requested_file_name=payload.requested_file_name,
         mp4_mode=payload.mp4_mode,

@@ -1,5 +1,12 @@
+x-default-json-logging: &default-json-logging
+  driver: "json-file"
+  options:
+    max-size: ${DOCKER_LOG_MAX_SIZE:-50m}
+    max-file: "${DOCKER_LOG_MAX_FILE:-5}"
+
 services:
   web:
+    logging: *default-json-logging
     build:
       context: .
       dockerfile: infra/docker/web.Dockerfile
@@ -43,6 +50,7 @@ services:
       retries: 5
 
   api:
+    logging: *default-json-logging
     ports: !reset []
     volumes: !override
       - vatranscribe_storage:/app/storage
@@ -65,6 +73,7 @@ services:
       retries: 5
 
   worker:
+    logging: *default-json-logging
     volumes: !override
       - vatranscribe_storage:/app/storage
     user: "10001:10001"
@@ -86,11 +95,13 @@ services:
       retries: 5
 
   db:
+    logging: *default-json-logging
     ports: !reset []
     expose:
       - "5432"
 
   redis:
+    logging: *default-json-logging
     ports: !reset []
     expose:
       - "6379"

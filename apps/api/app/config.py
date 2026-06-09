@@ -122,6 +122,13 @@ class Settings(BaseSettings):
     database_url: str = Field(..., alias="DATABASE_URL")
     redis_url: str = Field("redis://redis:6379/0", alias="REDIS_URL")
 
+    # --- OBSERVABILITY / LOGGING ---
+    sentry_dsn: str | None = Field(None, alias="SENTRY_DSN")
+    sentry_traces_sample_rate: float = Field(0.0, alias="SENTRY_TRACES_SAMPLE_RATE")
+    log_level: str = Field("INFO", alias="LOG_LEVEL")
+    log_json: bool = Field(True, alias="LOG_JSON")
+    release_version: str | None = Field(None, alias="RELEASE_VERSION")
+
 
     # --- RATE LIMITING / TRUSTED PROXY ---
     rate_limit_backend: str = Field("memory", alias="RATE_LIMIT_BACKEND")
@@ -234,6 +241,11 @@ class Settings(BaseSettings):
         self.app_env = self.app_env.strip().lower()
         self.jwt_algorithm = self.jwt_algorithm.strip().upper()
         self.cookie_samesite = self.cookie_samesite.strip().lower()
+        self.log_level = self.log_level.strip().upper()
+        if self.release_version == "":
+            self.release_version = None
+        if self.sentry_dsn == "":
+            self.sentry_dsn = None
 
         self.rate_limit_backend = self.rate_limit_backend.strip().lower()
         self.trusted_proxy_cidrs = ",".join(_split_csv(self.trusted_proxy_cidrs))
@@ -263,6 +275,12 @@ class Settings(BaseSettings):
 
         if self.cookie_samesite not in ALLOWED_COOKIE_SAMESITE:
             errors.append("COOKIE_SAMESITE must be lax or strict")
+
+        if self.log_level not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:
+            errors.append("LOG_LEVEL must be one of: DEBUG, INFO, WARNING, ERROR, CRITICAL")
+
+        if not 0.0 <= self.sentry_traces_sample_rate <= 1.0:
+            errors.append("SENTRY_TRACES_SAMPLE_RATE must be between 0.0 and 1.0")
 
         if self.youtube_cookies_max_bytes <= 0:
             errors.append("YOUTUBE_COOKIES_MAX_BYTES must be positive")
@@ -432,6 +450,12 @@ class Settings(BaseSettings):
     @property
     def cors_origins_list(self) -> list[str]:
         return _split_csv(self.cors_origins)
+
+    @property
+    def log_level_upper(self) -> int:
+        import logging
+
+        return getattr(logging, self.log_level, logging.INFO)
 
 
     @property

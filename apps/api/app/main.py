@@ -6,11 +6,14 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.app.config import get_settings
+from apps.api.app.observability import configure_logging, init_sentry
 from apps.api.app.routers import router as api_router
 from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
 from apps.api.app.schemas import ApiInfoResponse
 
 settings = get_settings()
+configure_logging(settings)
+init_sentry(settings)
 
 
 def ensure_storage_dirs() -> None:

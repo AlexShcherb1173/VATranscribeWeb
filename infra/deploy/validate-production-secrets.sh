@@ -137,11 +137,55 @@ require_non_placeholder ADMIN_2FA_ISSUER
 require_non_placeholder TRUSTED_PROXY_CIDRS
 
 require_non_placeholder BACKUP_DIR
+require_present BACKUP_RPO_HOURS
+require_present BACKUP_RTO_HOURS
+require_present BACKUP_RETENTION_DAILY
+require_present BACKUP_RETENTION_WEEKLY
+require_present BACKUP_RETENTION_MONTHLY
+require_present RESTORE_DRILL_DATABASE
+[[ "${RESTORE_DRILL_DATABASE}" != "${POSTGRES_DB:-vatranscribe}" ]] || fail "RESTORE_DRILL_DATABASE must not equal POSTGRES_DB"
+[[ "${BACKUP_RETENTION_DAILY}" -ge 14 ]] || fail "BACKUP_RETENTION_DAILY must be at least 14"
+[[ "${BACKUP_RETENTION_WEEKLY}" -ge 8 ]] || fail "BACKUP_RETENTION_WEEKLY must be at least 8"
+[[ "${BACKUP_RETENTION_MONTHLY}" -ge 6 ]] || fail "BACKUP_RETENTION_MONTHLY must be at least 6"
+[[ "${BACKUP_RPO_HOURS}" -le 24 ]] || fail "BACKUP_RPO_HOURS must be 24 or less"
+[[ "${BACKUP_RTO_HOURS}" -le 2 ]] || fail "BACKUP_RTO_HOURS must be 2 or less"
+require_bool_value BACKUP_REQUIRE_ENCRYPTION true
+
 if [[ "${REQUIRE_BACKUP_ENCRYPTION:-true}" == "true" ]]; then
   if [[ -z "${BACKUP_ENCRYPTION_RECIPIENT:-${AGE_RECIPIENT:-}}" ]]; then
     fail "BACKUP_ENCRYPTION_RECIPIENT or AGE_RECIPIENT is required"
   fi
 fi
+
+
+require_bool_value COOKIE_CONSENT_REQUIRED true
+require_non_placeholder COOKIE_CONSENT_VERSION
+require_present ANALYTICS_PROVIDER
+case "${ANALYTICS_PROVIDER}" in
+  disabled|yandex|ga4|both|posthog|provider-neutral) ;;
+  *) fail "ANALYTICS_PROVIDER has unsupported value: ${ANALYTICS_PROVIDER}" ;;
+esac
+
+if [[ "${ANALYTICS_PROVIDER}" == "yandex" || "${ANALYTICS_PROVIDER}" == "both" ]]; then
+  require_non_placeholder YANDEX_METRIKA_ID
+fi
+if [[ "${ANALYTICS_PROVIDER}" == "ga4" || "${ANALYTICS_PROVIDER}" == "both" ]]; then
+  require_non_placeholder GA4_MEASUREMENT_ID
+fi
+if [[ "${ANALYTICS_PROVIDER}" == "posthog" ]]; then
+  require_secret_non_placeholder POSTHOG_API_KEY
+fi
+if [[ "${ANALYTICS_PROVIDER}" != "disabled" && "${ANALYTICS_PROVIDER}" != "provider-neutral" ]]; then
+  require_bool_value LEGAL_ANALYTICS_COOKIES_ENABLED true
+fi
+require_bool_value VITE_COOKIE_CONSENT_REQUIRED true
+require_non_placeholder VITE_COOKIE_CONSENT_VERSION
+require_bool_value PUBLIC_COOKIE_CONSENT_REQUIRED true
+require_non_placeholder PUBLIC_COOKIE_CONSENT_VERSION
+require_present CORE_WEB_VITALS_ENABLED
+require_present CORE_WEB_VITALS_LCP_TARGET_MS
+require_present CORE_WEB_VITALS_INP_TARGET_MS
+require_present CORE_WEB_VITALS_CLS_TARGET
 
 optional_secret_if_set SENTRY_DSN
 optional_secret_if_set SMTP_PASSWORD

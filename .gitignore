@@ -83,3 +83,12 @@ secrets/
 !/infra/certbot/conf/.gitkeep
 /infra/certbot/www/*
 !/infra/certbot/www/.gitkeep
+
+# Backup runtime artifacts
+/backups/
+*.dump
+*.dump.age
+*.dump.sha256
+*.manifest.json
+/infra/backup/reports/
+/infra/backup/restore-drills/

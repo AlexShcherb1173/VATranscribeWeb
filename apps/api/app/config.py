@@ -53,6 +53,15 @@ ALLOWED_PAYMENT_PROVIDERS = {
     "stripe",
     "robokassa",
 }
+
+ALLOWED_ANALYTICS_PROVIDERS = {
+    "disabled",
+    "yandex",
+    "ga4",
+    "both",
+    "posthog",
+    "provider-neutral",
+}
 LOCALHOST_VALUES = {
     "localhost",
     "127.0.0.1",
@@ -202,7 +211,7 @@ def _validate_cookie_domain(domain: str | None) -> list[str]:
 
 class Settings(BaseSettings):
     """
-    Глобальные настройки приложения, читаемые из .env.
+    Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё РїСЂРёР»РѕР¶РµРЅРёСЏ, С‡РёС‚Р°РµРјС‹Рµ РёР· .env.
     """
 
     model_config = SettingsConfigDict(
@@ -419,6 +428,33 @@ class Settings(BaseSettings):
         None, alias="DEFAULT_LANGUAGE"
     )
 
+
+    # P2-08 Analytics / cookie consent / Core Web Vitals
+    analytics_provider: str = "disabled"
+    analytics_yandex_metrika_id: str = ""
+    analytics_ga4_measurement_id: str = ""
+    analytics_posthog_key: str = ""
+    analytics_posthog_host: str = "https://app.posthog.com"
+    analytics_enabled_in_development: bool = False
+
+    yandex_metrika_id: str = ""
+    ga4_measurement_id: str = ""
+    posthog_key: str = ""
+    posthog_api_key: str = ""
+    posthog_host: str = "https://app.posthog.com"
+
+    cookie_consent_required: bool = True
+    cookie_consent_version: str = "2026-06-10"
+    cookie_consent_categories: str = "necessary,analytics,marketing"
+    cookie_consent_storage: str = "localStorage"
+
+    core_web_vitals_enabled: bool = True
+    core_web_vitals_report_provider: str = "analytics"
+    core_web_vitals_report_mode: str = "analytics"
+    core_web_vitals_lcp_target_ms: int = 2500
+    core_web_vitals_inp_target_ms: int = 200
+    core_web_vitals_cls_target: float = 0.1
+
     @model_validator(mode="after")
     def validate_environment_guardrails(self) -> "Settings":
         errors: list[str] = []
@@ -470,6 +506,13 @@ class Settings(BaseSettings):
             "payment_webhook_secret",
             "payment_api_key",
             "payment_webhook_signature_header",
+            "analytics_provider",
+            "yandex_metrika_id",
+            "ga4_measurement_id",
+            "posthog_api_key",
+            "posthog_host",
+            "cookie_consent_version",
+            "core_web_vitals_report_mode",
             "secret_manager_strategy",
             "runtime_env_file",
             "secret_rotation_policy_version",
@@ -478,7 +521,7 @@ class Settings(BaseSettings):
             "uptime_checks_base_url",
             "sentry_environment",
         ):
-            value = getattr(self, attr_name)
+            value = getattr(self, attr_name, None)
             if isinstance(value, str):
                 value = value.strip()
                 setattr(self, attr_name, value if value else None)
@@ -560,6 +603,33 @@ class Settings(BaseSettings):
             errors.append("ADMIN_2FA_TOTP_WINDOW must be between 0 and 2")
 
         self.payment_provider = (self.payment_provider or "disabled").strip().lower()
+
+        self.analytics_provider = (self.analytics_provider or "disabled").strip().lower()
+        if self.analytics_provider not in ALLOWED_ANALYTICS_PROVIDERS:
+            errors.append(
+                "ANALYTICS_PROVIDER must be one of: "
+                + ", ".join(sorted(ALLOWED_ANALYTICS_PROVIDERS))
+            )
+        if self.yandex_metrika_id == "":
+            self.yandex_metrika_id = None
+        if self.ga4_measurement_id == "":
+            self.ga4_measurement_id = None
+        if getattr(self, "posthog_api_key", "") == "":
+            self.posthog_api_key = None
+        if self.posthog_host == "":
+            self.posthog_host = None
+        self.cookie_consent_version = (self.cookie_consent_version or "").strip()
+        self.core_web_vitals_report_mode = (getattr(self, "core_web_vitals_report_mode", None) or getattr(self, "core_web_vitals_report_provider", None) or "analytics").strip().lower()
+        if not self.cookie_consent_version:
+            errors.append("COOKIE_CONSENT_VERSION must not be empty")
+        if self.core_web_vitals_report_mode not in {"analytics", "console", "endpoint-later", "disabled"}:
+            errors.append("CORE_WEB_VITALS_REPORT_MODE must be analytics, console, endpoint-later or disabled")
+        if self.core_web_vitals_lcp_target_ms <= 0:
+            errors.append("CORE_WEB_VITALS_LCP_TARGET_MS must be positive")
+        if self.core_web_vitals_inp_target_ms <= 0:
+            errors.append("CORE_WEB_VITALS_INP_TARGET_MS must be positive")
+        if self.core_web_vitals_cls_target <= 0:
+            errors.append("CORE_WEB_VITALS_CLS_TARGET must be positive")
         if self.payment_provider not in ALLOWED_PAYMENT_PROVIDERS:
             errors.append(
                 "PAYMENT_PROVIDER must be one of: "
@@ -794,6 +864,21 @@ class Settings(BaseSettings):
             errors.append(
                 "BILLING_PAID_PLANS_ENABLED cannot be true when PAYMENT_PROVIDER=disabled"
             )
+
+        if not self.cookie_consent_required:
+            errors.append("COOKIE_CONSENT_REQUIRED must be true in production")
+
+        if self.analytics_provider in {"yandex", "both"} and _looks_like_secret_placeholder(self.yandex_metrika_id):
+            errors.append("YANDEX_METRIKA_ID is required when Yandex Metrika analytics is enabled")
+
+        if self.analytics_provider in {"ga4", "both"} and _looks_like_secret_placeholder(self.ga4_measurement_id):
+            errors.append("GA4_MEASUREMENT_ID is required when GA4 analytics is enabled")
+
+        if self.analytics_provider == "posthog" and _looks_like_secret_placeholder(self.posthog_api_key):
+            errors.append("POSTHOG_API_KEY is required when PostHog analytics is enabled")
+
+        if self.analytics_provider not in {"disabled", "provider-neutral"} and not self.legal_analytics_cookies_enabled:
+            errors.append("LEGAL_ANALYTICS_COOKIES_ENABLED must be true when analytics is enabled")
 
         if self.payment_provider != "disabled":
             if not self.billing_paid_plans_enabled:

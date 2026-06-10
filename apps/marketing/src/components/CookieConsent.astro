@@ -1,0 +1,105 @@
+---
+const analyticsProvider = import.meta.env.PUBLIC_ANALYTICS_PROVIDER ?? "disabled";
+const yandexMetrikaId = import.meta.env.PUBLIC_YANDEX_METRIKA_ID ?? "";
+const ga4MeasurementId = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID ?? "";
+const consentVersion = import.meta.env.PUBLIC_COOKIE_CONSENT_VERSION ?? "2026-06-10";
+const coreWebVitalsEnabled = import.meta.env.PUBLIC_CORE_WEB_VITALS_ENABLED ?? "true";
+---
+
+<div
+  id="vatranscribe-cookie-consent"
+  data-analytics-provider={analyticsProvider}
+  data-yandex-metrika-id={yandexMetrikaId}
+  data-ga4-measurement-id={ga4MeasurementId}
+  data-consent-version={consentVersion}
+  data-core-web-vitals-enabled={coreWebVitalsEnabled}
+  hidden
+>
+  <div class="cookie-consent-panel">
+    <strong>Cookie preferences</strong>
+    <p>Necessary cookies and browser storage are used for security. Analytics and marketing stay disabled until consent.</p>
+    <label><input type="checkbox" checked disabled /> Necessary</label>
+    <label><input type="checkbox" data-cookie-category="analytics" /> Analytics</label>
+    <label><input type="checkbox" data-cookie-category="marketing" /> Marketing</label>
+    <div class="cookie-consent-actions">
+      <button type="button" data-cookie-action="reject">Reject optional</button>
+      <button type="button" data-cookie-action="save">Save choices</button>
+      <button type="button" data-cookie-action="analytics">Allow analytics</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const banner = document.getElementById("vatranscribe-cookie-consent");
+    if (!banner) return;
+
+    const key = "vatranscribe.cookieConsent";
+    const version = banner.dataset.consentVersion || "2026-06-10";
+    const provider = banner.dataset.analyticsProvider || "disabled";
+    const yandexId = banner.dataset.yandexMetrikaId || "";
+    const ga4Id = banner.dataset.ga4MeasurementId || "";
+
+    function readConsent() {
+      try {
+        const parsed = JSON.parse(window.localStorage.getItem(key) || "null");
+        return parsed && parsed.version === version ? parsed : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function writeConsent(consent) {
+      window.localStorage.setItem(key, JSON.stringify({
+        version,
+        necessary: true,
+        analytics: consent.analytics === true,
+        marketing: consent.marketing === true,
+        updatedAt: new Date().toISOString(),
+      }));
+      window.dispatchEvent(new CustomEvent("vatranscribe:cookie-consent-updated"));
+      loadAnalyticsWhenAllowed();
+      banner.hidden = true;
+    }
+
+    function loadScript(id, src) {
+      if (!src || document.getElementById(id)) return;
+      const script = document.createElement("script");
+      script.id = id;
+      script.async = true;
+      script.src = src;
+      document.head.appendChild(script);
+    }
+
+    function loadAnalyticsWhenAllowed() {
+      const consent = readConsent();
+      if (!consent || consent.analytics !== true || provider === "disabled") return;
+
+      if ((provider === "yandex" || provider === "both") && yandexId) {
+        window.ym = window.ym || function(){ (window.ym.a = window.ym.a || []).push(arguments); };
+        loadScript("vatranscribe-yandex-metrika", "https://mc.yandex.ru/metrika/tag.js");
+        window.ym(Number(yandexId), "init", { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: false });
+      }
+
+      if ((provider === "ga4" || provider === "both") && ga4Id) {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+        loadScript("vatranscribe-ga4", `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4Id)}`);
+        window.gtag("js", new Date());
+        window.gtag("config", ga4Id, { anonymize_ip: true, send_page_view: true });
+      }
+    }
+
+    banner.querySelector('[data-cookie-action="reject"]')?.addEventListener("click", () => writeConsent({ analytics: false, marketing: false }));
+    banner.querySelector('[data-cookie-action="save"]')?.addEventListener("click", () => writeConsent({
+      analytics: banner.querySelector('[data-cookie-category="analytics"]')?.checked === true,
+      marketing: banner.querySelector('[data-cookie-category="marketing"]')?.checked === true,
+    }));
+    banner.querySelector('[data-cookie-action="analytics"]')?.addEventListener("click", () => writeConsent({ analytics: true, marketing: false }));
+
+    if (!readConsent()) {
+      banner.hidden = false;
+    }
+    loadAnalyticsWhenAllowed();
+  })();
+</script>

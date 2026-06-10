@@ -1,0 +1,10 @@
+[Unit]
+Description=VATranscribeWeb PostgreSQL backup
+Wants=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/vatranscribe
+EnvironmentFile=/opt/vatranscribe/secrets/.env.runtime
+ExecStart=/srv/vatranscribe/infra/backup/backup-postgres.sh

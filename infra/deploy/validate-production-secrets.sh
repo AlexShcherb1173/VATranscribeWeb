@@ -167,4 +167,30 @@ else
   require_non_placeholder PAYMENT_WEBHOOK_SIGNATURE_HEADER
 fi
 
+
+require_present MONITORING_REQUIRED
+if [[ "${MONITORING_REQUIRED,,}" == "true" ]]; then
+  require_bool_value MONITORING_RELEASE_CHECKLIST_ACK true
+  require_non_placeholder UPTIME_PROVIDER
+  [[ "${UPTIME_PROVIDER}" != "disabled" ]] || fail "UPTIME_PROVIDER must not be disabled when MONITORING_REQUIRED=true"
+  require_non_placeholder UPTIME_ALERT_CHANNELS
+  require_non_placeholder APM_PROVIDER
+  [[ "${APM_PROVIDER}" != "disabled" ]] || fail "APM_PROVIDER must not be disabled when MONITORING_REQUIRED=true"
+  require_present SENTRY_REQUIRED
+  if [[ "${SENTRY_REQUIRED,,}" == "true" || "${APM_PROVIDER}" == "sentry" ]]; then
+    require_secret_non_placeholder SENTRY_DSN
+  fi
+  require_non_placeholder CENTRAL_LOGGING_PROVIDER
+  [[ "${CENTRAL_LOGGING_PROVIDER}" != "disabled" ]] || fail "CENTRAL_LOGGING_PROVIDER must not be disabled when MONITORING_REQUIRED=true"
+fi
+
+require_present LOG_JSON
+require_bool_value LOG_JSON true
+require_non_placeholder LOG_LEVEL
+require_present LOG_RETENTION_DAYS
+require_present LOKI_RETENTION_DAYS
+require_present NGINX_ACCESS_LOG_RETENTION_DAYS
+require_present NGINX_ERROR_LOG_RETENTION_DAYS
+require_non_placeholder REQUEST_ID_HEADER
+
 info "Production secret validation passed for ${RUNTIME_ENV_FILE}"

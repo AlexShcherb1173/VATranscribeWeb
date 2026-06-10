@@ -236,6 +236,25 @@ class Settings(BaseSettings):
     log_json: bool = Field(True, alias="LOG_JSON")
     release_version: str | None = Field(None, alias="RELEASE_VERSION")
 
+    # --- MONITORING / APM / CENTRALIZED LOGGING ---
+    monitoring_required: bool = Field(False, alias="MONITORING_REQUIRED")
+    monitoring_release_checklist_ack: bool = Field(False, alias="MONITORING_RELEASE_CHECKLIST_ACK")
+    uptime_provider: str = Field("disabled", alias="UPTIME_PROVIDER")
+    uptime_alert_channels: str = Field("", alias="UPTIME_ALERT_CHANNELS")
+    uptime_checks_base_url: str | None = Field(None, alias="UPTIME_CHECKS_BASE_URL")
+    apm_provider: str = Field("disabled", alias="APM_PROVIDER")
+    sentry_required: bool = Field(False, alias="SENTRY_REQUIRED")
+    sentry_environment: str | None = Field(None, alias="SENTRY_ENVIRONMENT")
+    sentry_profiles_sample_rate: float = Field(0.0, alias="SENTRY_PROFILES_SAMPLE_RATE")
+    sentry_worker_enabled: bool = Field(True, alias="SENTRY_WORKER_ENABLED")
+    central_logging_required: bool = Field(False, alias="CENTRAL_LOGGING_REQUIRED")
+    central_logging_provider: str = Field("disabled", alias="CENTRAL_LOGGING_PROVIDER")
+    log_retention_days: int = Field(30, alias="LOG_RETENTION_DAYS")
+    loki_retention_days: int = Field(14, alias="LOKI_RETENTION_DAYS")
+    nginx_access_log_retention_days: int = Field(30, alias="NGINX_ACCESS_LOG_RETENTION_DAYS")
+    nginx_error_log_retention_days: int = Field(30, alias="NGINX_ERROR_LOG_RETENTION_DAYS")
+    request_id_header: str = Field("X-Request-ID", alias="REQUEST_ID_HEADER")
+
     # --- PRODUCTION SECRETS / VAULT ---
     secret_manager_strategy: str = Field("local-env", alias="SECRET_MANAGER_STRATEGY")
     runtime_env_file: str | None = Field(None, alias="RUNTIME_ENV_FILE")
@@ -412,6 +431,15 @@ class Settings(BaseSettings):
             self.release_version = None
         if self.sentry_dsn == "":
             self.sentry_dsn = None
+        if self.sentry_environment == "":
+            self.sentry_environment = None
+        if self.uptime_checks_base_url == "":
+            self.uptime_checks_base_url = None
+        self.uptime_provider = (self.uptime_provider or "disabled").strip().lower()
+        self.apm_provider = (self.apm_provider or "disabled").strip().lower()
+        self.central_logging_provider = (self.central_logging_provider or "disabled").strip().lower()
+        self.uptime_alert_channels = ",".join(_split_csv(self.uptime_alert_channels or ""))
+        self.request_id_header = (self.request_id_header or "X-Request-ID").strip()
 
         for attr_name in (
             "legal_document_version",
@@ -445,6 +473,10 @@ class Settings(BaseSettings):
             "secret_manager_strategy",
             "runtime_env_file",
             "secret_rotation_policy_version",
+            "request_id_header",
+            "uptime_alert_channels",
+            "uptime_checks_base_url",
+            "sentry_environment",
         ):
             value = getattr(self, attr_name)
             if isinstance(value, str):
@@ -497,6 +529,20 @@ class Settings(BaseSettings):
 
         if not 0.0 <= self.sentry_traces_sample_rate <= 1.0:
             errors.append("SENTRY_TRACES_SAMPLE_RATE must be between 0.0 and 1.0")
+
+        if not 0.0 <= self.sentry_profiles_sample_rate <= 1.0:
+            errors.append("SENTRY_PROFILES_SAMPLE_RATE must be between 0.0 and 1.0")
+
+        if self.log_retention_days <= 0:
+            errors.append("LOG_RETENTION_DAYS must be positive")
+        if self.loki_retention_days <= 0:
+            errors.append("LOKI_RETENTION_DAYS must be positive")
+        if self.nginx_access_log_retention_days <= 0:
+            errors.append("NGINX_ACCESS_LOG_RETENTION_DAYS must be positive")
+        if self.nginx_error_log_retention_days <= 0:
+            errors.append("NGINX_ERROR_LOG_RETENTION_DAYS must be positive")
+        if not self.request_id_header:
+            errors.append("REQUEST_ID_HEADER must not be empty")
 
         if self.secret_manager_strategy not in ALLOWED_SECRET_MANAGER_STRATEGIES:
             errors.append(
@@ -770,6 +816,28 @@ class Settings(BaseSettings):
                     "when PAYMENT_PROVIDER is enabled"
                 )
 
+
+        if self.monitoring_required:
+            if not self.monitoring_release_checklist_ack:
+                errors.append("MONITORING_RELEASE_CHECKLIST_ACK must be true when MONITORING_REQUIRED=true")
+            if self.uptime_provider == "disabled":
+                errors.append("UPTIME_PROVIDER must not be disabled when monitoring is required")
+            if not self.uptime_alert_channels_list:
+                errors.append("UPTIME_ALERT_CHANNELS must contain at least one channel when monitoring is required")
+            if self.apm_provider == "disabled":
+                errors.append("APM_PROVIDER must not be disabled when monitoring is required")
+            if self.central_logging_provider == "disabled":
+                errors.append("CENTRAL_LOGGING_PROVIDER must not be disabled when monitoring is required")
+
+        if self.sentry_required and _looks_like_secret_placeholder(self.sentry_dsn):
+            errors.append("SENTRY_DSN is required and must not be a placeholder when SENTRY_REQUIRED=true")
+
+        if self.apm_provider == "sentry" and self.sentry_required and not self.sentry_dsn:
+            errors.append("SENTRY_DSN is required when APM_PROVIDER=sentry and SENTRY_REQUIRED=true")
+
+        if self.central_logging_required and self.central_logging_provider == "disabled":
+            errors.append("CENTRAL_LOGGING_PROVIDER must not be disabled when CENTRAL_LOGGING_REQUIRED=true")
+
         return errors
 
     # ============================================================
@@ -806,6 +874,11 @@ class Settings(BaseSettings):
 
         return getattr(logging, self.log_level, logging.INFO)
 
+
+
+    @property
+    def uptime_alert_channels_list(self) -> list[str]:
+        return _split_csv(self.uptime_alert_channels or "")
 
     @property
     def rate_limit_redis_url_resolved(self) -> str:

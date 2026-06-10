@@ -28,3 +28,4 @@ fi
 # shellcheck disable=SC2086
 docker compose --env-file "${RUNTIME_ENV_FILE}" -p "${PROJECT_NAME}" -f ${COMPOSE_FILES} up -d --remove-orphans
 ./infra/deploy/smoke-test.sh
+./infra/deploy/monitoring-smoke.sh

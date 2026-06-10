@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+DEFAULT_REQUEST_ID_HEADER = "X-Request-ID"
+
 from contextlib import asynccontextmanager
+import logging
+import time
+from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,6 +19,7 @@ from apps.api.app.schemas import ApiInfoResponse
 settings = get_settings()
 configure_logging(settings)
 init_sentry(settings)
+request_logger = logging.getLogger("apps.api.request")
 
 
 def ensure_storage_dirs() -> None:
@@ -48,6 +54,39 @@ app.add_middleware(
 )
 
 
+
+
+@app.middleware("http")
+async def request_id_and_access_log_middleware(request: Request, call_next):
+    request_id = request.headers.get(settings.request_id_header) or uuid4().hex
+    start = time.perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        duration_ms = round((time.perf_counter() - start) * 1000, 2)
+        request_logger.exception(
+            "request failed",
+            extra={
+                "request_id": request_id,
+                "method": request.method,
+                "path": request.url.path,
+                "duration_ms": duration_ms,
+            },
+        )
+        raise
+    duration_ms = round((time.perf_counter() - start) * 1000, 2)
+    response.headers[settings.request_id_header] = request_id
+    request_logger.info(
+        "request completed",
+        extra={
+            "request_id": request_id,
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": response.status_code,
+            "duration_ms": duration_ms,
+        },
+    )
+    return response
 
 @app.middleware("http")
 async def api_rate_limit_middleware(request: Request, call_next):

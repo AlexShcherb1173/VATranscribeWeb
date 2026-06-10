@@ -3,6 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from apps.api.app.routers.auth import router as auth_router
+from apps.api.app.routers.admin_security import router as admin_security_router
 from apps.api.app.routers.billing import router as billing_router
 from apps.api.app.routers.plans import router as plans_router
 from apps.api.app.routers.downloads import router as downloads_router
@@ -30,6 +31,7 @@ router = APIRouter()
 # Core transferred routers
 router.include_router(health_router)
 router.include_router(auth_router)
+router.include_router(admin_security_router)
 router.include_router(profile_router)
 router.include_router(quota_router)
 router.include_router(billing_router)

@@ -59,6 +59,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -122,6 +123,21 @@ class User(Base):
         cascade="all, delete-orphan",
         uselist=False,
         foreign_keys="UserYoutubeCookies.user_id",
+    )
+
+    admin_two_factor: Mapped["AdminTwoFactor | None"] = relationship(
+        "AdminTwoFactor",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+        foreign_keys="AdminTwoFactor.user_id",
+    )
+
+    admin_recovery_codes: Mapped[list["AdminRecoveryCode"]] = relationship(
+        "AdminRecoveryCode",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="AdminRecoveryCode.user_id",
     )
 
 
@@ -206,6 +222,74 @@ class UserYoutubeCookies(Base):
     user: Mapped["User"] = relationship(
         "User",
         back_populates="youtube_cookies",
+        foreign_keys=[user_id],
+    )
+
+
+class AdminTwoFactor(Base):
+    __tablename__ = "admin_two_factor"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    encrypted_totp_secret: Mapped[str | None] = mapped_column(Text, nullable=True)
+    encrypted_pending_totp_secret: Mapped[str | None] = mapped_column(Text, nullable=True)
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    disabled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="admin_two_factor",
+        foreign_keys=[user_id],
+    )
+
+
+class AdminRecoveryCode(Base):
+    __tablename__ = "admin_recovery_codes"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    code_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="admin_recovery_codes",
         foreign_keys=[user_id],
     )
 

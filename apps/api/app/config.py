@@ -223,6 +223,13 @@ class Settings(BaseSettings):
     legal_152fz_rkn_notification_status: str = Field("not_decided", alias="LEGAL_152FZ_RKN_NOTIFICATION_STATUS")
     legal_152fz_pd_localization_status: str = Field("not_decided", alias="LEGAL_152FZ_PD_LOCALIZATION_STATUS")
 
+    # --- ADMIN SECURITY / 2FA ---
+    admin_2fa_required: bool = Field(True, alias="ADMIN_2FA_REQUIRED")
+    admin_2fa_issuer: str = Field("VATranscribe", alias="ADMIN_2FA_ISSUER")
+    admin_2fa_recovery_code_count: int = Field(10, alias="ADMIN_2FA_RECOVERY_CODE_COUNT")
+    admin_2fa_recovery_code_bytes: int = Field(10, alias="ADMIN_2FA_RECOVERY_CODE_BYTES")
+    admin_2fa_totp_window: int = Field(1, alias="ADMIN_2FA_TOTP_WINDOW")
+
 
     # --- RATE LIMITING / TRUSTED PROXY ---
     rate_limit_backend: str = Field("memory", alias="RATE_LIMIT_BACKEND")
@@ -365,6 +372,7 @@ class Settings(BaseSettings):
             "legal_billing_records_retention",
             "legal_152fz_rkn_notification_status",
             "legal_152fz_pd_localization_status",
+            "admin_2fa_issuer",
         ):
             value = getattr(self, attr_name)
             if isinstance(value, str):
@@ -411,6 +419,15 @@ class Settings(BaseSettings):
 
         if not 0.0 <= self.sentry_traces_sample_rate <= 1.0:
             errors.append("SENTRY_TRACES_SAMPLE_RATE must be between 0.0 and 1.0")
+
+        if self.admin_2fa_recovery_code_count <= 0:
+            errors.append("ADMIN_2FA_RECOVERY_CODE_COUNT must be positive")
+
+        if self.admin_2fa_recovery_code_bytes < 8:
+            errors.append("ADMIN_2FA_RECOVERY_CODE_BYTES must be >= 8")
+
+        if self.admin_2fa_totp_window < 0 or self.admin_2fa_totp_window > 2:
+            errors.append("ADMIN_2FA_TOTP_WINDOW must be between 0 and 2")
 
         if self.youtube_cookies_max_bytes <= 0:
             errors.append("YOUTUBE_COOKIES_MAX_BYTES must be positive")
@@ -586,6 +603,12 @@ class Settings(BaseSettings):
 
         if self.legal_152fz_russian_pd and self.legal_152fz_rkn_notification_status == "not_done":
             errors.append("LEGAL_152FZ_RKN_NOTIFICATION_STATUS must not be not_done in production")
+
+        if not self.admin_2fa_required:
+            errors.append("ADMIN_2FA_REQUIRED must be true in production")
+
+        if _is_legal_placeholder(self.admin_2fa_issuer):
+            errors.append("ADMIN_2FA_ISSUER must be a real production value")
 
         return errors
 

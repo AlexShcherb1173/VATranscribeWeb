@@ -103,3 +103,10 @@ domain-tls-cdn-evidence*.md
 *.curl-headers.txt
 *.tls-evidence.txt
 *.dns-evidence.txt
+
+# P3 monitoring/APM/logging activation generated evidence
+monitoring-apm-logs-evidence*.md
+*.sentry-evidence.txt
+*.request-id-evidence.txt
+*.monitoring-evidence.txt
+uptime-kuma-export*.json

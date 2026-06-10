@@ -33,9 +33,23 @@
 - [ ] `infra/deploy/validate-cdn-cache-live.sh` passes with real `CDN_STATIC_TEST_URLS`.
 - [ ] Redacted DNS/TLS/CDN evidence is stored outside Git.
 
+## P3-04 Monitoring / APM / logs activation
+
+- [ ] Runtime env file `/opt/vatranscribe/secrets/.env.runtime` contains final monitoring/APM/logging values.
+- [ ] Uptime checks exist for marketing, app, API live, API ready, and admin if public.
+- [ ] `infra/deploy/validate-monitoring-live.sh` passes on the production host.
+- [ ] Telegram or email alert delivery is verified.
+- [ ] `infra/deploy/validate-alert-delivery.sh` passes on the production host.
+- [ ] `APM_PROVIDER=sentry` and `SENTRY_REQUIRED=true` are configured.
+- [ ] `infra/deploy/validate-sentry-test-event.sh` creates a visible Sentry event.
+- [ ] Central logging provider is selected and active: Loki/Grafana or external provider.
+- [ ] `infra/deploy/validate-request-id-live.sh` confirms `X-Request-ID` propagation.
+- [ ] A generated request ID is found in centralized logs.
+- [ ] Retention is configured: Loki 14 days, Nginx access/error logs 30 days, audit logs 180 days.
+- [ ] Sanitized `monitoring-apm-logs-evidence` is stored outside Git.
+
 ## Remaining activation blocks
 
-- P3-04 Monitoring / APM / centralized logging live evidence.
 - P3-05 Backup restore proof.
 - P3-06 Legal / 152-ФЗ final operator data.
 - P3-07 Supply-chain scan evidence.

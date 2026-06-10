@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from apps.api.app.database import get_db
 from apps.api.app.dependencies import require_admin_2fa, require_admin_user
 from apps.api.app.models import User
-from apps.api.app.schemas.admin_security import (
+from apps.api.app.schemas import (
     AdminSecurityCheckResponse,
     AdminTwoFactorConfirmResponse,
     AdminTwoFactorDisableRequest,

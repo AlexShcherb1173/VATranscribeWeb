@@ -19,6 +19,32 @@ DEFAULT_SECRET_KEY_VALUES = {
     "secret-key",
     "development-secret-key",
 }
+
+SECRET_PLACEHOLDER_FRAGMENTS = (
+    "change_me",
+    "change-me",
+    "changeme",
+    "replace_me",
+    "replace-me",
+    "todo",
+    "example.com",
+    "super-secret",
+    "local-dev",
+    "placeholder",
+)
+
+ALLOWED_SECRET_MANAGER_STRATEGIES = {
+    "local-env",
+    "runtime-env-file",
+    "github-environments",
+    "yandex-lockbox",
+    "doppler",
+    "hashicorp-vault",
+    "onepassword-cli",
+    "docker-secrets",
+}
+
+PRODUCTION_SECRET_MANAGER_STRATEGIES = ALLOWED_SECRET_MANAGER_STRATEGIES - {"local-env"}
 LOCALHOST_VALUES = {
     "localhost",
     "127.0.0.1",
@@ -77,6 +103,17 @@ def _is_unmonitored_example_email(value: str | None) -> bool:
         or normalized.endswith("@example.org")
         or normalized.endswith("@localhost")
     )
+
+
+def _looks_like_secret_placeholder(value: str | None) -> bool:
+    if value is None:
+        return True
+
+    normalized = value.strip().lower()
+    if not normalized:
+        return True
+
+    return any(fragment in normalized for fragment in SECRET_PLACEHOLDER_FRAGMENTS)
 
 
 def _split_domains(value: str) -> list[str]:
@@ -190,6 +227,16 @@ class Settings(BaseSettings):
     log_level: str = Field("INFO", alias="LOG_LEVEL")
     log_json: bool = Field(True, alias="LOG_JSON")
     release_version: str | None = Field(None, alias="RELEASE_VERSION")
+
+    # --- PRODUCTION SECRETS / VAULT ---
+    secret_manager_strategy: str = Field("local-env", alias="SECRET_MANAGER_STRATEGY")
+    runtime_env_file: str | None = Field(None, alias="RUNTIME_ENV_FILE")
+    production_secrets_validation_required: bool = Field(
+        True, alias="PRODUCTION_SECRETS_VALIDATION_REQUIRED"
+    )
+    secret_rotation_policy_version: str = Field(
+        "2026-06", alias="SECRET_ROTATION_POLICY_VERSION"
+    )
 
     # --- LEGAL / COMPLIANCE ---
     legal_document_version: str = Field("2.0", alias="LEGAL_DOCUMENT_VERSION")
@@ -373,6 +420,9 @@ class Settings(BaseSettings):
             "legal_152fz_rkn_notification_status",
             "legal_152fz_pd_localization_status",
             "admin_2fa_issuer",
+            "secret_manager_strategy",
+            "runtime_env_file",
+            "secret_rotation_policy_version",
         ):
             value = getattr(self, attr_name)
             if isinstance(value, str):
@@ -384,6 +434,12 @@ class Settings(BaseSettings):
         self.legal_production_domains = ",".join(_split_domains(self.legal_production_domains or ""))
         self.legal_152fz_rkn_notification_status = (self.legal_152fz_rkn_notification_status or "not_decided").strip().lower()
         self.legal_152fz_pd_localization_status = (self.legal_152fz_pd_localization_status or "not_decided").strip().lower()
+
+        self.secret_manager_strategy = (self.secret_manager_strategy or "local-env").strip().lower()
+        if self.runtime_env_file == "":
+            self.runtime_env_file = None
+        if self.secret_rotation_policy_version == "":
+            self.secret_rotation_policy_version = None
 
         self.rate_limit_backend = self.rate_limit_backend.strip().lower()
         self.trusted_proxy_cidrs = ",".join(_split_csv(self.trusted_proxy_cidrs))
@@ -419,6 +475,12 @@ class Settings(BaseSettings):
 
         if not 0.0 <= self.sentry_traces_sample_rate <= 1.0:
             errors.append("SENTRY_TRACES_SAMPLE_RATE must be between 0.0 and 1.0")
+
+        if self.secret_manager_strategy not in ALLOWED_SECRET_MANAGER_STRATEGIES:
+            errors.append(
+                "SECRET_MANAGER_STRATEGY must be one of: "
+                + ", ".join(sorted(ALLOWED_SECRET_MANAGER_STRATEGIES))
+            )
 
         if self.admin_2fa_recovery_code_count <= 0:
             errors.append("ADMIN_2FA_RECOVERY_CODE_COUNT must be positive")
@@ -489,6 +551,21 @@ class Settings(BaseSettings):
         if self.expose_api_docs:
             errors.append("APP_ENV=production requires EXPOSE_API_DOCS=false")
 
+        if self.production_secrets_validation_required is not True:
+            errors.append("PRODUCTION_SECRETS_VALIDATION_REQUIRED must be true in production")
+
+        if self.secret_manager_strategy not in PRODUCTION_SECRET_MANAGER_STRATEGIES:
+            errors.append(
+                "SECRET_MANAGER_STRATEGY must not be local-env in production; "
+                "use runtime-env-file, GitHub Environments or a vault adapter"
+            )
+
+        if not self.runtime_env_file:
+            errors.append("RUNTIME_ENV_FILE is required in production")
+
+        if _looks_like_secret_placeholder(self.runtime_env_file):
+            errors.append("RUNTIME_ENV_FILE must not be a placeholder value")
+
         if len(self.secret_key) < 32:
             errors.append("SECRET_KEY must be at least 32 characters in production")
 
@@ -499,6 +576,19 @@ class Settings(BaseSettings):
             or "changeme" in secret_key_normalized
         ):
             errors.append("SECRET_KEY must not use a default/change-me value")
+
+        if _looks_like_secret_placeholder(self.database_url):
+            errors.append("DATABASE_URL must not contain placeholder values in production")
+
+        database_url_normalized = self.database_url.strip().lower()
+        if "postgres:postgres" in database_url_normalized:
+            errors.append("DATABASE_URL must not use postgres:postgres in production")
+
+        if _looks_like_secret_placeholder(self.redis_url):
+            errors.append("REDIS_URL must not contain placeholder values in production")
+
+        if self.sentry_dsn and _looks_like_secret_placeholder(self.sentry_dsn):
+            errors.append("SENTRY_DSN must not contain placeholder values")
 
         if self.access_token_expire_minutes > 15:
             errors.append(

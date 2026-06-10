@@ -69,3 +69,10 @@ VATranscribeWeb_P0-*_context.zip
 # Local audit exports
 VATranscribeWeb_Stage4_Production_Readiness_Audit_*.docx
 VATranscribeWeb_Stage4_Production_Readiness_Audit_*.md
+
+# Runtime secrets / local generated env files
+.env.runtime
+.env.runtime.*
+secrets/
+*.env.runtime
+/infra/secrets/

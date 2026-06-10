@@ -92,3 +92,8 @@ secrets/
 *.manifest.json
 /infra/backup/reports/
 /infra/backup/restore-drills/
+
+# P3 runtime secret activation generated files
+runtime-env*.template
+runtime-secrets-evidence*.md
+*.redacted.env

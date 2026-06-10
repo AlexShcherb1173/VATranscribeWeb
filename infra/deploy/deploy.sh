@@ -10,6 +10,9 @@ RUN_MIGRATIONS="${RUN_MIGRATIONS:-true}"
 cd "${PROJECT_ROOT}"
 ./infra/deploy/validate-production-secrets.sh "${RUNTIME_ENV_FILE}"
 ln -sfn "${RUNTIME_ENV_FILE}" "${PROJECT_ROOT}/.env"
+if [[ "${CHECK_DOMAIN_READINESS:-false}" == "true" ]]; then
+  ./infra/deploy/check-domain-readiness.sh
+fi
 [[ "${BACKUP_BEFORE_DEPLOY}" == "true" ]] && ./infra/backup/backup-postgres.sh
 git fetch --all --tags --prune
 git checkout "${GIT_REF}"

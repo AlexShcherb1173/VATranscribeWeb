@@ -96,6 +96,30 @@ require_non_placeholder PUBLIC_API_ORIGIN
 require_non_placeholder PUBLIC_ADMIN_ORIGIN
 require_non_placeholder VITE_API_BASE_URL
 
+require_non_placeholder ROOT_DOMAIN
+require_non_placeholder MARKETING_DOMAIN
+require_non_placeholder APP_DOMAIN
+require_non_placeholder API_DOMAIN
+require_non_placeholder ADMIN_DOMAIN
+require_non_placeholder CERTBOT_DOMAINS
+require_non_placeholder CERTBOT_PRIMARY_DOMAIN
+require_non_placeholder CERTBOT_EMAIL
+require_non_placeholder CERTBOT_WEBROOT
+require_present CDN_PROVIDER
+require_bool_value CDN_API_ENABLED false
+require_bool_value HSTS_PRELOAD_ENABLED false
+
+if [[ -n "${PRODUCTION_HOST_PUBLIC_IP:-}" ]]; then
+  [[ "${PRODUCTION_HOST_PUBLIC_IP}" != *"CHANGE_ME"* ]] || fail "PRODUCTION_HOST_PUBLIC_IP contains a placeholder value"
+fi
+
+for domain_name in ROOT_DOMAIN MARKETING_DOMAIN APP_DOMAIN API_DOMAIN ADMIN_DOMAIN; do
+  value="${!domain_name}"
+  [[ "${value}" != *"http://"* && "${value}" != *"https://"* ]] || fail "${domain_name} must contain a hostname, not a URL"
+  [[ "${value}" != *"localhost"* && "${value}" != *"127.0.0.1"* ]] || fail "${domain_name} must not use localhost"
+done
+
+
 for origin_name in CORS_ORIGINS PUBLIC_MARKETING_ORIGIN PUBLIC_APP_ORIGIN PUBLIC_API_ORIGIN PUBLIC_ADMIN_ORIGIN VITE_API_BASE_URL; do
   value="${!origin_name}"
   [[ "${value}" == *"https://"* ]] || fail "${origin_name} must use https in production"

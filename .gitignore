@@ -76,3 +76,10 @@ VATranscribeWeb_Stage4_Production_Readiness_Audit_*.md
 secrets/
 *.env.runtime
 /infra/secrets/
+
+# Certbot runtime data: certificates and ACME webroot are generated on production host.
+# Keep documentation and .gitkeep files only.
+/infra/certbot/conf/*
+!/infra/certbot/conf/.gitkeep
+/infra/certbot/www/*
+!/infra/certbot/www/.gitkeep

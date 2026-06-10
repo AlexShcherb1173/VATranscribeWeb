@@ -36,6 +36,8 @@ services:
       NGINX_ANALYZE_BODY_LIMIT: ${NGINX_ANALYZE_BODY_LIMIT:-2m}
       NGINX_UPLOAD_BODY_LIMIT: ${NGINX_UPLOAD_BODY_LIMIT:-1024m}
       PUBLIC_API_ORIGIN: ${PUBLIC_API_ORIGIN:-https://api.vatranscribe.ru}
+      CDN_ASSET_CACHE_SECONDS: ${CDN_ASSET_CACHE_SECONDS:-31536000}
+      CDN_HTML_CACHE_POLICY: ${CDN_HTML_CACHE_POLICY:-no-cache}
     volumes:
       - ./infra/docker/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./infra/certbot/conf:/etc/letsencrypt:ro
@@ -48,6 +50,18 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+
+  certbot:
+    logging: *default-json-logging
+    image: certbot/certbot:v2.11.0
+    container_name: vatranscribe-certbot
+    profiles:
+      - certbot
+    volumes:
+      - ./infra/certbot/conf:/etc/letsencrypt
+      - ./infra/certbot/www:/var/www/certbot
+    entrypoint: ["certbot"]
+    restart: "no"
 
   api:
     logging: *default-json-logging

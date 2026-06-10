@@ -80,7 +80,7 @@ const dictionaries = {
       subtitles: "Subtitles",
       content: "Content",
       goToStep: "Go to step",
-      comingSoon: "Coming soon",
+      comingSoon: "Planned",
     },
 
     auth: {
@@ -569,10 +569,10 @@ const dictionaries = {
 
     billing: {
       selectedPlan: "Selected plan",
-      fakePayment: "Fake payment",
+      fakePayment: "Payment unavailable",
       fakePaymentDescription:
-        "This is a temporary payment form placeholder. Later it can be connected to Stripe, YooKassa or CloudPayments.",
-      fakePaymentCompleted: "fake payment completed",
+        "Paid plan activation is disabled until a verified payment provider is enabled.",
+      fakePaymentCompleted: "payment flow disabled",
     },
 
     uploads: {
@@ -1155,10 +1155,10 @@ const dictionaries = {
 
     billing: {
       selectedPlan: "Выбранный тариф",
-      fakePayment: "Тестовая оплата",
+      fakePayment: "Оплата недоступна",
       fakePaymentDescription:
-        "Сейчас это временная заглушка платежной формы. Позже сюда можно подключить Stripe, YooKassa или CloudPayments.",
-      fakePaymentCompleted: "тестовая оплата выполнена",
+        "Активация платных тарифов отключена до подключения проверенного платёжного провайдера.",
+      fakePaymentCompleted: "платёжный процесс отключён",
     },
 
     uploads: {

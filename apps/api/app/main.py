@@ -11,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.app.config import get_settings
+from apps.api.app.exception_handlers import register_exception_handlers
 from apps.api.app.observability import configure_logging, init_sentry
 from apps.api.app.routers import router as api_router
 from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
@@ -44,6 +45,8 @@ app = FastAPI(
     redoc_url=settings.redoc_url,
     openapi_url=settings.openapi_url,
 )
+
+register_exception_handlers(app, settings=settings)
 
 app.add_middleware(
     CORSMiddleware,

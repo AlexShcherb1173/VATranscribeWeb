@@ -1,0 +1,24 @@
+---
+import MarketingLayout from "../layouts/MarketingLayout.astro";
+---
+
+<MarketingLayout
+  canonicalPath="/500"
+  title="Service temporarily unavailable"
+  description="VATranscribe could not complete the request."
+  noindex={true}
+>
+  <section class="section error-page-shell" aria-labelledby="page-title">
+    <div class="container error-page-card">
+      <span class="eyebrow">500</span>
+      <h1 id="page-title" class="h1">Service temporarily unavailable</h1>
+      <p class="lead">
+        The request could not be completed. Refresh the page or return to the documentation while the service recovers.
+      </p>
+      <div class="error-page-actions">
+        <a class="button button-primary" href="/">Open home page</a>
+        <a class="button button-secondary" href="/docs">Open documentation</a>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

@@ -1,5 +1,7 @@
 import React, { PropsWithChildren } from "react";
 
+const isDevelopment = import.meta.env.DEV;
+
 type ErrorBoundaryState = {
   hasError: boolean;
   message: string | null;
@@ -26,7 +28,7 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
+    console.error("VATranscribe runtime error:", error, errorInfo);
   }
 
   handleReload = () => {
@@ -42,17 +44,16 @@ export class ErrorBoundary extends React.Component<
               VATranscribe
             </div>
             <h1 className="mt-3 text-2xl font-semibold text-white">
-              Something went wrong
+              Interface temporarily unavailable
             </h1>
-            <p className="mt-3 text-sm text-slate-400">
-              The interface hit an unexpected runtime error. Reload the page and
-              try again.
+            <p className="mt-3 text-sm leading-6 text-slate-400">
+              The workspace could not render this view. Reload the page or return to the dashboard.
             </p>
 
-            {this.state.message ? (
-              <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950 p-4 text-sm text-slate-300">
+            {isDevelopment && this.state.message ? (
+              <pre className="mt-4 overflow-auto rounded-xl border border-slate-800 bg-slate-950 p-4 text-xs text-slate-300">
                 {this.state.message}
-              </div>
+              </pre>
             ) : null}
 
             <button

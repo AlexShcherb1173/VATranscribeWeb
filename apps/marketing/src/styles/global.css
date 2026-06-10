@@ -723,3 +723,23 @@ main {
   background: var(--card-strong);
   color: var(--text);
 }
+
+.error-page-shell {
+  min-height: 68vh;
+  display: grid;
+  align-items: center;
+}
+
+.error-page-card {
+  max-width: 820px;
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.error-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+

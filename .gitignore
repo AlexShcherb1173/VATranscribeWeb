@@ -97,3 +97,9 @@ secrets/
 runtime-env*.template
 runtime-secrets-evidence*.md
 *.redacted.env
+
+# P3 domain/TLS/CDN activation generated evidence
+domain-tls-cdn-evidence*.md
+*.curl-headers.txt
+*.tls-evidence.txt
+*.dns-evidence.txt

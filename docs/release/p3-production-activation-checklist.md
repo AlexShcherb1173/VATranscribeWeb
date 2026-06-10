@@ -48,9 +48,24 @@
 - [ ] Retention is configured: Loki 14 days, Nginx access/error logs 30 days, audit logs 180 days.
 - [ ] Sanitized `monitoring-apm-logs-evidence` is stored outside Git.
 
+## P3-05 Backup restore proof
+
+- [ ] Runtime env file `/opt/vatranscribe/secrets/.env.runtime` contains final backup/restore values.
+- [ ] `BACKUP_DIR=/opt/vatranscribe/backups` is configured on the production host.
+- [ ] `BACKUP_REQUIRE_ENCRYPTION=true` is configured.
+- [ ] `BACKUP_ENCRYPTION_RECIPIENT` or `AGE_RECIPIENT` is configured.
+- [ ] `AGE_IDENTITY_FILE` points to a private age identity file outside Git.
+- [ ] `RESTORE_DRILL_DATABASE=vatranscribe_restore_drill` is configured and differs from `POSTGRES_DB`.
+- [ ] `infra/backup/run-backup-restore-proof.sh` completed on the production host.
+- [ ] `infra/backup/validate-backup-artifacts.sh` verified checksum, manifest, encryption, and `pg_restore --list`.
+- [ ] Restore drill completed into a disposable PostgreSQL database.
+- [ ] `alembic_version` and critical tables were verified.
+- [ ] `infra/backup/redact-backup-restore-report.sh` created sanitized `backup-restore-proof-evidence`.
+- [ ] Sanitized evidence is stored outside Git.
+
+
 ## Remaining activation blocks
 
-- P3-05 Backup restore proof.
 - P3-06 Legal / 152-ФЗ final operator data.
 - P3-07 Supply-chain scan evidence.
 - P3-08 Production rehearsal.

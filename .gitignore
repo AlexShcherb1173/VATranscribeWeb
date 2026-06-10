@@ -110,3 +110,9 @@ monitoring-apm-logs-evidence*.md
 *.request-id-evidence.txt
 *.monitoring-evidence.txt
 uptime-kuma-export*.json
+
+# P3 backup restore proof generated evidence
+backup-restore-proof-evidence*.md
+restore-drill-redacted*.md
+*.backup-proof.txt
+*.restore-proof.txt

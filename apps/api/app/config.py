@@ -45,6 +45,14 @@ ALLOWED_SECRET_MANAGER_STRATEGIES = {
 }
 
 PRODUCTION_SECRET_MANAGER_STRATEGIES = ALLOWED_SECRET_MANAGER_STRATEGIES - {"local-env"}
+
+ALLOWED_PAYMENT_PROVIDERS = {
+    "disabled",
+    "yookassa",
+    "cloudpayments",
+    "stripe",
+    "robokassa",
+}
 LOCALHOST_VALUES = {
     "localhost",
     "127.0.0.1",
@@ -277,6 +285,16 @@ class Settings(BaseSettings):
     admin_2fa_recovery_code_bytes: int = Field(10, alias="ADMIN_2FA_RECOVERY_CODE_BYTES")
     admin_2fa_totp_window: int = Field(1, alias="ADMIN_2FA_TOTP_WINDOW")
 
+    # --- BILLING / PAYMENT PRODUCTION GATE ---
+    payment_provider: str = Field("disabled", alias="PAYMENT_PROVIDER")
+    payment_webhook_secret: str | None = Field(None, alias="PAYMENT_WEBHOOK_SECRET")
+    payment_api_key: str | None = Field(None, alias="PAYMENT_API_KEY")
+    payment_webhook_signature_header: str = Field(
+        "X-VATranscribe-Signature", alias="PAYMENT_WEBHOOK_SIGNATURE_HEADER"
+    )
+    billing_fake_upgrade_enabled: bool = Field(True, alias="BILLING_FAKE_UPGRADE_ENABLED")
+    billing_paid_plans_enabled: bool = Field(False, alias="BILLING_PAID_PLANS_ENABLED")
+
 
     # --- RATE LIMITING / TRUSTED PROXY ---
     rate_limit_backend: str = Field("memory", alias="RATE_LIMIT_BACKEND")
@@ -420,6 +438,10 @@ class Settings(BaseSettings):
             "legal_152fz_rkn_notification_status",
             "legal_152fz_pd_localization_status",
             "admin_2fa_issuer",
+            "payment_provider",
+            "payment_webhook_secret",
+            "payment_api_key",
+            "payment_webhook_signature_header",
             "secret_manager_strategy",
             "runtime_env_file",
             "secret_rotation_policy_version",
@@ -490,6 +512,25 @@ class Settings(BaseSettings):
 
         if self.admin_2fa_totp_window < 0 or self.admin_2fa_totp_window > 2:
             errors.append("ADMIN_2FA_TOTP_WINDOW must be between 0 and 2")
+
+        self.payment_provider = (self.payment_provider or "disabled").strip().lower()
+        if self.payment_provider not in ALLOWED_PAYMENT_PROVIDERS:
+            errors.append(
+                "PAYMENT_PROVIDER must be one of: "
+                + ", ".join(sorted(ALLOWED_PAYMENT_PROVIDERS))
+            )
+
+        if self.payment_webhook_secret == "":
+            self.payment_webhook_secret = None
+        if self.payment_api_key == "":
+            self.payment_api_key = None
+        if not self.payment_webhook_signature_header:
+            errors.append("PAYMENT_WEBHOOK_SIGNATURE_HEADER must not be empty")
+
+        if self.payment_provider == "disabled" and self.billing_paid_plans_enabled:
+            errors.append(
+                "BILLING_PAID_PLANS_ENABLED cannot be true when PAYMENT_PROVIDER=disabled"
+            )
 
         if self.youtube_cookies_max_bytes <= 0:
             errors.append("YOUTUBE_COOKIES_MAX_BYTES must be positive")
@@ -700,6 +741,35 @@ class Settings(BaseSettings):
         if _is_legal_placeholder(self.admin_2fa_issuer):
             errors.append("ADMIN_2FA_ISSUER must be a real production value")
 
+        if self.billing_fake_upgrade_enabled:
+            errors.append("BILLING_FAKE_UPGRADE_ENABLED must be false in production")
+
+        if self.payment_provider == "disabled" and self.billing_paid_plans_enabled:
+            errors.append(
+                "BILLING_PAID_PLANS_ENABLED cannot be true when PAYMENT_PROVIDER=disabled"
+            )
+
+        if self.payment_provider != "disabled":
+            if not self.billing_paid_plans_enabled:
+                errors.append(
+                    "BILLING_PAID_PLANS_ENABLED must be true when PAYMENT_PROVIDER is enabled"
+                )
+            if _looks_like_secret_placeholder(self.payment_webhook_secret):
+                errors.append(
+                    "PAYMENT_WEBHOOK_SECRET is required and must not be a placeholder "
+                    "when PAYMENT_PROVIDER is enabled"
+                )
+            if _looks_like_secret_placeholder(self.payment_api_key):
+                errors.append(
+                    "PAYMENT_API_KEY is required and must not be a placeholder "
+                    "when PAYMENT_PROVIDER is enabled"
+                )
+            if self.legal_payment_provider == "disabled":
+                errors.append(
+                    "LEGAL_PAYMENT_PROVIDER must identify the payment provider "
+                    "when PAYMENT_PROVIDER is enabled"
+                )
+
         return errors
 
     # ============================================================
@@ -748,6 +818,14 @@ class Settings(BaseSettings):
     @property
     def legal_production_domains_list(self) -> list[str]:
         return _split_domains(self.legal_production_domains or "")
+
+    @property
+    def payment_provider_enabled(self) -> bool:
+        return self.payment_provider != "disabled"
+
+    @property
+    def fake_billing_upgrade_allowed(self) -> bool:
+        return self.billing_fake_upgrade_enabled and not self.is_production
 
     @property
     def storage_dirs(self) -> list[Path]:

@@ -214,6 +214,15 @@ class BillingUpgradeResponse(BaseModel):
     quota: UserQuotaResponse
 
 
+class PaymentWebhookResponse(BaseModel):
+    ok: bool
+    status: str
+    provider: str
+    event_id: str | None = None
+    detail: str | None = None
+    subscription_id: str | None = None
+
+
 class MediaAssetResponse(BaseModel):
     id: str
     kind: str

@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from apps.api.app.routers.auth import router as auth_router
 from apps.api.app.routers.admin_security import router as admin_security_router
 from apps.api.app.routers.billing import router as billing_router
+from apps.api.app.routers.payment_webhooks import router as payment_webhooks_router
 from apps.api.app.routers.plans import router as plans_router
 from apps.api.app.routers.downloads import router as downloads_router
 from apps.api.app.routers.youtube_cookies import router as youtube_cookies_router
@@ -35,6 +36,7 @@ router.include_router(admin_security_router)
 router.include_router(profile_router)
 router.include_router(quota_router)
 router.include_router(billing_router)
+router.include_router(payment_webhooks_router)
 router.include_router(plans_router)
 router.include_router(jobs_router)
 router.include_router(downloads_router)

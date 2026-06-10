@@ -64,6 +64,7 @@ require_bool_value EXPOSE_API_DOCS false
 require_bool_value COOKIE_SECURE true
 require_bool_value COOKIE_HTTPONLY true
 require_bool_value ADMIN_2FA_REQUIRED true
+require_bool_value BILLING_FAKE_UPGRADE_ENABLED false
 require_bool_value RATE_LIMIT_REDIS_FAIL_OPEN false
 require_bool_value PRODUCTION_SECRETS_VALIDATION_REQUIRED true
 
@@ -125,9 +126,21 @@ optional_secret_if_set PAYMENT_API_KEY
 optional_secret_if_set BACKUP_REMOTE
 optional_secret_if_set BACKUP_REMOTE_PATH
 
-if [[ "${PAYMENT_PROVIDER:-disabled}" != "disabled" ]]; then
+require_present PAYMENT_PROVIDER
+case "${PAYMENT_PROVIDER}" in
+  disabled|yookassa|cloudpayments|stripe|robokassa) ;;
+  *) fail "PAYMENT_PROVIDER has unsupported value: ${PAYMENT_PROVIDER}" ;;
+esac
+
+if [[ "${PAYMENT_PROVIDER:-disabled}" == "disabled" ]]; then
+  if [[ "${BILLING_PAID_PLANS_ENABLED:-false}" == "true" ]]; then
+    fail "BILLING_PAID_PLANS_ENABLED cannot be true when PAYMENT_PROVIDER=disabled"
+  fi
+else
+  require_bool_value BILLING_PAID_PLANS_ENABLED true
   require_secret_non_placeholder PAYMENT_WEBHOOK_SECRET
   require_secret_non_placeholder PAYMENT_API_KEY
+  require_non_placeholder PAYMENT_WEBHOOK_SIGNATURE_HEADER
 fi
 
 info "Production secret validation passed for ${RUNTIME_ENV_FILE}"

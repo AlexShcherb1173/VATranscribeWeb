@@ -124,3 +124,15 @@ operator-details*.md
 processors-subprocessors-inventory.completed*.md
 legal-review-notes*.md
 *.legal-evidence.txt
+
+# P3 supply-chain evidence generated reports
+/reports/security/supply-chain-evidence/
+supply-chain-evidence*.md
+vulnerability-triage-high-critical.completed*.md
+*.supply-chain-evidence.txt
+*.pip-audit.json
+*.npm-audit.json
+*.trivy.json
+*.gitleaks.json
+*.sbom.spdx.json
+*.sbom.cyclonedx.json

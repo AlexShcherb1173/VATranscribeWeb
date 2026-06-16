@@ -91,3 +91,22 @@ DO NOT commit real secrets, runtime .env.runtime files, private keys, tokens, ce
 - [ ] Payment provider legal identity matches the operator before paid billing is enabled.
 - [ ] Completed legal evidence is stored outside Git.
 - [ ] Human/legal review gives PASS before public launch.
+
+## P3-07 Supply-chain evidence
+
+- [ ] Runtime environment and CI have scanner tools available: `pip-audit`, `npm`, Trivy, Gitleaks, and Syft.
+- [ ] `scripts/security/run-supply-chain-evidence.ps1` or `.sh` completed for the release candidate.
+- [ ] `pip-audit` report exists outside Git.
+- [ ] `npm audit --workspaces --audit-level=high` report exists outside Git.
+- [ ] Trivy filesystem/config/secret report exists outside Git.
+- [ ] Gitleaks redacted report exists outside Git.
+- [ ] Syft SBOM exists outside Git or in a controlled artifact store.
+- [ ] High/Critical findings are fixed or have explicit release-owner triage.
+- [ ] Medium findings are manually reviewed.
+- [ ] Low findings are accepted or scheduled.
+- [ ] Sanitized supply-chain evidence summary is available.
+- [ ] Raw reports, SBOM files, tokens, credentials, private registry URLs, and unreviewed secret findings are not committed to Git.
+
+## P3-07 secret handling notice
+
+DO NOT commit raw scanner outputs, SBOM files, private registry URLs, real credentials, `.env` files, `.env.runtime`, GitHub tokens, npm tokens, container registry tokens, or unreviewed Gitleaks findings to the repository.

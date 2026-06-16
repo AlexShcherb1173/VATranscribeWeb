@@ -116,3 +116,11 @@ backup-restore-proof-evidence*.md
 restore-drill-redacted*.md
 *.backup-proof.txt
 *.restore-proof.txt
+
+# P3 legal / 152-FZ activation generated evidence
+legal-final-review-evidence*.md
+legal-152fz-evidence*.md
+operator-details*.md
+processors-subprocessors-inventory.completed*.md
+legal-review-notes*.md
+*.legal-evidence.txt

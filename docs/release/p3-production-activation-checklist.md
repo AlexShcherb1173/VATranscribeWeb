@@ -73,3 +73,21 @@
 ## Secret handling notice
 
 DO NOT commit real secrets, runtime .env.runtime files, private keys, tokens, certificates, backup keys, payment keys, webhook secrets, SMTP passwords, Sentry DSNs, DNS/CDN API tokens, TLS private keys, Certbot account keys, or redacted evidence files to the repository.
+
+## P3-06 Legal / 152-ФЗ activation
+
+- [ ] Real operator details are filled locally and outside Git.
+- [ ] Legal, privacy, and support contacts are real and monitored.
+- [ ] Privacy Policy final review is complete.
+- [ ] User Agreement / Terms final review is complete.
+- [ ] Cookie Policy final review is complete.
+- [ ] Consent to personal data processing final review is complete.
+- [ ] Analytics/cookie consent final review is complete.
+- [ ] 152-ФЗ applicability decision is recorded.
+- [ ] RKN operator notification decision is recorded.
+- [ ] Personal data localization decision is recorded.
+- [ ] Cross-border transfer decision is recorded.
+- [ ] Processors/subprocessors inventory is complete.
+- [ ] Payment provider legal identity matches the operator before paid billing is enabled.
+- [ ] Completed legal evidence is stored outside Git.
+- [ ] Human/legal review gives PASS before public launch.

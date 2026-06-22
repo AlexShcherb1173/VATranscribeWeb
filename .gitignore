@@ -136,3 +136,10 @@ vulnerability-triage-high-critical.completed*.md
 *.gitleaks.json
 *.sbom.spdx.json
 *.sbom.cyclonedx.json
+
+# P3 production rehearsal generated evidence
+/reports/release/production-rehearsal/
+production-rehearsal-evidence*.md
+production-rehearsal-*.raw.txt
+production-rehearsal-*.redacted.txt
+*.production-rehearsal.log

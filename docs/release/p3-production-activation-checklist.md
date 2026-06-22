@@ -110,3 +110,31 @@ DO NOT commit real secrets, runtime .env.runtime files, private keys, tokens, ce
 ## P3-07 secret handling notice
 
 DO NOT commit raw scanner outputs, SBOM files, private registry URLs, real credentials, `.env` files, `.env.runtime`, GitHub tokens, npm tokens, container registry tokens, or unreviewed Gitleaks findings to the repository.
+
+## P3-08 Production rehearsal
+
+- [ ] Runtime env file `/opt/vatranscribe/secrets/.env.runtime` is available on the rehearsal host.
+- [ ] Release candidate commit is recorded.
+- [ ] Previous known-good rollback ref is recorded.
+- [ ] `infra/deploy/run-production-rehearsal.sh` completed on staging or production-like infrastructure.
+- [ ] Staging deploy completed from the release candidate.
+- [ ] Alembic migrations completed with `python -m alembic upgrade head`.
+- [ ] `infra/deploy/smoke-test.sh` passed.
+- [ ] `infra/deploy/rollback.sh` completed in 300 seconds or less.
+- [ ] Backup/restore proof is linked to current release evidence.
+- [ ] Auth checks passed.
+- [ ] Private files/storage checks passed.
+- [ ] Jobs/worker checks passed.
+- [ ] Billing checks passed and fake paid-plan upgrade is disabled.
+- [ ] Cookie consent checks passed.
+- [ ] Analytics checks passed and analytics is consent-gated.
+- [ ] Monitoring/APM/logs request_id evidence is linked.
+- [ ] Supply-chain evidence and High/Critical triage are linked.
+- [ ] Legal/152-ФЗ final review is linked.
+- [ ] `infra/deploy/redact-production-rehearsal-evidence.sh` created sanitized evidence.
+- [ ] `infra/deploy/validate-production-rehearsal.sh` passed on sanitized evidence.
+- [ ] `docs/release/final-production-go-nogo-checklist.md` has a GO / NO-GO decision.
+
+## P3-08 secret handling notice
+
+DO NOT commit production rehearsal raw evidence, redacted evidence, private logs, runtime `.env.runtime`, SSH keys, payment keys, Sentry DSNs, Telegram tokens, SMTP passwords, backup files, or legal/operator details to Git.

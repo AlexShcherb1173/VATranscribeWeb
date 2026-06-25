@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+﻿FROM python:3.12-slim-bookworm
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -42,7 +42,7 @@ RUN printf '%s\n' \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml README.md ./
-COPY requirements-worker-demucs.txt ./
+COPY scripts/maintenance/requirements-worker-demucs.txt ./requirements-worker-demucs.txt
 COPY apps ./apps
 COPY packages ./packages
 COPY alembic.ini ./

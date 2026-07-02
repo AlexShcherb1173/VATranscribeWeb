@@ -143,3 +143,8 @@ production-rehearsal-evidence*.md
 production-rehearsal-*.raw.txt
 production-rehearsal-*.redacted.txt
 *.production-rehearsal.log
+
+# Local deployment / evidence archives
+VATranscribeWeb_P4-01_live_redacted_evidence_*.tar.gz
+VATranscribeWeb_P4-01_*.tar.gz
+*.bak.*

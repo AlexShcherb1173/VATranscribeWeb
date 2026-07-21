@@ -8,9 +8,17 @@ type Props = {
 
 const { locale = "en" } = Astro.props;
 const content = getPricingContent(locale);
+
+const quotaLabels = locale === "ru"
+  ? { storage: "РҐСЂР°РЅРёР»РёС‰Рµ", transcription: "РўСЂР°РЅСЃРєСЂРёР±Р°С†РёСЏ", jobs: "Р—Р°РґР°С‡Рё" }
+  : { storage: "Storage", transcription: "Transcription", jobs: "Jobs" };
+
+const planCodeLabels = locale === "ru"
+  ? { free: "СЃС‚Р°СЂС‚", pro: "РїСЂРѕС„Рё", business: "РєРѕРјР°РЅРґР°" }
+  : { free: "free", pro: "pro", business: "business" };
 ---
 
-<div class="pricing-period" aria-label="Billing period selector foundation">
+<div class="pricing-period" aria-label={locale === "ru" ? "РџРµСЂРµРєР»СЋС‡Р°С‚РµР»СЊ РїРµСЂРёРѕРґР° РѕРїР»Р°С‚С‹" : "Billing period selector foundation"}>
   <span class="pricing-period-option active">{content.periodToggle.monthly}</span>
   <span class="pricing-period-option">{content.periodToggle.yearly}</span>
   <span class="pricing-period-note">{content.periodToggle.yearlyNote}</span>
@@ -21,7 +29,7 @@ const content = getPricingContent(locale);
     <article class={`pricing-card card ${plan.highlighted ? "card-strong pricing-card-featured" : ""}`}>
       <div class="pricing-card-top">
         <span class={`badge ${plan.highlighted ? "badge-accent" : ""}`}>{plan.badge}</span>
-        <span class="pricing-plan-code">{plan.code}</span>
+        <span class="pricing-plan-code">{planCodeLabels[plan.code]}</span>
       </div>
 
       <h3 class="pricing-plan-name">{plan.name}</h3>
@@ -36,13 +44,13 @@ const content = getPricingContent(locale);
       <p class="pricing-best-for">{plan.bestFor}</p>
 
       <div class="pricing-mini-quota">
-        <div><strong>{plan.storage}</strong><span>Storage</span></div>
-        <div><strong>{plan.transcription}</strong><span>Transcription</span></div>
-        <div><strong>{plan.jobs}</strong><span>Jobs</span></div>
+        <div><strong>{plan.storage}</strong><span>{quotaLabels.storage}</span></div>
+        <div><strong>{plan.transcription}</strong><span>{quotaLabels.transcription}</span></div>
+        <div><strong>{plan.jobs}</strong><span>{quotaLabels.jobs}</span></div>
       </div>
 
       <ul class="list">
-        {plan.features.map((feature) => <li>✓ {feature}</li>)}
+        {plan.features.map((feature) => <li>вњ“ {feature}</li>)}
       </ul>
 
       <a class="button button-primary button-block" href={plan.href}>{plan.cta}</a>

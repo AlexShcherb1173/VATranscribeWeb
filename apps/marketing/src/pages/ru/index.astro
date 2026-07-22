@@ -24,13 +24,6 @@ import { getSaasLink } from "../../config/links";
         <a class="button button-secondary" href="/ru/download">Варианты скачивания</a>
         <a class="button button-secondary" href="/ru/features">Возможности</a>
       </div>
-      <div class="kicker-row">
-        <span class="badge">Защита сессий</span>
-        <span class="badge">Юридические согласия</span>
-        <span class="badge">Запросы по персональным данным</span>
-        <span class="badge">Проверка прав на файлы</span>
-      </div>
-
       <div class="hero-panel">
         <div class="hero-window">
           <div class="hero-window-bar">
@@ -58,22 +51,16 @@ import { getSaasLink } from "../../config/links";
         </div>
       </div>
 
-      <div class="grid grid-4" style="margin-top: 20px;">
-        <div class="stat">
-          <div class="stat-value">MP3/MP4</div>
-          <div class="muted">скачивание и обработка</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">JWT + rotation</div>
-          <div class="muted">защита входа</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">Журнал действий</div>
-          <div class="muted">события безопасности</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">Тарифы</div>
-          <div class="muted">лимиты и квоты</div>
+      <div class="card card-strong" style="margin-top: 20px;">
+        <span class="eyebrow">Единый медиа-конвейер</span>
+        <h2 class="h2">От ссылки до готового результата — в одном сервисе.</h2>
+        <p class="lead" style="margin-bottom: 0;">
+          Скачивайте видео и аудио, получайте MP3/MP4, запускайте транскрибацию,
+          храните историю задач и управляйте лимитами в защищённом рабочем пространстве.
+        </p>
+        <div class="button-row">
+          <a class="button button-primary" href={getSaasLink("register")}>Попробовать бесплатно</a>
+          <a class="button button-secondary" href="/ru/pricing">Посмотреть тарифы</a>
         </div>
       </div>
     </div>

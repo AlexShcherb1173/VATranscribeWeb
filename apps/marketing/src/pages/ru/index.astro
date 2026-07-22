@@ -4,14 +4,20 @@ import PricingGrid from "../../components/PricingGrid.astro";
 import { getSaasLink } from "../../config/links";
 ---
 
-<MarketingLayout canonicalPath="/ru" locale="ru" title="VATranscribe" description="Скачивание, транскрибация и организация медиафайлов в одном безопасном SaaS-ready рабочем пространстве.">
-  <section class="section">
+<MarketingLayout
+  canonicalPath="/ru"
+  locale="ru"
+  title="VATranscribe"
+  description="Скачивание, конвертация, транскрибация и управление медиафайлами в одном безопасном веб-сервисе."
+>
+  <section class="section hero-shell">
     <div class="container">
-      <span class="eyebrow">Media workflow SaaS</span>
-      <h1 class="h1">Скачивайте, транскрибируйте и управляйте медиа в одном безопасном workspace.</h1>
+      <span class="eyebrow">Платформа для работы с медиа</span>
+      <h1 class="h1">Скачивайте, транскрибируйте и управляйте медиафайлами в одном безопасном рабочем пространстве.</h1>
       <p class="lead">
-        VATranscribe объединяет download jobs, MP3/MP4 conversion, transcription history, user-owned files,
-        quotas, privacy requests и audit logs в SaaS-ready продуктовой архитектуре.
+        VATranscribe объединяет анализ ссылок, скачивание видео и аудио, конвертацию MP3/MP4,
+        историю транскрибаций, пользовательские файлы, лимиты, запросы по персональным данным
+        и журнал действий в единую продуктовую основу.
       </p>
       <div class="button-row">
         <a class="button button-primary" href={getSaasLink("register")}>Начать бесплатно</a>
@@ -19,10 +25,56 @@ import { getSaasLink } from "../../config/links";
         <a class="button button-secondary" href="/ru/features">Возможности</a>
       </div>
       <div class="kicker-row">
-        <span class="badge">Refresh token rotation</span>
+        <span class="badge">Защита сессий</span>
         <span class="badge">Юридические согласия</span>
-        <span class="badge">Privacy requests</span>
-        <span class="badge">File ownership checks</span>
+        <span class="badge">Запросы по персональным данным</span>
+        <span class="badge">Проверка прав на файлы</span>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-window">
+          <div class="hero-window-bar">
+            <span class="hero-dot"></span>
+            <span class="hero-dot"></span>
+            <span class="hero-dot"></span>
+          </div>
+          <div class="hero-window-body">
+            <div class="pipeline-row">
+              <strong>Анализ ссылки</strong>
+              <div class="pipeline-progress"><span style="width: 92%;"></span></div>
+              <span class="badge">форматы найдены</span>
+            </div>
+            <div class="pipeline-row">
+              <strong>Скачивание медиа</strong>
+              <div class="pipeline-progress"><span style="width: 76%;"></span></div>
+              <span class="badge">MP4 / MP3</span>
+            </div>
+            <div class="pipeline-row">
+              <strong>Транскрибация</strong>
+              <div class="pipeline-progress"><span style="width: 61%;"></span></div>
+              <span class="badge">в очереди</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-4" style="margin-top: 20px;">
+        <div class="stat">
+          <div class="stat-value">MP3/MP4</div>
+          <div class="muted">скачивание и обработка</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">JWT + rotation</div>
+          <div class="muted">защита входа</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Журнал действий</div>
+          <div class="muted">события безопасности</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Тарифы</div>
+          <div class="muted">лимиты и квоты</div>
+        </div>
       </div>
     </div>
   </section>
@@ -33,18 +85,18 @@ import { getSaasLink } from "../../config/links";
         <span class="eyebrow">Проблема</span>
         <h2 class="h2">Медиа-автоматизация ломается, когда продуктовые слои смешаны.</h2>
         <ul class="list">
-          <li>— Ссылки, скачивания и транскрипты обычно лежат в разных инструментах.</li>
-          <li>— Ownership, auditability и privacy flows часто добавляются слишком поздно.</li>
-          <li>— Desktop downloads, SaaS quotas и billing трудно связать после запуска.</li>
+          <li>— Ссылки, скачивания и транскрибации часто лежат в разных инструментах.</li>
+          <li>— Права на файлы, журнал действий и запросы по персональным данным обычно добавляют слишком поздно.</li>
+          <li>— Скачивание, лимиты, тарифы и личный кабинет трудно связать после запуска.</li>
         </ul>
       </div>
       <div class="card card-strong">
         <span class="eyebrow">Решение</span>
-        <h2 class="h2">Чистый SaaS-слой вокруг реальных media jobs.</h2>
+        <h2 class="h2">Чистый продуктовый слой вокруг реальных задач обработки медиа.</h2>
         <ul class="list">
-          <li>✓ URL analysis, downloads, media assets и transcripts в одном workflow.</li>
-          <li>✓ Auth hardening, consents, audit logs и privacy requests с раннего этапа.</li>
-          <li>✓ Marketing, dashboard, API и будущая admin panel разделены архитектурно.</li>
+          <li>✓ Анализ ссылок, скачивание, медиатека и транскрибации работают в одном процессе.</li>
+          <li>✓ Аутентификация, согласия, журнал действий и запросы по персональным данным заложены с раннего этапа.</li>
+          <li>✓ Маркетинговый сайт, личный кабинет, API и будущая админ-панель разделены архитектурно.</li>
         </ul>
       </div>
     </div>
@@ -52,10 +104,181 @@ import { getSaasLink } from "../../config/links";
 
   <section class="section">
     <div class="container">
+      <div class="text-center">
+        <span class="eyebrow">Процесс</span>
+        <h2 class="h2">От исходной ссылки до контролируемого медиафайла.</h2>
+        <p class="lead">Публичная страница объясняет сценарий, а личный кабинет выполняет реальные задачи.</p>
+      </div>
+      <div class="grid grid-4" style="margin-top: 32px;">
+        <article class="card">
+          <div class="step-number">1</div>
+          <h3 class="h3" style="margin-top: 18px;">Добавить источник</h3>
+          <p class="muted" style="line-height: 1.65;">Вставьте ссылку на медиа или подготовьте файл для дальнейшей обработки.</p>
+        </article>
+        <article class="card">
+          <div class="step-number">2</div>
+          <h3 class="h3" style="margin-top: 18px;">Проверить форматы</h3>
+          <p class="muted" style="line-height: 1.65;">Сервис показывает доступные варианты видео и аудио до создания задачи.</p>
+        </article>
+        <article class="card">
+          <div class="step-number">3</div>
+          <h3 class="h3" style="margin-top: 18px;">Создать задачу</h3>
+          <p class="muted" style="line-height: 1.65;">Скачивание или транскрибация попадает в очередь с логами и статусами.</p>
+        </article>
+        <article class="card">
+          <div class="step-number">4</div>
+          <h3 class="h3" style="margin-top: 18px;">Сохранить результат</h3>
+          <p class="muted" style="line-height: 1.65;">Медиафайлы, транскрипты и экспортные файлы остаются привязаны к владельцу.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Возможности</span>
+      <h2 class="h2">Это продуктовая основа, а не набор отдельных скриптов.</h2>
+      <p class="lead">
+        VATranscribe разделяет публичный сайт, личный кабинет, API, фоновые задачи,
+        будущую desktop-версию и монетизацию.
+      </p>
+      <div class="grid grid-3" style="margin-top: 28px;">
+        <div class="card">
+          <span class="badge badge-accent">Скачивание</span>
+          <h3 class="h3" style="margin-top: 14px;">MP3 и MP4-процессы</h3>
+          <p class="muted" style="margin: 12px 0 0; line-height: 1.65;">Подготовка аудио и видео с состоянием задачи, прогрессом и логами.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-accent">Транскрибация</span>
+          <h3 class="h3" style="margin-top: 14px;">Основа для расшифровки речи</h3>
+          <p class="muted" style="margin: 12px 0 0; line-height: 1.65;">Связь медиафайлов с задачами транскрибации, историей и экспортом.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-accent">Безопасность</span>
+          <h3 class="h3" style="margin-top: 14px;">Базовая защита и приватность</h3>
+          <p class="muted" style="margin: 12px 0 0; line-height: 1.65;">Защита сессий, лимиты запросов, политика паролей, согласия и журнал действий.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-accent">Владение</span>
+          <h3 class="h3" style="margin-top: 14px;">Файлы принадлежат пользователю</h3>
+          <p class="muted" style="margin: 12px 0 0; line-height: 1.65;">Задачи, медиафайлы, транскрипты и экспорт доступны только владельцу.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-accent">Оплата</span>
+          <h3 class="h3" style="margin-top: 14px;">Готовность к тарифам</h3>
+          <p class="muted" style="margin: 12px 0 0; line-height: 1.65;">Планы, лимиты, подписки и история использования подготовлены для подключения платежей.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-accent">Маркетинг</span>
+          <h3 class="h3" style="margin-top: 14px;">Публичный слой для продвижения</h3>
+          <p class="muted" style="margin: 12px 0 0; line-height: 1.65;">Статические страницы объясняют продукт отдельно от авторизованного кабинета.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="card card-strong">
+        <div class="grid grid-2">
+          <div>
+            <span class="eyebrow">Доверие</span>
+            <h2 class="h2">Безопасность и приватность уже встроены в основу продукта.</h2>
+            <p class="lead">
+              Базовые механизмы нужны до публичного запуска: вход, согласия, журнал действий
+              и запросы по персональным данным должны работать заранее.
+            </p>
+          </div>
+          <div class="grid">
+            <div class="card">
+              <h3 class="h3">Защита входа</h3>
+              <p class="muted">Короткие access-токены, обновление refresh-токенов, выход со всех устройств и политика паролей.</p>
+            </div>
+            <div class="card">
+              <h3 class="h3">История согласий</h3>
+              <p class="muted">Версии условий, политики конфиденциальности и согласий сохраняются для каждого пользователя.</p>
+            </div>
+            <div class="card">
+              <h3 class="h3">Запросы по данным</h3>
+              <p class="muted">Пользователь может запросить экспорт, удаление или отзыв согласия с фиксацией действия.</p>
+            </div>
+            <div class="card">
+              <h3 class="h3">Журнал действий</h3>
+              <p class="muted">Вход, оплата, согласия и действия с данными фиксируются для контроля и расследований.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
       <span class="eyebrow">Тарифы</span>
-      <h2 class="h2">Начать просто. Масштабировать до SaaS.</h2>
-      <p class="lead">Тарифные карточки подготовлены для будущей синхронизации с backend billing plans.</p>
+      <h2 class="h2">Начните с проверки. Масштабируйте по мере роста.</h2>
+      <p class="lead">
+        Тарифные карточки подготовлены для будущей синхронизации с серверным каталогом планов.
+      </p>
       <PricingGrid locale="ru" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="card card-strong text-center">
+        <span class="eyebrow">Desktop-версия</span>
+        <h2 class="h2">Путь к desktop-дистрибутиву можно готовить заранее.</h2>
+        <p class="lead">
+          Страница скачивания уже готова для установщиков, заметок к релизам, контрольных сумм
+          и версионного распространения.
+        </p>
+        <div class="button-row" style="justify-content: center;">
+          <a class="button button-primary" href="/ru/download">Открыть страницу скачивания</a>
+          <a class="button button-secondary" href="/ru/docs">Читать документацию</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">FAQ</span>
+      <h2 class="h2">Вопросы перед запуском.</h2>
+      <div style="margin-top: 24px;">
+        <details class="faq-item">
+          <summary>Это только скачиватель?</summary>
+          <p>Нет. Направление продукта объединяет скачивание, транскрибацию, медиатеку, лимиты, оплату и процессы приватности.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Зачем отделять публичный сайт от личного кабинета?</summary>
+          <p>Публичный сайт должен быть быстрым и понятным для продвижения. Личный кабинет отвечает за авторизованные рабочие процессы.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Юридические страницы уже финальные?</summary>
+          <p>Нет. Они оформлены как продуктовая основа. Перед публичным запуском тексты нужно юридически проверить и завершить.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Desktop-приложение уже готово?</summary>
+          <p>Пока подготовлен слой для будущего распространения. Реальные установщики и релизный процесс относятся к следующему этапу.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="card text-center">
+        <span class="eyebrow">Следующий шаг</span>
+        <h2 class="h2">Превратите техническую основу в публичный продукт.</h2>
+        <p class="lead">
+          Используйте маркетинговый слой, чтобы объяснить ценность, проверить позиционирование
+          и привести пользователя в личный кабинет.
+        </p>
+        <div class="button-row" style="justify-content: center;">
+          <a class="button button-primary" href={getSaasLink("dashboard")}>Открыть личный кабинет</a>
+          <a class="button button-secondary" href="/ru/pricing">Сравнить тарифы</a>
+        </div>
+      </div>
     </div>
   </section>
 </MarketingLayout>

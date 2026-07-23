@@ -12,7 +12,7 @@ const content = getDownloadContent(locale);
 
 <section class="section download-hero">
   <div class="container">
-    <span class="eyebrow">{content.eyebrow}</span>
+    {locale !== "ru" && <span class="eyebrow">{content.eyebrow}</span>}
     <h1 class="h1">{content.title}</h1>
     <p class="lead">{content.lead}</p>
 
@@ -32,10 +32,21 @@ const content = getDownloadContent(locale);
         <span class="hero-dot"></span>
       </div>
       <div class="download-console-body">
-        <code>channel:web-dashboard</code>
-        <code>desktop:planned</code>
-        <code>checksums:planned-for-signed-builds</code>
-        <code>release-notes:0.1.0-web</code>
+        {locale === "ru" ? (
+          <>
+            <code>канал:веб-кабинет</code>
+            <code>настольная-версия:запланирована</code>
+            <code>контрольные-суммы:для-подписанных-сборок</code>
+            <code>заметки-к-релизу:0.1.0-web</code>
+          </>
+        ) : (
+          <>
+            <code>channel:web-dashboard</code>
+            <code>desktop:planned</code>
+            <code>checksums:planned-for-signed-builds</code>
+            <code>release-notes:0.1.0-web</code>
+          </>
+        )}
       </div>
     </div>
   </div>

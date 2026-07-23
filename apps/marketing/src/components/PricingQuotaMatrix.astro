@@ -27,7 +27,7 @@ const labels = locale === "ru"
 
 <section class="section">
   <div class="container">
-    <span class="eyebrow">{content.quotaTitle}</span>
+    {locale !== "ru" && <span class="eyebrow">{content.quotaTitle}</span>}
     <h2 class="h2">{content.quotaTitle}</h2>
     {content.quotaLead && <p class="lead">{content.quotaLead}</p>}
 

@@ -15,7 +15,7 @@ const labels = locale === "ru"
 
 <section class="section">
   <div class="container">
-    <span class="eyebrow">{content.comparisonTitle}</span>
+    {locale !== "ru" && <span class="eyebrow">{content.comparisonTitle}</span>}
     <h2 class="h2">{content.comparisonTitle}</h2>
     {content.comparisonLead && <p class="lead">{content.comparisonLead}</p>}
 

@@ -17,7 +17,7 @@ const labels = locale === "ru"
   <div class="container">
     <span class="eyebrow">{content.comparisonTitle}</span>
     <h2 class="h2">{content.comparisonTitle}</h2>
-    <p class="lead">{content.comparisonLead}</p>
+    {content.comparisonLead && <p class="lead">{content.comparisonLead}</p>}
 
     <div class="table-card">
       <table class="pricing-table">

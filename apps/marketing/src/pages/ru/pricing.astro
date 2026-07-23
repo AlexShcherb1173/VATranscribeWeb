@@ -17,11 +17,6 @@ const content = getPricingContent("ru");
       <h1 class="h1">{content.title}</h1>
       <p class="lead">{content.lead}</p>
 
-      <div class="card" style="margin-top: 28px;">
-        <strong>Backend-aligned pricing</strong>
-        <p class="muted" style="margin-bottom: 0;">{content.sourceNote}</p>
-      </div>
-
       <h2 class="h2" style="margin-top: 52px;">{content.cardsTitle}</h2>
       <PricingGrid locale="ru" />
     </div>
@@ -34,7 +29,6 @@ const content = getPricingContent("ru");
   <section class="section">
     <div class="container">
       <div class="card card-strong text-center">
-        <span class="eyebrow">Следующий шаг</span>
         <h2 class="h2">{content.finalTitle}</h2>
         <p class="lead">{content.finalLead}</p>
         <div class="button-row" style="justify-content: center;">

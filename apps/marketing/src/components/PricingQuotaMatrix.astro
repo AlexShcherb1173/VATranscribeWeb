@@ -29,7 +29,7 @@ const labels = locale === "ru"
   <div class="container">
     <span class="eyebrow">{content.quotaTitle}</span>
     <h2 class="h2">{content.quotaTitle}</h2>
-    <p class="lead">{content.quotaLead}</p>
+    {content.quotaLead && <p class="lead">{content.quotaLead}</p>}
 
     <div class="table-card">
       <table class="pricing-table">

@@ -37,7 +37,7 @@ jobs:
     if: ${{ inputs.run_deploy == 'true' }}
     steps:
       - name: Run remote deploy over SSH
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.PRODUCTION_SSH_HOST }}
           username: ${{ secrets.PRODUCTION_SSH_USER }}

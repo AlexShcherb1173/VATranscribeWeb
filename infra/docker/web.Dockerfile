@@ -27,7 +27,7 @@ ENV VITE_BASE_PATH=${VITE_BASE_PATH}
 RUN npm run build:marketing
 RUN npm run build:web
 
-FROM nginx:1.27-alpine AS runtime
+FROM nginx:1.31-alpine AS runtime
 
 COPY infra/docker/nginx.conf /etc/nginx/conf.d/default.conf
 

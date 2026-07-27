@@ -1,8 +1,11 @@
-const DEFAULT_API_BASE_URL = "http://127.0.0.1:8000/api/v1";
+﻿const DEFAULT_API_BASE_URL =
+  import.meta.env.MODE === "production"
+    ? "/api/v1"
+    : "сервер API/api/v1";
 
 function normalizeApiBaseUrl(value?: string): string {
   const raw = (value || DEFAULT_API_BASE_URL).trim().replace(/\/+$/, "");
-  return raw.replace("http://localhost:", "http://127.0.0.1:");
+  return raw;
 }
 
 function normalizeOptional(value?: string): string | undefined {
@@ -37,3 +40,5 @@ export const env = {
     cls: normalizeNumber(import.meta.env.VITE_CORE_WEB_VITALS_CLS_TARGET, 0.1),
   },
 };
+
+

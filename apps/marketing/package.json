@@ -11,7 +11,7 @@
     "clean": "rimraf dist .astro"
   },
   "dependencies": {
-    "@astrojs/check": "0.9.9",
+    "@astrojs/check": "0.9.10",
     "astro": "6.4.2",
     "typescript": "^5.6.3"
   },

@@ -69,3 +69,82 @@ VATranscribeWeb_P0-*_context.zip
 # Local audit exports
 VATranscribeWeb_Stage4_Production_Readiness_Audit_*.docx
 VATranscribeWeb_Stage4_Production_Readiness_Audit_*.md
+
+# Runtime secrets / local generated env files
+.env.runtime
+.env.runtime.*
+secrets/
+*.env.runtime
+/infra/secrets/
+
+# Certbot runtime data: certificates and ACME webroot are generated on production host.
+# Keep documentation and .gitkeep files only.
+/infra/certbot/conf/*
+!/infra/certbot/conf/.gitkeep
+/infra/certbot/www/*
+!/infra/certbot/www/.gitkeep
+
+# Backup runtime artifacts
+/backups/
+*.dump
+*.dump.age
+*.dump.sha256
+*.manifest.json
+/infra/backup/reports/
+/infra/backup/restore-drills/
+
+# P3 runtime secret activation generated files
+runtime-env*.template
+runtime-secrets-evidence*.md
+*.redacted.env
+
+# P3 domain/TLS/CDN activation generated evidence
+domain-tls-cdn-evidence*.md
+*.curl-headers.txt
+*.tls-evidence.txt
+*.dns-evidence.txt
+
+# P3 monitoring/APM/logging activation generated evidence
+monitoring-apm-logs-evidence*.md
+*.sentry-evidence.txt
+*.request-id-evidence.txt
+*.monitoring-evidence.txt
+uptime-kuma-export*.json
+
+# P3 backup restore proof generated evidence
+backup-restore-proof-evidence*.md
+restore-drill-redacted*.md
+*.backup-proof.txt
+*.restore-proof.txt
+
+# P3 legal / 152-FZ activation generated evidence
+legal-final-review-evidence*.md
+legal-152fz-evidence*.md
+operator-details*.md
+processors-subprocessors-inventory.completed*.md
+legal-review-notes*.md
+*.legal-evidence.txt
+
+# P3 supply-chain evidence generated reports
+/reports/security/supply-chain-evidence/
+supply-chain-evidence*.md
+vulnerability-triage-high-critical.completed*.md
+*.supply-chain-evidence.txt
+*.pip-audit.json
+*.npm-audit.json
+*.trivy.json
+*.gitleaks.json
+*.sbom.spdx.json
+*.sbom.cyclonedx.json
+
+# P3 production rehearsal generated evidence
+/reports/release/production-rehearsal/
+production-rehearsal-evidence*.md
+production-rehearsal-*.raw.txt
+production-rehearsal-*.redacted.txt
+*.production-rehearsal.log
+
+# Local deployment / evidence archives
+VATranscribeWeb_P4-01_live_redacted_evidence_*.tar.gz
+VATranscribeWeb_P4-01_*.tar.gz
+*.bak.*

@@ -12,7 +12,7 @@ const content = getDownloadContent(locale);
 
 <section class="section">
   <div class="container">
-    <span class="eyebrow">{content.platformsTitle}</span>
+    {locale !== "ru" && <span class="eyebrow">{content.platformsTitle}</span>}
     <h2 class="h2">{content.platformsTitle}</h2>
     <p class="lead">{content.platformsLead}</p>
 
@@ -29,7 +29,7 @@ const content = getDownloadContent(locale);
 
           <div class="download-version">
             <strong>{platform.version}</strong>
-            <span>version</span>
+            <span>{locale === "ru" ? "версия" : "version"}</span>
           </div>
 
           <ul class="list">

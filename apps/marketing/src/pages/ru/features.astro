@@ -2,23 +2,47 @@
 import MarketingLayout from "../../layouts/MarketingLayout.astro";
 ---
 
-<MarketingLayout canonicalPath="/ru/features" locale="ru" title="Возможности" description="Возможности VATranscribe для скачивания медиа, транскрибации, SaaS security и billing-ready workflows.">
+<MarketingLayout canonicalPath="/ru/features" locale="ru" title="Возможности" description="Возможности VATranscribe: скачивание медиа, транскрибация, безопасность SaaS и готовая модель тарифов.">
   <section class="section">
     <div class="container">
       <span class="eyebrow">Возможности</span>
-      <h1 class="h1">Полноценная media workflow поверхность, а не набор утилит.</h1>
+      <h1 class="h1">Полный цикл работы с медиа, а не набор отдельных утилит.</h1>
       <p class="lead">
-        Публичный marketing layer объясняет продукт, а dashboard обрабатывает authenticated jobs,
-        files, transcripts, quotas и account state.
+        Публичная часть объясняет продукт, а личный кабинет обрабатывает задачи,
+        файлы, транскрипты, лимиты и состояние аккаунта.
       </p>
 
       <div class="grid grid-3" style="margin-top: 32px;">
-        <article class="card"><span class="badge badge-accent">Downloader</span><h2 class="h3" style="margin-top: 16px;">MP3 и MP4 workflows</h2><p class="muted">Скачивание совместимых audio/video outputs со статусами, progress и logs.</p></article>
-        <article class="card"><span class="badge badge-accent">Transcription</span><h2 class="h3" style="margin-top: 16px;">Основа transcript pipeline</h2><p class="muted">Связка media assets с transcription jobs, transcript history и export artifacts.</p></article>
-        <article class="card"><span class="badge badge-accent">Security</span><h2 class="h3" style="margin-top: 16px;">Security и privacy baseline</h2><p class="muted">Refresh token rotation, rate limits, backend password policy, consents и audit logs.</p></article>
-        <article class="card"><span class="badge badge-accent">Ownership</span><h2 class="h3" style="margin-top: 16px;">User-owned files</h2><p class="muted">Jobs, media assets, transcripts и exports привязаны к authenticated ownership.</p></article>
-        <article class="card"><span class="badge badge-accent">Billing</span><h2 class="h3" style="margin-top: 16px;">Billing-ready model</h2><p class="muted">Plans, quotas, subscriptions и usage history подготовлены к payment integration.</p></article>
-        <article class="card"><span class="badge badge-accent">Marketing</span><h2 class="h3" style="margin-top: 16px;">SEO-ready public layer</h2><p class="muted">Astro marketing pages отделены от authenticated SaaS dashboard.</p></article>
+        <article class="card">
+          <span class="badge badge-accent">Скачивание</span>
+          <h2 class="h3" style="margin-top: 16px;">MP3 и MP4 без лишних шагов</h2>
+          <p class="muted">Скачивание совместимых аудио- и видеофайлов со статусами, прогрессом и журналами выполнения.</p>
+        </article>
+        <article class="card">
+          <span class="badge badge-accent">Транскрибация</span>
+          <h2 class="h3" style="margin-top: 16px;">Основа конвейера транскрибации</h2>
+          <p class="muted">Медиафайлы связаны с задачами транскрибации, историей распознавания и экспортными файлами.</p>
+        </article>
+        <article class="card">
+          <span class="badge badge-accent">Безопасность</span>
+          <h2 class="h3" style="margin-top: 16px;">Базовый контур безопасности и приватности</h2>
+          <p class="muted">Ротация токенов обновления, лимиты запросов, политика паролей, согласия и журнал аудита.</p>
+        </article>
+        <article class="card">
+          <span class="badge badge-accent">Владение</span>
+          <h2 class="h3" style="margin-top: 16px;">Файлы принадлежат пользователю</h2>
+          <p class="muted">Задачи, медиафайлы, транскрипты и экспортные файлы привязаны к владельцу аккаунта.</p>
+        </article>
+        <article class="card">
+          <span class="badge badge-accent">Тарифы</span>
+          <h2 class="h3" style="margin-top: 16px;">Модель готова к тарифам</h2>
+          <p class="muted">Тарифные планы, лимиты, подписки и история использования подготовлены к подключению платежей.</p>
+        </article>
+        <article class="card">
+          <span class="badge badge-accent">Продвижение</span>
+          <h2 class="h3" style="margin-top: 16px;">Публичный SEO-слой</h2>
+          <p class="muted">Публичные страницы для продвижения и SEO отделены от личного кабинета.</p>
+        </article>
       </div>
     </div>
   </section>

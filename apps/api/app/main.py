@@ -1,11 +1,17 @@
 from __future__ import annotations
 
+DEFAULT_REQUEST_ID_HEADER = "X-Request-ID"
+
 from contextlib import asynccontextmanager
+import logging
+import time
+from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.app.config import get_settings
+from apps.api.app.exception_handlers import register_exception_handlers
 from apps.api.app.observability import configure_logging, init_sentry
 from apps.api.app.routers import router as api_router
 from apps.api.app.security_foundation.rate_limits import build_rate_limit_key, rate_limiter
@@ -14,6 +20,7 @@ from apps.api.app.schemas import ApiInfoResponse
 settings = get_settings()
 configure_logging(settings)
 init_sentry(settings)
+request_logger = logging.getLogger("apps.api.request")
 
 
 def ensure_storage_dirs() -> None:
@@ -39,6 +46,8 @@ app = FastAPI(
     openapi_url=settings.openapi_url,
 )
 
+register_exception_handlers(app, settings=settings)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -48,6 +57,39 @@ app.add_middleware(
 )
 
 
+
+
+@app.middleware("http")
+async def request_id_and_access_log_middleware(request: Request, call_next):
+    request_id = request.headers.get(settings.request_id_header) or uuid4().hex
+    start = time.perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        duration_ms = round((time.perf_counter() - start) * 1000, 2)
+        request_logger.exception(
+            "request failed",
+            extra={
+                "request_id": request_id,
+                "method": request.method,
+                "path": request.url.path,
+                "duration_ms": duration_ms,
+            },
+        )
+        raise
+    duration_ms = round((time.perf_counter() - start) * 1000, 2)
+    response.headers[settings.request_id_header] = request_id
+    request_logger.info(
+        "request completed",
+        extra={
+            "request_id": request_id,
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": response.status_code,
+            "duration_ms": duration_ms,
+        },
+    )
+    return response
 
 @app.middleware("http")
 async def api_rate_limit_middleware(request: Request, call_next):

@@ -46,4 +46,7 @@ jobs:
           script_stop: true
           script: |
             cd ${{ secrets.PRODUCTION_PROJECT_ROOT }}
-            GIT_REF=${{ inputs.git_ref }} SMOKE_BASE_URL=${{ secrets.PRODUCTION_SMOKE_BASE_URL }} ./infra/deploy/deploy.sh
+            RUNTIME_ENV_FILE=${{ secrets.PRODUCTION_RUNTIME_ENV_FILE }} \
+            GIT_REF=${{ inputs.git_ref }} \
+            SMOKE_BASE_URL=${{ secrets.PRODUCTION_SMOKE_BASE_URL }} \
+            ./infra/deploy/deploy.sh

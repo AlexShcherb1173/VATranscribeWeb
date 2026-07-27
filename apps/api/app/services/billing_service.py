@@ -11,6 +11,10 @@ from apps.api.app.services.account_bootstrap import ensure_user_quota
 from apps.api.app.services.plan_catalog import PLAN_CATALOG, get_plan_spec_or_raise
 
 
+class BillingUpgradeForbidden(ValueError):
+    """Raised when a plan activation path is not allowed in the current environment."""
+
+
 def _normalize_billing_period_days(billing_period: str) -> int:
     normalized = (billing_period or "monthly").strip().lower()
     if normalized == "yearly":
@@ -161,21 +165,12 @@ def ensure_default_subscription(db: Session, user: User) -> tuple[Plan, Subscrip
         return plan, current, quota
 
     free_plan = get_plan_by_code(db, "free")
-    now = datetime.now(timezone.utc)
-    subscription = Subscription(
-        id=str(uuid.uuid4()),
-        user_id=str(user.id),
-        plan_id=free_plan.id,
-        status="active",
-        started_at=now,
-        current_period_start=now,
-        current_period_end=now + timedelta(days=30),
-        cancel_at_period_end=False,
+    subscription = _replace_active_subscription(
+        db=db,
+        user=user,
+        target_plan=free_plan,
+        billing_period="monthly",
     )
-    db.add(subscription)
-    db.commit()
-    db.refresh(subscription)
-
     quota = sync_quota_limits_from_plan(db, user, free_plan)
     return free_plan, subscription, quota
 
@@ -236,25 +231,16 @@ def get_billing_overview(db: Session, user: User) -> dict:
     }
 
 
-def upgrade_user_plan(
+def _replace_active_subscription(
     db: Session,
     user: User,
-    plan_code: str,
-    billing_period: str = "monthly",
-) -> tuple[Plan, Subscription, UserQuota]:
-    """
-    Fake billing upgrade:
-    - валидирует target plan
-    - отменяет текущую active subscription
-    - создаёт новую active subscription
-    - синкает plan limits -> user_quotas
-    """
-    target_plan = get_plan_by_code(db, plan_code)
+    target_plan: Plan,
+    billing_period: str,
+) -> Subscription:
     current_subscription = get_active_subscription(db, user.id)
 
     if current_subscription is not None and current_subscription.plan_id == target_plan.id:
-        quota = sync_quota_limits_from_plan(db, user, target_plan)
-        return target_plan, current_subscription, quota
+        return current_subscription
 
     now = datetime.now(timezone.utc)
     period_days = _normalize_billing_period_days(billing_period)
@@ -276,6 +262,63 @@ def upgrade_user_plan(
     db.add(new_subscription)
     db.commit()
     db.refresh(new_subscription)
+    return new_subscription
 
+
+def upgrade_user_plan(
+    db: Session,
+    user: User,
+    plan_code: str,
+    billing_period: str = "monthly",
+    *,
+    allow_fake_upgrade: bool = False,
+) -> tuple[Plan, Subscription, UserQuota]:
+    """
+    Development-only manual upgrade path.
+
+    Production paid-plan activation must go through a verified payment webhook.
+    Free-plan selection remains available because it does not grant paid limits.
+    """
+    target_plan = get_plan_by_code(db, plan_code)
+
+    if target_plan.price_monthly > 0 and not allow_fake_upgrade:
+        raise BillingUpgradeForbidden(
+            "Paid plan activation requires a verified payment webhook."
+        )
+
+    subscription = _replace_active_subscription(
+        db=db,
+        user=user,
+        target_plan=target_plan,
+        billing_period=billing_period,
+    )
     quota = sync_quota_limits_from_plan(db, user, target_plan)
-    return target_plan, new_subscription, quota
+    return target_plan, subscription, quota
+
+
+def activate_paid_subscription_from_verified_payment(
+    db: Session,
+    *,
+    user_id: str,
+    plan_code: str,
+    billing_period: str = "monthly",
+) -> tuple[Plan, Subscription, UserQuota]:
+    """
+    Trusted activation path used only after webhook signature and idempotency checks.
+    """
+    target_plan = get_plan_by_code(db, plan_code)
+    if target_plan.price_monthly <= 0:
+        raise ValueError("Payment webhook cannot activate a free plan")
+
+    user = db.get(User, str(user_id))
+    if user is None:
+        raise ValueError("Payment webhook references an unknown user")
+
+    subscription = _replace_active_subscription(
+        db=db,
+        user=user,
+        target_plan=target_plan,
+        billing_period=billing_period,
+    )
+    quota = sync_quota_limits_from_plan(db, user, target_plan)
+    return target_plan, subscription, quota

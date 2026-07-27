@@ -199,50 +199,47 @@ export const pricingContentRu: PricingContent = {
   eyebrow: "Тарифы",
   title: "Планы для авторов, разработчиков и команд.",
   lead:
-    "Начните с бесплатного workflow, перейдите на Pro для регулярной обработки и используйте Business, когда важны auditability, квоты и командные процессы.",
-  sourceNote:
-    "Коды тарифов и месячные цены синхронизированы с backend-каталогом /api/v1/plans.",
+    "Начните с бесплатного тарифа, перейдите на Pro для регулярной обработки и используйте командный план, когда важны журнал действий, лимиты и совместная работа.",
+  sourceNote: "",
   periodToggle: {
     monthly: "Месяц",
     yearly: "Год",
     yearlyNote:
-      "Годовая оплата заложена как UI foundation. Backend annual prices можно добавить на следующем billing-этапе."
+      "Годовая оплата подготовлена на уровне интерфейса. Серверные годовые цены можно добавить на следующем этапе оплаты."
   },
-  cardsTitle: "Выберите подходящий уровень workflow.",
-  quotaTitle: "Матрица лимитов",
-  quotaLead:
-    "Эти лимиты соответствуют backend plan catalog и должны оставаться синхронизированными с /api/v1/plans.",
+  cardsTitle: "Выберите подходящий уровень обработки.",
+  quotaTitle: "Тарифные планы",
+  quotaLead: "",
   comparisonTitle: "Сравнение возможностей",
-  comparisonLead:
-    "Таблица объясняет коммерческую упаковку одной и той же технической продуктовой основы.",
+  comparisonLead: "",
   faqTitle: "FAQ по оплате",
   faqLead:
-    "Короткие ответы по выбору тарифа, лимитам, billing readiness и будущей годовой оплате.",
-  finalTitle: "Готовы проверить workflow?",
+    "Короткие ответы по выбору тарифа, лимитам, готовности оплаты и будущей годовой подписке.",
+  finalTitle: "Готовы проверить процесс?",
   finalLead:
-    "Выберите plan code сейчас. Интеграцию платёжного провайдера можно добавить после проверки pricing surface.",
+    "Выберите тариф сейчас. Способ оплаты можно добавить после выбора тарифного плана.",
   finalPrimary: "Начать с Pro",
-  finalSecondary: "Открыть dashboard",
+  finalSecondary: "Открыть личный кабинет",
   plans: [
     {
       code: "free",
-      name: "Free",
+      name: "Бесплатный",
       badge: "Проверка",
       price: "$0",
       period: "навсегда",
       yearlyNote: "Оплата не требуется",
-      description: "Для проверки workflow и тестирования обработки медиа.",
+      description: "Для проверки сценария и тестирования обработки медиа.",
       bestFor: "Локальное тестирование, проверка продукта и лёгкое использование.",
       quota: "Базовые лимиты",
-      storage: "10 GB",
-      transcription: "36,000 сек",
+      storage: "10 ГБ",
+      transcription: "36 000 сек",
       jobs: "500 задач",
       features: [
-        "Предпросмотр MP3/MP4 workflow",
+        "Предпросмотр скачивания MP3/MP4",
         "Ограниченная транскрибация",
         "Базовая история задач",
         "Согласия с юридическими документами",
-        "Поддержка уровня community"
+        "Базовая поддержка"
       ],
       cta: "Начать бесплатно",
       href: getSaasLink("register", { plan: "free" }),
@@ -250,17 +247,17 @@ export const pricingContentRu: PricingContent = {
     },
     {
       code: "pro",
-      name: "Pro",
+      name: "Профессиональный",
       badge: "Рекомендуем",
       price: "$12",
       period: "в месяц",
       yearlyNote: "Основа для годовой оплаты готова",
       description: "Для авторов и одиночных операторов с регулярной обработкой медиа.",
-      bestFor: "Регулярное скачивание, транскрибация и работа с media assets.",
+      bestFor: "Регулярное скачивание, транскрибация и работа с медиатекой.",
       quota: "Повышенные месячные лимиты",
-      storage: "100 GB",
-      transcription: "144,000 сек",
-      jobs: "5,000 задач",
+      storage: "100 ГБ",
+      transcription: "144 000 сек",
+      jobs: "5 000 задач",
       features: [
         "Повышенный лимит скачиваний",
         "Повышенный лимит транскрибации",
@@ -274,25 +271,25 @@ export const pricingContentRu: PricingContent = {
     },
     {
       code: "business",
-      name: "Business",
+      name: "Командный",
       badge: "Масштаб",
       price: "$49",
       period: "в месяц",
       yearlyNote: "Годовые контракты можно добавить позже",
-      description: "Для команд, которым нужны контролируемые media workflows.",
-      bestFor: "Audit-heavy workflows, большие лимиты и командные операции.",
+      description: "Для команд, которым нужны контролируемые процессы обработки медиа.",
+      bestFor: "Журнал действий, большие лимиты и командные операции.",
       quota: "Командные лимиты",
-      storage: "500 GB",
-      transcription: "720,000 сек",
-      jobs: "20,000 задач",
+      storage: "500 ГБ",
+      transcription: "720 000 сек",
+      jobs: "20 000 задач",
       features: [
-        "Основа audit logs",
-        "Privacy request workflow",
-        "Billing overview",
-        "Архитектура под админку",
-        "Roadmap командной работы"
+        "Основа журнала действий",
+        "Запросы по персональным данным",
+        "Обзор оплаты и тарифов",
+        "Архитектура под админ-панель",
+        "План развития командной работы"
       ],
-      cta: "Выбрать Business",
+      cta: "Выбрать командный план",
       href: getSaasLink("register", { plan: "business" }),
       highlighted: false
     }
@@ -300,35 +297,36 @@ export const pricingContentRu: PricingContent = {
   comparison: [
     { label: "Скачивание медиа", free: "Базово", pro: "Повышенная квота", business: "Командный масштаб" },
     { label: "Транскрибация", free: "Ограниченно", pro: "Регулярное использование", business: "Большой объём" },
-    { label: "Media asset library", free: "Базово", pro: "Включено", business: "Включено" },
-    { label: "Audit logs", free: "Security baseline", pro: "Security baseline", business: "Audit-ready" },
-    { label: "Privacy requests", free: "Включено", pro: "Включено", business: "Включено" },
-    { label: "Billing overview", free: "Базово", pro: "Включено", business: "Включено" },
-    { label: "Admin/team layer", free: "Нет", pro: "Roadmap", business: "Roadmap priority" }
+    { label: "Библиотека медиафайлов", free: "Базово", pro: "Включено", business: "Включено" },
+    { label: "Журнал действий", free: "Базовый уровень", pro: "Базовый уровень", business: "Расширенный уровень" },
+    { label: "Запросы по персональным данным", free: "Включено", pro: "Включено", business: "Включено" },
+    { label: "Обзор оплаты", free: "Базово", pro: "Включено", business: "Включено" },
+    { label: "Админ-панель и команды", free: "Нет", pro: "В плане развития", business: "Приоритет развития" }
   ],
   faq: [
     {
-      question: "Эти цены связаны с backend plans?",
+      question: "Эти цены связаны с серверными тарифами?",
       answer:
-        "Да. Публичная pricing surface синхронизирована с backend-каталогом: free, pro и business."
+        "Да. Публичная тарифная страница синхронизирована с серверным каталогом: free, pro и business."
     },
     {
       question: "Годовая оплата уже активна?",
       answer:
-        "Пока нет. Stage 3.5.1 добавляет UI foundation для monthly/yearly, но backend annual pricing лучше добавить отдельным billing-этапом."
+        "Пока нет. Интерфейс подготовлен для переключения месяца и года, но годовые цены лучше добавить отдельным этапом оплаты."
     },
     {
-      question: "Лимиты берутся из backend?",
+      question: "Лимиты берутся из серверной части?",
       answer:
-        "Значения лимитов совпадают с текущей таблицей plans и ответом /api/v1/plans."
+        "Да. Значения лимитов должны совпадать с текущей таблицей тарифов и ответом /api/v1/plans."
     },
     {
       question: "Выбор тарифа сразу списывает деньги?",
       answer:
-        "Нет. Сейчас CTA передаёт plan code в регистрацию или billing flow. Платёжный провайдер подключается позже."
+        "Нет. Сейчас кнопки передают код тарифа в регистрацию или раздел оплаты. Платёжный провайдер подключается позже."
     }
   ]
 };
+
 
 export function getPricingContent(locale: Locale = "en"): PricingContent {
   return locale === "ru" ? pricingContentRu : pricingContentEn;

@@ -98,6 +98,7 @@ class UserRead(BaseModel):
     id: str
     email: EmailStr
     is_active: bool = True
+    is_admin: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -211,6 +212,15 @@ class BillingUpgradeResponse(BaseModel):
     current_plan: BillingPlanResponse
     subscription: BillingSubscriptionResponse
     quota: UserQuotaResponse
+
+
+class PaymentWebhookResponse(BaseModel):
+    ok: bool
+    status: str
+    provider: str
+    event_id: str | None = None
+    detail: str | None = None
+    subscription_id: str | None = None
 
 
 class MediaAssetResponse(BaseModel):
@@ -364,3 +374,38 @@ class TranscriptResponse(BaseModel):
     exports: list[ExportArtifactResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
+
+# P2-02 Admin 2FA schemas
+class AdminTwoFactorStatusResponse(BaseModel):
+    enabled: bool
+    confirmed_at: datetime | None = None
+    recovery_codes_remaining: int = 0
+
+
+class AdminTwoFactorSetupResponse(BaseModel):
+    secret: str
+    otpauth_url: str
+
+
+class AdminTwoFactorVerifyRequest(BaseModel):
+    code: str = Field(min_length=6, max_length=32)
+
+
+class AdminTwoFactorDisableRequest(BaseModel):
+    code: str | None = Field(default=None, min_length=6, max_length=32)
+    recovery_code: str | None = Field(default=None, min_length=8, max_length=128)
+
+
+class AdminTwoFactorConfirmResponse(BaseModel):
+    enabled: bool
+    recovery_codes: list[str] = Field(default_factory=list)
+
+
+class AdminTwoFactorRecoveryCodesResponse(BaseModel):
+    recovery_codes: list[str] = Field(default_factory=list)
+
+
+class AdminSecurityCheckResponse(BaseModel):
+    status: str = "ok"
+    admin_2fa: str = "enabled"
+

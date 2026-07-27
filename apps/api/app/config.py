@@ -19,6 +19,49 @@ DEFAULT_SECRET_KEY_VALUES = {
     "secret-key",
     "development-secret-key",
 }
+
+SECRET_PLACEHOLDER_FRAGMENTS = (
+    "change_me",
+    "change-me",
+    "changeme",
+    "replace_me",
+    "replace-me",
+    "todo",
+    "example.com",
+    "super-secret",
+    "local-dev",
+    "placeholder",
+)
+
+ALLOWED_SECRET_MANAGER_STRATEGIES = {
+    "local-env",
+    "runtime-env-file",
+    "github-environments",
+    "yandex-lockbox",
+    "doppler",
+    "hashicorp-vault",
+    "onepassword-cli",
+    "docker-secrets",
+}
+
+PRODUCTION_SECRET_MANAGER_STRATEGIES = ALLOWED_SECRET_MANAGER_STRATEGIES - {"local-env"}
+
+ALLOWED_PAYMENT_PROVIDERS = {
+    "disabled",
+    "yookassa",
+    "cloudpayments",
+    "stripe",
+    "robokassa",
+}
+
+ALLOWED_ANALYTICS_PROVIDERS = {
+    "disabled",
+    "yandex",
+    "ga4",
+    "both",
+    "posthog",
+    "provider-neutral",
+}
 LOCALHOST_VALUES = {
     "localhost",
     "127.0.0.1",
@@ -77,6 +120,17 @@ def _is_unmonitored_example_email(value: str | None) -> bool:
         or normalized.endswith("@example.org")
         or normalized.endswith("@localhost")
     )
+
+
+def _looks_like_secret_placeholder(value: str | None) -> bool:
+    if value is None:
+        return True
+
+    normalized = value.strip().lower()
+    if not normalized:
+        return True
+
+    return any(fragment in normalized for fragment in SECRET_PLACEHOLDER_FRAGMENTS)
 
 
 def _split_domains(value: str) -> list[str]:
@@ -157,7 +211,7 @@ def _validate_cookie_domain(domain: str | None) -> list[str]:
 
 class Settings(BaseSettings):
     """
-    Глобальные настройки приложения, читаемые из .env.
+    Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё РїСЂРёР»РѕР¶РµРЅРёСЏ, С‡РёС‚Р°РµРјС‹Рµ РёР· .env.
     """
 
     model_config = SettingsConfigDict(
@@ -191,6 +245,35 @@ class Settings(BaseSettings):
     log_json: bool = Field(True, alias="LOG_JSON")
     release_version: str | None = Field(None, alias="RELEASE_VERSION")
 
+    # --- MONITORING / APM / CENTRALIZED LOGGING ---
+    monitoring_required: bool = Field(False, alias="MONITORING_REQUIRED")
+    monitoring_release_checklist_ack: bool = Field(False, alias="MONITORING_RELEASE_CHECKLIST_ACK")
+    uptime_provider: str = Field("disabled", alias="UPTIME_PROVIDER")
+    uptime_alert_channels: str = Field("", alias="UPTIME_ALERT_CHANNELS")
+    uptime_checks_base_url: str | None = Field(None, alias="UPTIME_CHECKS_BASE_URL")
+    apm_provider: str = Field("disabled", alias="APM_PROVIDER")
+    sentry_required: bool = Field(False, alias="SENTRY_REQUIRED")
+    sentry_environment: str | None = Field(None, alias="SENTRY_ENVIRONMENT")
+    sentry_profiles_sample_rate: float = Field(0.0, alias="SENTRY_PROFILES_SAMPLE_RATE")
+    sentry_worker_enabled: bool = Field(True, alias="SENTRY_WORKER_ENABLED")
+    central_logging_required: bool = Field(False, alias="CENTRAL_LOGGING_REQUIRED")
+    central_logging_provider: str = Field("disabled", alias="CENTRAL_LOGGING_PROVIDER")
+    log_retention_days: int = Field(30, alias="LOG_RETENTION_DAYS")
+    loki_retention_days: int = Field(14, alias="LOKI_RETENTION_DAYS")
+    nginx_access_log_retention_days: int = Field(30, alias="NGINX_ACCESS_LOG_RETENTION_DAYS")
+    nginx_error_log_retention_days: int = Field(30, alias="NGINX_ERROR_LOG_RETENTION_DAYS")
+    request_id_header: str = Field("X-Request-ID", alias="REQUEST_ID_HEADER")
+
+    # --- PRODUCTION SECRETS / VAULT ---
+    secret_manager_strategy: str = Field("local-env", alias="SECRET_MANAGER_STRATEGY")
+    runtime_env_file: str | None = Field(None, alias="RUNTIME_ENV_FILE")
+    production_secrets_validation_required: bool = Field(
+        True, alias="PRODUCTION_SECRETS_VALIDATION_REQUIRED"
+    )
+    secret_rotation_policy_version: str = Field(
+        "2026-06", alias="SECRET_ROTATION_POLICY_VERSION"
+    )
+
     # --- LEGAL / COMPLIANCE ---
     legal_document_version: str = Field("2.0", alias="LEGAL_DOCUMENT_VERSION")
     legal_operator_type: str = Field("pre-release", alias="LEGAL_OPERATOR_TYPE")
@@ -222,6 +305,23 @@ class Settings(BaseSettings):
     legal_152fz_russian_pd: bool = Field(False, alias="LEGAL_152FZ_RUSSIAN_PD")
     legal_152fz_rkn_notification_status: str = Field("not_decided", alias="LEGAL_152FZ_RKN_NOTIFICATION_STATUS")
     legal_152fz_pd_localization_status: str = Field("not_decided", alias="LEGAL_152FZ_PD_LOCALIZATION_STATUS")
+
+    # --- ADMIN SECURITY / 2FA ---
+    admin_2fa_required: bool = Field(True, alias="ADMIN_2FA_REQUIRED")
+    admin_2fa_issuer: str = Field("VATranscribe", alias="ADMIN_2FA_ISSUER")
+    admin_2fa_recovery_code_count: int = Field(10, alias="ADMIN_2FA_RECOVERY_CODE_COUNT")
+    admin_2fa_recovery_code_bytes: int = Field(10, alias="ADMIN_2FA_RECOVERY_CODE_BYTES")
+    admin_2fa_totp_window: int = Field(1, alias="ADMIN_2FA_TOTP_WINDOW")
+
+    # --- BILLING / PAYMENT PRODUCTION GATE ---
+    payment_provider: str = Field("disabled", alias="PAYMENT_PROVIDER")
+    payment_webhook_secret: str | None = Field(None, alias="PAYMENT_WEBHOOK_SECRET")
+    payment_api_key: str | None = Field(None, alias="PAYMENT_API_KEY")
+    payment_webhook_signature_header: str = Field(
+        "X-VATranscribe-Signature", alias="PAYMENT_WEBHOOK_SIGNATURE_HEADER"
+    )
+    billing_fake_upgrade_enabled: bool = Field(True, alias="BILLING_FAKE_UPGRADE_ENABLED")
+    billing_paid_plans_enabled: bool = Field(False, alias="BILLING_PAID_PLANS_ENABLED")
 
 
     # --- RATE LIMITING / TRUSTED PROXY ---
@@ -328,6 +428,33 @@ class Settings(BaseSettings):
         None, alias="DEFAULT_LANGUAGE"
     )
 
+
+    # P2-08 Analytics / cookie consent / Core Web Vitals
+    analytics_provider: str = "disabled"
+    analytics_yandex_metrika_id: str = ""
+    analytics_ga4_measurement_id: str = ""
+    analytics_posthog_key: str = ""
+    analytics_posthog_host: str = "https://app.posthog.com"
+    analytics_enabled_in_development: bool = False
+
+    yandex_metrika_id: str = ""
+    ga4_measurement_id: str = ""
+    posthog_key: str = ""
+    posthog_api_key: str = ""
+    posthog_host: str = "https://app.posthog.com"
+
+    cookie_consent_required: bool = True
+    cookie_consent_version: str = "2026-06-10"
+    cookie_consent_categories: str = "necessary,analytics,marketing"
+    cookie_consent_storage: str = "localStorage"
+
+    core_web_vitals_enabled: bool = True
+    core_web_vitals_report_provider: str = "analytics"
+    core_web_vitals_report_mode: str = "analytics"
+    core_web_vitals_lcp_target_ms: int = 2500
+    core_web_vitals_inp_target_ms: int = 200
+    core_web_vitals_cls_target: float = 0.1
+
     @model_validator(mode="after")
     def validate_environment_guardrails(self) -> "Settings":
         errors: list[str] = []
@@ -340,6 +467,15 @@ class Settings(BaseSettings):
             self.release_version = None
         if self.sentry_dsn == "":
             self.sentry_dsn = None
+        if self.sentry_environment == "":
+            self.sentry_environment = None
+        if self.uptime_checks_base_url == "":
+            self.uptime_checks_base_url = None
+        self.uptime_provider = (self.uptime_provider or "disabled").strip().lower()
+        self.apm_provider = (self.apm_provider or "disabled").strip().lower()
+        self.central_logging_provider = (self.central_logging_provider or "disabled").strip().lower()
+        self.uptime_alert_channels = ",".join(_split_csv(self.uptime_alert_channels or ""))
+        self.request_id_header = (self.request_id_header or "X-Request-ID").strip()
 
         for attr_name in (
             "legal_document_version",
@@ -365,8 +501,27 @@ class Settings(BaseSettings):
             "legal_billing_records_retention",
             "legal_152fz_rkn_notification_status",
             "legal_152fz_pd_localization_status",
+            "admin_2fa_issuer",
+            "payment_provider",
+            "payment_webhook_secret",
+            "payment_api_key",
+            "payment_webhook_signature_header",
+            "analytics_provider",
+            "yandex_metrika_id",
+            "ga4_measurement_id",
+            "posthog_api_key",
+            "posthog_host",
+            "cookie_consent_version",
+            "core_web_vitals_report_mode",
+            "secret_manager_strategy",
+            "runtime_env_file",
+            "secret_rotation_policy_version",
+            "request_id_header",
+            "uptime_alert_channels",
+            "uptime_checks_base_url",
+            "sentry_environment",
         ):
-            value = getattr(self, attr_name)
+            value = getattr(self, attr_name, None)
             if isinstance(value, str):
                 value = value.strip()
                 setattr(self, attr_name, value if value else None)
@@ -376,6 +531,12 @@ class Settings(BaseSettings):
         self.legal_production_domains = ",".join(_split_domains(self.legal_production_domains or ""))
         self.legal_152fz_rkn_notification_status = (self.legal_152fz_rkn_notification_status or "not_decided").strip().lower()
         self.legal_152fz_pd_localization_status = (self.legal_152fz_pd_localization_status or "not_decided").strip().lower()
+
+        self.secret_manager_strategy = (self.secret_manager_strategy or "local-env").strip().lower()
+        if self.runtime_env_file == "":
+            self.runtime_env_file = None
+        if self.secret_rotation_policy_version == "":
+            self.secret_rotation_policy_version = None
 
         self.rate_limit_backend = self.rate_limit_backend.strip().lower()
         self.trusted_proxy_cidrs = ",".join(_split_csv(self.trusted_proxy_cidrs))
@@ -411,6 +572,81 @@ class Settings(BaseSettings):
 
         if not 0.0 <= self.sentry_traces_sample_rate <= 1.0:
             errors.append("SENTRY_TRACES_SAMPLE_RATE must be between 0.0 and 1.0")
+
+        if not 0.0 <= self.sentry_profiles_sample_rate <= 1.0:
+            errors.append("SENTRY_PROFILES_SAMPLE_RATE must be between 0.0 and 1.0")
+
+        if self.log_retention_days <= 0:
+            errors.append("LOG_RETENTION_DAYS must be positive")
+        if self.loki_retention_days <= 0:
+            errors.append("LOKI_RETENTION_DAYS must be positive")
+        if self.nginx_access_log_retention_days <= 0:
+            errors.append("NGINX_ACCESS_LOG_RETENTION_DAYS must be positive")
+        if self.nginx_error_log_retention_days <= 0:
+            errors.append("NGINX_ERROR_LOG_RETENTION_DAYS must be positive")
+        if not self.request_id_header:
+            errors.append("REQUEST_ID_HEADER must not be empty")
+
+        if self.secret_manager_strategy not in ALLOWED_SECRET_MANAGER_STRATEGIES:
+            errors.append(
+                "SECRET_MANAGER_STRATEGY must be one of: "
+                + ", ".join(sorted(ALLOWED_SECRET_MANAGER_STRATEGIES))
+            )
+
+        if self.admin_2fa_recovery_code_count <= 0:
+            errors.append("ADMIN_2FA_RECOVERY_CODE_COUNT must be positive")
+
+        if self.admin_2fa_recovery_code_bytes < 8:
+            errors.append("ADMIN_2FA_RECOVERY_CODE_BYTES must be >= 8")
+
+        if self.admin_2fa_totp_window < 0 or self.admin_2fa_totp_window > 2:
+            errors.append("ADMIN_2FA_TOTP_WINDOW must be between 0 and 2")
+
+        self.payment_provider = (self.payment_provider or "disabled").strip().lower()
+
+        self.analytics_provider = (self.analytics_provider or "disabled").strip().lower()
+        if self.analytics_provider not in ALLOWED_ANALYTICS_PROVIDERS:
+            errors.append(
+                "ANALYTICS_PROVIDER must be one of: "
+                + ", ".join(sorted(ALLOWED_ANALYTICS_PROVIDERS))
+            )
+        if self.yandex_metrika_id == "":
+            self.yandex_metrika_id = None
+        if self.ga4_measurement_id == "":
+            self.ga4_measurement_id = None
+        if getattr(self, "posthog_api_key", "") == "":
+            self.posthog_api_key = None
+        if self.posthog_host == "":
+            self.posthog_host = None
+        self.cookie_consent_version = (self.cookie_consent_version or "").strip()
+        self.core_web_vitals_report_mode = (getattr(self, "core_web_vitals_report_mode", None) or getattr(self, "core_web_vitals_report_provider", None) or "analytics").strip().lower()
+        if not self.cookie_consent_version:
+            errors.append("COOKIE_CONSENT_VERSION must not be empty")
+        if self.core_web_vitals_report_mode not in {"analytics", "console", "endpoint-later", "disabled"}:
+            errors.append("CORE_WEB_VITALS_REPORT_MODE must be analytics, console, endpoint-later or disabled")
+        if self.core_web_vitals_lcp_target_ms <= 0:
+            errors.append("CORE_WEB_VITALS_LCP_TARGET_MS must be positive")
+        if self.core_web_vitals_inp_target_ms <= 0:
+            errors.append("CORE_WEB_VITALS_INP_TARGET_MS must be positive")
+        if self.core_web_vitals_cls_target <= 0:
+            errors.append("CORE_WEB_VITALS_CLS_TARGET must be positive")
+        if self.payment_provider not in ALLOWED_PAYMENT_PROVIDERS:
+            errors.append(
+                "PAYMENT_PROVIDER must be one of: "
+                + ", ".join(sorted(ALLOWED_PAYMENT_PROVIDERS))
+            )
+
+        if self.payment_webhook_secret == "":
+            self.payment_webhook_secret = None
+        if self.payment_api_key == "":
+            self.payment_api_key = None
+        if not self.payment_webhook_signature_header:
+            errors.append("PAYMENT_WEBHOOK_SIGNATURE_HEADER must not be empty")
+
+        if self.payment_provider == "disabled" and self.billing_paid_plans_enabled:
+            errors.append(
+                "BILLING_PAID_PLANS_ENABLED cannot be true when PAYMENT_PROVIDER=disabled"
+            )
 
         if self.youtube_cookies_max_bytes <= 0:
             errors.append("YOUTUBE_COOKIES_MAX_BYTES must be positive")
@@ -472,6 +708,21 @@ class Settings(BaseSettings):
         if self.expose_api_docs:
             errors.append("APP_ENV=production requires EXPOSE_API_DOCS=false")
 
+        if self.production_secrets_validation_required is not True:
+            errors.append("PRODUCTION_SECRETS_VALIDATION_REQUIRED must be true in production")
+
+        if self.secret_manager_strategy not in PRODUCTION_SECRET_MANAGER_STRATEGIES:
+            errors.append(
+                "SECRET_MANAGER_STRATEGY must not be local-env in production; "
+                "use runtime-env-file, GitHub Environments or a vault adapter"
+            )
+
+        if not self.runtime_env_file:
+            errors.append("RUNTIME_ENV_FILE is required in production")
+
+        if _looks_like_secret_placeholder(self.runtime_env_file):
+            errors.append("RUNTIME_ENV_FILE must not be a placeholder value")
+
         if len(self.secret_key) < 32:
             errors.append("SECRET_KEY must be at least 32 characters in production")
 
@@ -482,6 +733,19 @@ class Settings(BaseSettings):
             or "changeme" in secret_key_normalized
         ):
             errors.append("SECRET_KEY must not use a default/change-me value")
+
+        if _looks_like_secret_placeholder(self.database_url):
+            errors.append("DATABASE_URL must not contain placeholder values in production")
+
+        database_url_normalized = self.database_url.strip().lower()
+        if "postgres:postgres" in database_url_normalized:
+            errors.append("DATABASE_URL must not use postgres:postgres in production")
+
+        if _looks_like_secret_placeholder(self.redis_url):
+            errors.append("REDIS_URL must not contain placeholder values in production")
+
+        if self.sentry_dsn and _looks_like_secret_placeholder(self.sentry_dsn):
+            errors.append("SENTRY_DSN must not contain placeholder values")
 
         if self.access_token_expire_minutes > 15:
             errors.append(
@@ -587,6 +851,78 @@ class Settings(BaseSettings):
         if self.legal_152fz_russian_pd and self.legal_152fz_rkn_notification_status == "not_done":
             errors.append("LEGAL_152FZ_RKN_NOTIFICATION_STATUS must not be not_done in production")
 
+        if not self.admin_2fa_required:
+            errors.append("ADMIN_2FA_REQUIRED must be true in production")
+
+        if _is_legal_placeholder(self.admin_2fa_issuer):
+            errors.append("ADMIN_2FA_ISSUER must be a real production value")
+
+        if self.billing_fake_upgrade_enabled:
+            errors.append("BILLING_FAKE_UPGRADE_ENABLED must be false in production")
+
+        if self.payment_provider == "disabled" and self.billing_paid_plans_enabled:
+            errors.append(
+                "BILLING_PAID_PLANS_ENABLED cannot be true when PAYMENT_PROVIDER=disabled"
+            )
+
+        if not self.cookie_consent_required:
+            errors.append("COOKIE_CONSENT_REQUIRED must be true in production")
+
+        if self.analytics_provider in {"yandex", "both"} and _looks_like_secret_placeholder(self.yandex_metrika_id):
+            errors.append("YANDEX_METRIKA_ID is required when Yandex Metrika analytics is enabled")
+
+        if self.analytics_provider in {"ga4", "both"} and _looks_like_secret_placeholder(self.ga4_measurement_id):
+            errors.append("GA4_MEASUREMENT_ID is required when GA4 analytics is enabled")
+
+        if self.analytics_provider == "posthog" and _looks_like_secret_placeholder(self.posthog_api_key):
+            errors.append("POSTHOG_API_KEY is required when PostHog analytics is enabled")
+
+        if self.analytics_provider not in {"disabled", "provider-neutral"} and not self.legal_analytics_cookies_enabled:
+            errors.append("LEGAL_ANALYTICS_COOKIES_ENABLED must be true when analytics is enabled")
+
+        if self.payment_provider != "disabled":
+            if not self.billing_paid_plans_enabled:
+                errors.append(
+                    "BILLING_PAID_PLANS_ENABLED must be true when PAYMENT_PROVIDER is enabled"
+                )
+            if _looks_like_secret_placeholder(self.payment_webhook_secret):
+                errors.append(
+                    "PAYMENT_WEBHOOK_SECRET is required and must not be a placeholder "
+                    "when PAYMENT_PROVIDER is enabled"
+                )
+            if _looks_like_secret_placeholder(self.payment_api_key):
+                errors.append(
+                    "PAYMENT_API_KEY is required and must not be a placeholder "
+                    "when PAYMENT_PROVIDER is enabled"
+                )
+            if self.legal_payment_provider == "disabled":
+                errors.append(
+                    "LEGAL_PAYMENT_PROVIDER must identify the payment provider "
+                    "when PAYMENT_PROVIDER is enabled"
+                )
+
+
+        if self.monitoring_required:
+            if not self.monitoring_release_checklist_ack:
+                errors.append("MONITORING_RELEASE_CHECKLIST_ACK must be true when MONITORING_REQUIRED=true")
+            if self.uptime_provider == "disabled":
+                errors.append("UPTIME_PROVIDER must not be disabled when monitoring is required")
+            if not self.uptime_alert_channels_list:
+                errors.append("UPTIME_ALERT_CHANNELS must contain at least one channel when monitoring is required")
+            if self.apm_provider == "disabled":
+                errors.append("APM_PROVIDER must not be disabled when monitoring is required")
+            if self.central_logging_provider == "disabled":
+                errors.append("CENTRAL_LOGGING_PROVIDER must not be disabled when monitoring is required")
+
+        if self.sentry_required and _looks_like_secret_placeholder(self.sentry_dsn):
+            errors.append("SENTRY_DSN is required and must not be a placeholder when SENTRY_REQUIRED=true")
+
+        if self.apm_provider == "sentry" and self.sentry_required and not self.sentry_dsn:
+            errors.append("SENTRY_DSN is required when APM_PROVIDER=sentry and SENTRY_REQUIRED=true")
+
+        if self.central_logging_required and self.central_logging_provider == "disabled":
+            errors.append("CENTRAL_LOGGING_PROVIDER must not be disabled when CENTRAL_LOGGING_REQUIRED=true")
+
         return errors
 
     # ============================================================
@@ -624,6 +960,11 @@ class Settings(BaseSettings):
         return getattr(logging, self.log_level, logging.INFO)
 
 
+
+    @property
+    def uptime_alert_channels_list(self) -> list[str]:
+        return _split_csv(self.uptime_alert_channels or "")
+
     @property
     def rate_limit_redis_url_resolved(self) -> str:
         return self.rate_limit_redis_url or self.redis_url
@@ -635,6 +976,14 @@ class Settings(BaseSettings):
     @property
     def legal_production_domains_list(self) -> list[str]:
         return _split_domains(self.legal_production_domains or "")
+
+    @property
+    def payment_provider_enabled(self) -> bool:
+        return self.payment_provider != "disabled"
+
+    @property
+    def fake_billing_upgrade_allowed(self) -> bool:
+        return self.billing_fake_upgrade_enabled and not self.is_production
 
     @property
     def storage_dirs(self) -> list[Path]:

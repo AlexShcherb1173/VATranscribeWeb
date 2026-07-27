@@ -14,6 +14,7 @@ import { SettingsPage } from "@/pages/settings/SettingsPage";
 import { TranscriptionsPage } from "@/pages/transcriptions/TranscriptionsPage";
 import { UpgradePage } from "@/pages/upgrade/UpgradePage";
 import { PricingPage } from "@/pages/pricing/PricingPage";
+import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
@@ -44,4 +45,5 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  { path: "*", element: <NotFoundPage /> },
 ]);

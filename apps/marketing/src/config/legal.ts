@@ -51,7 +51,7 @@ export const legalDocuments: LegalDocumentConfig[] = [
         "paragraphs": [
           "Operator type: individual / self-employed operator.",
           "Operator name, legal address and registration data are configured through deployment legal settings and must be finalized before public production launch.",
-          "Legal contact: legal@example.com. Support contact: legal@example.com."
+          "Legal contact: legal@vatranscribe.ru. Support contact: support@vatranscribe.ru."
         ]
       },
       {
@@ -114,7 +114,7 @@ export const legalDocuments: LegalDocumentConfig[] = [
         "title": "1. Controller / operator",
         "paragraphs": [
           "VATranscribe is operated by an individual / self-employed operator in pre-release mode. Operator details are configured through LEGAL_* deployment settings and must be finalized before public production launch.",
-          "Privacy contact: privacy@example.com. Legal contact: legal@example.com."
+          "Privacy contact: privacy@vatranscribe.ru. Legal contact: legal@vatranscribe.ru."
         ]
       },
       {

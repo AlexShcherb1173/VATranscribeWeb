@@ -24,7 +24,7 @@ export const legalDocumentsRu: LegalDocumentConfig[] = [
         "paragraphs": [
           "Тип оператора: физлицо / самозанятый.",
           "ФИО, адрес и регистрационные данные оператора задаются через production-настройки LEGAL_* и должны быть финализированы до публичного production-запуска.",
-          "Юридический контакт: legal@example.com. Поддержка: legal@example.com."
+          "Юридический контакт: legal@vatranscribe.ru. Поддержка: support@vatranscribe.ru."
         ]
       },
       {
@@ -87,7 +87,7 @@ export const legalDocumentsRu: LegalDocumentConfig[] = [
         "title": "1. Оператор",
         "paragraphs": [
           "VATranscribe работает от имени физлица / самозанятого в pre-release режиме. Данные оператора задаются через LEGAL_* настройки и должны быть финализированы до публичного production-запуска.",
-          "Privacy contact: privacy@example.com. Legal contact: legal@example.com."
+          "Privacy contact: privacy@vatranscribe.ru. Legal contact: legal@vatranscribe.ru."
         ]
       },
       {

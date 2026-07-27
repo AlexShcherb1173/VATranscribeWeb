@@ -15,6 +15,10 @@ services:
         PUBLIC_VATRANSCRIBE_APP_URL: ${PUBLIC_VATRANSCRIBE_APP_URL:-https://app.vatranscribe.ru}
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
         VITE_BASE_PATH: ${VITE_BASE_PATH:-/app/}
+        VITE_SENTRY_DSN: ${VITE_SENTRY_DSN:-}
+        VITE_SENTRY_ENVIRONMENT: ${VITE_SENTRY_ENVIRONMENT:-production}
+        VITE_SENTRY_RELEASE: ${VITE_SENTRY_RELEASE:-local-dev}
+        VITE_SENTRY_TRACES_SAMPLE_RATE: ${VITE_SENTRY_TRACES_SAMPLE_RATE:-0.0}
     container_name: vatranscribe-web
     depends_on:
       - api
@@ -36,6 +40,8 @@ services:
       NGINX_ANALYZE_BODY_LIMIT: ${NGINX_ANALYZE_BODY_LIMIT:-2m}
       NGINX_UPLOAD_BODY_LIMIT: ${NGINX_UPLOAD_BODY_LIMIT:-1024m}
       PUBLIC_API_ORIGIN: ${PUBLIC_API_ORIGIN:-https://api.vatranscribe.ru}
+      CDN_ASSET_CACHE_SECONDS: ${CDN_ASSET_CACHE_SECONDS:-31536000}
+      CDN_HTML_CACHE_POLICY: ${CDN_HTML_CACHE_POLICY:-no-cache}
     volumes:
       - ./infra/docker/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./infra/certbot/conf:/etc/letsencrypt:ro
@@ -48,6 +54,18 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+
+  certbot:
+    logging: *default-json-logging
+    image: certbot/certbot:v2.11.0
+    container_name: vatranscribe-certbot
+    profiles:
+      - certbot
+    volumes:
+      - ./infra/certbot/conf:/etc/letsencrypt
+      - ./infra/certbot/www:/var/www/certbot
+    entrypoint: ["certbot"]
+    restart: "no"
 
   api:
     logging: *default-json-logging
@@ -66,8 +84,24 @@ services:
       - no-new-privileges:true
     environment:
       XDG_CACHE_HOME: /app/storage/cache
+      MONITORING_REQUIRED: ${MONITORING_REQUIRED:-false}
+      MONITORING_RELEASE_CHECKLIST_ACK: ${MONITORING_RELEASE_CHECKLIST_ACK:-false}
+      UPTIME_PROVIDER: ${UPTIME_PROVIDER:-disabled}
+      UPTIME_ALERT_CHANNELS: ${UPTIME_ALERT_CHANNELS:-}
+      APM_PROVIDER: ${APM_PROVIDER:-disabled}
+      SENTRY_REQUIRED: ${SENTRY_REQUIRED:-false}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-production}
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.0}
+      SENTRY_PROFILES_SAMPLE_RATE: ${SENTRY_PROFILES_SAMPLE_RATE:-0.0}
+      SENTRY_WORKER_ENABLED: ${SENTRY_WORKER_ENABLED:-true}
+      CENTRAL_LOGGING_REQUIRED: ${CENTRAL_LOGGING_REQUIRED:-false}
+      CENTRAL_LOGGING_PROVIDER: ${CENTRAL_LOGGING_PROVIDER:-disabled}
+      LOG_RETENTION_DAYS: ${LOG_RETENTION_DAYS:-30}
+      LOKI_RETENTION_DAYS: ${LOKI_RETENTION_DAYS:-14}
+      REQUEST_ID_HEADER: ${REQUEST_ID_HEADER:-X-Request-ID}
     healthcheck:
-      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live', timeout=3).read()\" || exit 1"]
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/live', timeout=3).read()\" || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -88,6 +122,22 @@ services:
       C_FORCE_ROOT: "false"
       XDG_CACHE_HOME: /app/storage/cache
       TORCH_HOME: /app/storage/cache/torch
+      MONITORING_REQUIRED: ${MONITORING_REQUIRED:-false}
+      MONITORING_RELEASE_CHECKLIST_ACK: ${MONITORING_RELEASE_CHECKLIST_ACK:-false}
+      UPTIME_PROVIDER: ${UPTIME_PROVIDER:-disabled}
+      UPTIME_ALERT_CHANNELS: ${UPTIME_ALERT_CHANNELS:-}
+      APM_PROVIDER: ${APM_PROVIDER:-disabled}
+      SENTRY_REQUIRED: ${SENTRY_REQUIRED:-false}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-production}
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0.0}
+      SENTRY_PROFILES_SAMPLE_RATE: ${SENTRY_PROFILES_SAMPLE_RATE:-0.0}
+      SENTRY_WORKER_ENABLED: ${SENTRY_WORKER_ENABLED:-true}
+      CENTRAL_LOGGING_REQUIRED: ${CENTRAL_LOGGING_REQUIRED:-false}
+      CENTRAL_LOGGING_PROVIDER: ${CENTRAL_LOGGING_PROVIDER:-disabled}
+      LOG_RETENTION_DAYS: ${LOG_RETENTION_DAYS:-30}
+      LOKI_RETENTION_DAYS: ${LOKI_RETENTION_DAYS:-14}
+      REQUEST_ID_HEADER: ${REQUEST_ID_HEADER:-X-Request-ID}
     healthcheck:
       test: ["CMD-SHELL", "celery -A apps.worker.app.worker:celery inspect ping -d celery@$$HOSTNAME --timeout=10 >/dev/null || exit 1"]
       interval: 60s

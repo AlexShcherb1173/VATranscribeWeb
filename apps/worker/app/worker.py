@@ -3,8 +3,11 @@ from __future__ import annotations
 from celery import Celery
 
 from apps.api.app.config import get_settings
+from apps.api.app.observability import configure_logging, init_sentry
 
 settings = get_settings()
+configure_logging(settings)
+init_sentry(settings, service="worker")
 
 celery = Celery(
     "vatranscribe_worker",

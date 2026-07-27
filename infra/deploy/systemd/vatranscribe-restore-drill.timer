@@ -1,0 +1,10 @@
+[Unit]
+Description=Run VATranscribeWeb monthly restore drill
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+RandomizedDelaySec=3600
+
+[Install]
+WantedBy=timers.target

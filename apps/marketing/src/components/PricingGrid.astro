@@ -8,9 +8,22 @@ type Props = {
 
 const { locale = "en" } = Astro.props;
 const content = getPricingContent(locale);
+const quotaLabels =
+  locale === "ru"
+    ? {
+        storage: "Хранилище",
+        transcription: "Транскрибация",
+        jobs: "Задачи"
+      }
+    : {
+        storage: "Storage",
+        transcription: "Transcription",
+        jobs: "Jobs"
+      };
+const periodAriaLabel = locale === "ru" ? "Переключатель периода оплаты" : "Billing period selector foundation";
 ---
 
-<div class="pricing-period" aria-label="Billing period selector foundation">
+<div class="pricing-period" aria-label={periodAriaLabel}>
   <span class="pricing-period-option active">{content.periodToggle.monthly}</span>
   <span class="pricing-period-option">{content.periodToggle.yearly}</span>
   <span class="pricing-period-note">{content.periodToggle.yearlyNote}</span>
@@ -36,9 +49,9 @@ const content = getPricingContent(locale);
       <p class="pricing-best-for">{plan.bestFor}</p>
 
       <div class="pricing-mini-quota">
-        <div><strong>{plan.storage}</strong><span>Storage</span></div>
-        <div><strong>{plan.transcription}</strong><span>Transcription</span></div>
-        <div><strong>{plan.jobs}</strong><span>Jobs</span></div>
+        <div><strong>{plan.storage}</strong><span>{quotaLabels.storage}</span></div>
+        <div><strong>{plan.transcription}</strong><span>{quotaLabels.transcription}</span></div>
+        <div><strong>{plan.jobs}</strong><span>{quotaLabels.jobs}</span></div>
       </div>
 
       <ul class="list">

@@ -1,0 +1,25 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+---
+
+<MarketingLayout
+  canonicalPath="/ru/404"
+  title="Страница не найдена"
+  description="Запрошенная страница VATranscribe не найдена."
+  noindex={true}
+  locale="ru"
+>
+  <section class="section error-page-shell" aria-labelledby="page-title">
+    <div class="container error-page-card">
+      <span class="eyebrow">404</span>
+      <h1 id="page-title" class="h1">Страница не найдена</h1>
+      <p class="lead">
+        Страница была перемещена, переименована или больше не существует. Используйте навигацию ниже, чтобы перейти в рабочий раздел VATranscribe.
+      </p>
+      <div class="error-page-actions">
+        <a class="button button-primary" href="/ru/">На главную</a>
+        <a class="button button-secondary" href="/ru/docs">В документацию</a>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

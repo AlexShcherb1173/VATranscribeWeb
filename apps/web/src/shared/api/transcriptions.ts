@@ -1,7 +1,7 @@
-import type { ExportArtifact, Transcript } from "@/entities/transcript/model/types";
+﻿import type { ExportArtifact, Transcript } from "@/entities/transcript/model/types";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api/v1";
+  import.meta.env.VITE_API_BASE_URL || "сервер API/api/v1";
 
 const API_PREFIX_PATTERN = /^\/api\/v\d+(?=\/|$)/;
 
@@ -176,3 +176,4 @@ export async function createTranscriptionJob(
     body: JSON.stringify(payload),
   });
 }
+

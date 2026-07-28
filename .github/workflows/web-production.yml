@@ -1,6 +1,21 @@
 name: Web production
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "apps/marketing/**"
+      - "apps/web/**"
+      - "infra/docker/web.Dockerfile"
+      - "infra/docker/nginx.conf"
+      - "infra/docker/nginx.prod.conf.template"
+      - "infra/compose/docker-compose.registry.yml"
+      - "infra/deploy/deploy-web.sh"
+      - "infra/deploy/gha-dispatch.sh"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/web-production.yml"
   push:
     branches:
       - main
@@ -19,7 +34,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: vatranscribe-web-production
+  group: vatranscribe-web-${{ github.ref }}
   cancel-in-progress: false
 
 env:
@@ -42,6 +57,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -61,12 +77,12 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.title=VATranscribe Web
 
-      - name: Build and push image
+      - name: Build image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: infra/docker/web.Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
@@ -85,7 +101,7 @@ jobs:
     name: Deploy web to production
     needs:
       - build-and-push
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: production

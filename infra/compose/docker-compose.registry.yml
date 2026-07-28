@@ -1,0 +1,4 @@
+services:
+  web:
+    build: !reset null
+    image: ${WEB_IMAGE_REPOSITORY:-ghcr.io/alexshcherb1173/vatranscribe-web}:${WEB_IMAGE_TAG:?WEB_IMAGE_TAG is required}

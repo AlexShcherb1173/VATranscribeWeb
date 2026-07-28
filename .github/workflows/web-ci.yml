@@ -25,6 +25,20 @@ jobs:
       - name: Install dependencies
         run: npm install --include=optional --no-audit --no-fund
 
+      - name: Ensure Rollup native binary
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          ROLLUP_VERSION="$(node -p 'require("./node_modules/rollup/package.json").version')"
+
+          npm install --no-save --package-lock=false --include=optional --no-audit --no-fund "@rollup/rollup-linux-x64-gnu@${ROLLUP_VERSION}"
+
+          node -e 'require("@rollup/rollup-linux-x64-gnu"); console.log("ROLLUP_NATIVE_GNU_OK")'
+
       - name: Build marketing
         run: npm run build:marketing
 

@@ -1,0 +1,143 @@
+name: Web production
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/marketing/**"
+      - "apps/web/**"
+      - "infra/docker/web.Dockerfile"
+      - "infra/docker/nginx.conf"
+      - "infra/docker/nginx.prod.conf.template"
+      - "infra/compose/docker-compose.registry.yml"
+      - "infra/deploy/deploy-web.sh"
+      - "infra/deploy/gha-dispatch.sh"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/web-production.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: vatranscribe-web-production
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/alexshcherb1173/vatranscribe-web
+
+jobs:
+  build-and-push:
+    name: Build and publish web image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-,format=long
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.title=VATranscribe Web
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/web.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            PUBLIC_VATRANSCRIBE_MARKETING_URL=https://vatranscribe.ru
+            PUBLIC_VATRANSCRIBE_APP_URL=https://app.vatranscribe.ru
+            VITE_API_BASE_URL=/api/v1
+            VITE_BASE_PATH=/app/
+            VITE_SENTRY_ENVIRONMENT=production
+            VITE_SENTRY_RELEASE=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+          sbom: true
+
+  deploy-production:
+    name: Deploy web to production
+    needs:
+      - build-and-push
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://app.vatranscribe.ru/app/
+    permissions:
+      contents: read
+
+    steps:
+      - name: Validate production secrets
+        env:
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+          PROD_USER: ${{ secrets.PROD_USER }}
+          PROD_SSH_PORT: ${{ secrets.PROD_SSH_PORT }}
+          PROD_SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          PROD_SSH_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test -n "$PROD_HOST"
+          test -n "$PROD_USER"
+          test -n "$PROD_SSH_PORT"
+          test -n "$PROD_SSH_PRIVATE_KEY"
+          test -n "$PROD_SSH_KNOWN_HOSTS"
+
+      - name: Configure restricted SSH identity
+        env:
+          PROD_SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          PROD_SSH_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$PROD_SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$PROD_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+
+      - name: Deploy immutable image tag
+        env:
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+          PROD_USER: ${{ secrets.PROD_USER }}
+          PROD_SSH_PORT: ${{ secrets.PROD_SSH_PORT }}
+          IMAGE_TAG: sha-${{ github.sha }}
+        run: |
+          set -euo pipefail
+          ssh \
+            -p "$PROD_SSH_PORT" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            -i "$HOME/.ssh/id_ed25519" \
+            "$PROD_USER@$PROD_HOST" \
+            "deploy-web $IMAGE_TAG"
+
+      - name: Remove SSH identity
+        if: always()
+        run: rm -f "$HOME/.ssh/id_ed25519"

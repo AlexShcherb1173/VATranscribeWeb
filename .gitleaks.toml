@@ -1,5 +1,5 @@
 title = "VATranscribe Gitleaks configuration"
-# Allowlist scope includes .env.example and .env.production.example templates only.
+# Only clearly marked templates and documentation examples are allowlisted.
 
 [extend]
 useDefault = true
@@ -7,13 +7,13 @@ useDefault = true
 [allowlist]
 description = "Repository templates may contain clearly marked non-secret examples. Real secrets stay out of git."
 paths = [
-  "^\.env\.example$",
-  "^\.env\.production\.example$",
-  "^docs/.*",
-  "^infra/security/.*\.md$"
+  '''^\.env\.example$''',
+  '''^\.env\.production\.example$''',
+  '''^docs/.*''',
+  '''^infra/security/.*\.md$'''
 ]
 regexes = [
-  "example-only",
-  "dummy-secret",
-  "not-a-real-secret"
+  '''example-only''',
+  '''dummy-secret''',
+  '''not-a-real-secret'''
 ]

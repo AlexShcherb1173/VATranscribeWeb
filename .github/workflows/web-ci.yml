@@ -26,17 +26,11 @@ jobs:
         run: npm install --include=optional --no-audit --no-fund
 
       - name: Ensure Rollup native binary
-
         shell: bash
-
         run: |
-
           set -euo pipefail
-
           ROLLUP_VERSION="$(node -p 'require("./node_modules/rollup/package.json").version')"
-
           npm install --no-save --package-lock=false --include=optional --no-audit --no-fund "@rollup/rollup-linux-x64-gnu@${ROLLUP_VERSION}"
-
           node -e 'require("@rollup/rollup-linux-x64-gnu"); console.log("ROLLUP_NATIVE_GNU_OK")'
 
       - name: Build marketing
@@ -44,6 +38,18 @@ jobs:
 
       - name: Build web app
         run: npm run build:web
+
+      - name: Prepare CI environment file
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f .env.example ]]; then
+            cp .env.example .env
+          else
+            : > .env
+          fi
+          test -f .env
+          echo "CI_ENV_FILE_READY"
 
       - name: Validate production compose config
         run: docker compose -f docker-compose.yml -f infra/compose/docker-compose.prod.yml config

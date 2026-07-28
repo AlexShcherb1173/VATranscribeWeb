@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - feature/stage-3-marketing-layer
     paths:
       - "apps/marketing/**"
       - "apps/web/**"

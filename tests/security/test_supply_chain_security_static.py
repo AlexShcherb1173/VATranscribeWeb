@@ -15,7 +15,7 @@ def test_security_scan_workflow_contains_required_scanners():
     assert "schedule" in workflow
     assert "pip-audit" in workflow
     assert "npm audit --workspaces --audit-level=high" in workflow
-    assert "aquasecurity/trivy-action" in workflow
+    assert "aquasecurity/trivy-action@v0.36.0" in workflow
     assert "gitleaks/gitleaks-action@v3" in workflow
     assert "actions/checkout@v6" in workflow
     assert "fetch-depth: 0" in workflow

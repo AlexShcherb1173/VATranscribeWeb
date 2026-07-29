@@ -93,7 +93,7 @@ else {
 
 if (Test-CommandAvailable "gitleaks") {
     $GitleaksExit = Invoke-Scan "Gitleaks" (Join-Path $RawDir "gitleaks.log") {
-        gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path (Join-Path $RawDir "gitleaks.json")
+        gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path (Join-Path $RawDir "gitleaks.json")
     }
 }
 else {

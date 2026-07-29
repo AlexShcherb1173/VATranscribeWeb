@@ -38,7 +38,7 @@ else {
 }
 
 if (Test-Command "gitleaks") {
-    gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path (Join-Path $ReportDir "gitleaks.json")
+    gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path (Join-Path $ReportDir "gitleaks.json")
 }
 else {
     Write-Host "[WARN] Gitleaks is not installed. See docs/security/supply-chain-security-scan.md" -ForegroundColor Yellow

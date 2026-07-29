@@ -100,7 +100,7 @@ fi
 
 if command -v gitleaks >/dev/null 2>&1; then
   set +e
-  gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path "${RAW_DIR}/gitleaks.json" >"${RAW_DIR}/gitleaks.log" 2>&1
+  gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path "${RAW_DIR}/gitleaks.json" >"${RAW_DIR}/gitleaks.log" 2>&1
   GITLEAKS_EXIT=$?
   set -e
   GITLEAKS_STATUS="$(status_of "$GITLEAKS_EXIT")"

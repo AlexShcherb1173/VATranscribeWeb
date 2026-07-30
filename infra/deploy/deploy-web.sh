@@ -105,6 +105,14 @@ docker pull "$TARGET_IMAGE"
 
 TARGET_IMAGE_ID="$(docker image inspect --format '{{.Id}}' "$TARGET_IMAGE")"
 
+echo "Synchronizing runtime certificate volume"
+
+PROJECT_ROOT="$APP_DIR" \
+PROJECT_NAME="vatranscribeweb" \
+RUNTIME_ENV_FILE="$ENV_FILE" \
+COMPOSE_FILES="$APP_DIR/docker-compose.yml -f $APP_DIR/infra/compose/docker-compose.prod.yml -f $REGISTRY_COMPOSE" \
+  bash "$APP_DIR/infra/deploy/sync-nginx-certificates.sh"
+
 compose up -d --no-deps --force-recreate --no-build --pull never web
 wait_for_web_health
 

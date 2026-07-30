@@ -44,10 +44,21 @@ services:
       CDN_HTML_CACHE_POLICY: ${CDN_HTML_CACHE_POLICY:-no-cache}
     volumes:
       - ./infra/docker/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
-      - ./infra/certbot/conf:/etc/letsencrypt:ro
       - ./infra/certbot/www:/var/www/certbot:ro
+      - vatranscribe_nginx_certs:/etc/letsencrypt:ro
+    user: "101:101"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m,uid=101,gid=101,mode=1770
+      - /etc/nginx/conf.d:rw,noexec,nosuid,size=4m,uid=101,gid=101,mode=0750
+      - /var/cache/nginx:rw,noexec,nosuid,size=64m,uid=101,gid=101,mode=0750
+      - /run:rw,noexec,nosuid,size=4m,uid=101,gid=101,mode=0750
+    cap_drop:
+      - ALL
     security_opt:
       - no-new-privileges:true
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: "0"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/healthz || exit 1"]
@@ -64,6 +75,7 @@ services:
     volumes:
       - ./infra/certbot/conf:/etc/letsencrypt
       - ./infra/certbot/www:/var/www/certbot
+      - vatranscribe_nginx_certs:/etc/nginx-certs
     entrypoint: ["certbot"]
     restart: "no"
 
@@ -158,3 +170,4 @@ services:
 
 volumes:
   vatranscribe_storage:
+  vatranscribe_nginx_certs:

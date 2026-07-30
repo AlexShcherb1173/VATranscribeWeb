@@ -13,6 +13,9 @@ compose() {
 }
 
 compose run --rm certbot renew --webroot -w /var/www/certbot
+
+bash infra/deploy/sync-nginx-certificates.sh
+
 if [[ "${CERTBOT_RENEW_DEPLOY_HOOK_RELOAD:-true}" == "true" ]]; then
   compose exec -T web nginx -s reload
 fi

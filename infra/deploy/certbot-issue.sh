@@ -35,6 +35,9 @@ if [[ ! -f "infra/certbot/conf/live/${CERTBOT_PRIMARY_DOMAIN}/fullchain.pem" || 
     -subj "/CN=${CERTBOT_PRIMARY_DOMAIN}"
 fi
 
+info "Synchronizing bootstrap certificate for non-root nginx"
+bash infra/deploy/sync-nginx-certificates.sh
+
 info "Starting nginx/web for HTTP-01 challenge"
 compose up -d web
 
@@ -51,6 +54,9 @@ done
 
 info "Requesting Let's Encrypt certificate for: ${CERTBOT_DOMAINS}"
 compose run --rm certbot "${args[@]}"
+
+info "Synchronizing issued certificate for non-root nginx"
+bash infra/deploy/sync-nginx-certificates.sh
 
 info "Reloading nginx"
 compose exec -T web nginx -s reload

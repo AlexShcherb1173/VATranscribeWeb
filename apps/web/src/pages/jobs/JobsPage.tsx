@@ -269,7 +269,6 @@ export function JobsPage() {
   const [logsOpen, setLogsOpen] = useState(false);
 
   const jobsQuery = useJobsQuery();
-  const apiJobs = jobsQuery.data ?? [];
   const { queue: uploadQueue } = useUploadQueue();
 
   const uploadJobs = useMemo(
@@ -278,8 +277,8 @@ export function JobsPage() {
   );
 
   const data = useMemo(
-    () => [...uploadJobs, ...apiJobs],
-    [apiJobs, uploadJobs],
+    () => [...uploadJobs, ...(jobsQuery.data ?? [])],
+    [jobsQuery.data, uploadJobs],
   );
 
   const jobs = useMemo(() => {

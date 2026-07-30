@@ -15,8 +15,12 @@ def test_security_scan_workflow_contains_required_scanners():
     assert "schedule" in workflow
     assert "pip-audit" in workflow
     assert "npm audit --workspaces --audit-level=high" in workflow
-    assert "aquasecurity/trivy-action" in workflow
-    assert "gitleaks/gitleaks-action" in workflow
+    assert "aquasecurity/trivy-action@v0.36.0" in workflow
+    assert "gitleaks/gitleaks-action@v3" in workflow
+    assert "actions/checkout@v6" in workflow
+    assert "fetch-depth: 0" in workflow
+    assert "GITLEAKS_CONFIG: .gitleaks.toml" in workflow
+    assert '"security/**"' in workflow
     assert "anchore/sbom-action" in workflow
     assert "HIGH,CRITICAL" in workflow
 
@@ -69,10 +73,21 @@ def test_supply_chain_policy_documents_release_gate():
     assert "Production release is blocked" in release_gate
 
 
-def test_gitleaks_config_exists_with_safe_allowlist_scope():
+def test_gitleaks_strict_config_has_no_repository_allowlist():
     config = read(".gitleaks.toml")
 
     assert "useDefault = true" in config
-    assert ".env.example" in config
-    assert ".env.production.example" in config
-    assert "not-a-real-secret" in config
+    assert "[allowlist]" not in config
+    assert "[[allowlists]]" not in config
+
+
+def test_gitleaks_local_config_limits_filesystem_exclusions():
+    config = read(".gitleaks.local.toml")
+
+    assert 'path = ".gitleaks.toml"' in config
+    assert r"(^|/)\.venv/" in config
+    assert r"(^|/)node_modules/" in config
+    assert r"(^|/)\.env$" in config
+    assert ".env.example" not in config
+    assert "docs/" not in config
+    assert "infra/security" not in config

@@ -38,7 +38,7 @@ else
 fi
 
 if command -v gitleaks >/dev/null 2>&1; then
-  run_or_warn "gitleaks" gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path "$REPORT_DIR/gitleaks.json"
+  run_or_warn "gitleaks" gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path "$REPORT_DIR/gitleaks.json"
 else
   echo "[WARN] Gitleaks is not installed. See docs/security/supply-chain-security-scan.md" >&2
 fi

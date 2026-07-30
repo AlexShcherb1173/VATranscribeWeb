@@ -29,14 +29,20 @@ RUN npm run build:web
 
 FROM nginx:1.27-alpine AS runtime
 
-COPY infra/docker/nginx.conf /etc/nginx/conf.d/default.conf
+RUN sed -i '/^user  nginx;/d' /etc/nginx/nginx.conf \
+    && mkdir -p /etc/nginx/conf.d /var/cache/nginx /run \
+    && chown -R nginx:nginx /etc/nginx/conf.d /var/cache/nginx /run
 
-COPY --from=build /app/apps/marketing/dist /usr/share/nginx/html/marketing
-COPY --from=build /app/apps/web/dist /usr/share/nginx/html/web
+COPY --chown=nginx:nginx infra/docker/nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+COPY --from=build --chown=nginx:nginx /app/apps/marketing/dist /usr/share/nginx/html/marketing
+COPY --from=build --chown=nginx:nginx /app/apps/web/dist /usr/share/nginx/html/web
+
+EXPOSE 80 443
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD wget -q -O /dev/null http://127.0.0.1/healthz || exit 1
+
+USER 101:101
 
 CMD ["nginx", "-g", "daemon off;"]

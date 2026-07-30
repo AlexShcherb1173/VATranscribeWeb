@@ -1,19 +1,6 @@
-title = "VATranscribe Gitleaks configuration"
-# Only clearly marked templates and documentation examples are allowlisted.
+title = "VATranscribe strict repository secret scanning"
 
+# CI and Git-history scans use all built-in Gitleaks rules.
+# Repository source, documentation, and example env files are not allowlisted.
 [extend]
 useDefault = true
-
-[allowlist]
-description = "Repository templates may contain clearly marked non-secret examples. Real secrets stay out of git."
-paths = [
-  '''^\.env\.example$''',
-  '''^\.env\.production\.example$''',
-  '''^docs/.*''',
-  '''^infra/security/.*\.md$'''
-]
-regexes = [
-  '''example-only''',
-  '''dummy-secret''',
-  '''not-a-real-secret'''
-]

@@ -1,15 +1,17 @@
-﻿FROM python:3.12-slim-bookworm
+FROM python:3.12-slim-bookworm
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DEFAULT_TIMEOUT=300 \
-    DENO_INSTALL=/usr/local \
     XDG_CACHE_HOME=/app/storage/cache \
     TORCH_HOME=/app/storage/cache/torch
 
 WORKDIR /app
+
+ARG DENO_VERSION=2.9.4
+ARG DENO_SHA256=c24f955d9fbfe0ea5ae2b501c8e71ae76e31e4c9782390a54a284b3364fda725
 
 RUN printf '%s\n' \
     'Types: deb' \
@@ -34,8 +36,16 @@ RUN printf '%s\n' \
         git \
         build-essential \
         libsndfile1 \
-    && curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh \
-    && ln -sf /usr/local/bin/deno /usr/bin/deno \
+    && curl --fail --location --silent --show-error --http1.1 \
+        --connect-timeout 20 --max-time 300 \
+        --retry 5 --retry-delay 2 --retry-all-errors \
+        --output /tmp/deno.zip \
+        "https://github.com/denoland/deno/releases/download/v${DENO_VERSION}/deno-x86_64-unknown-linux-gnu.zip" \
+    && echo "${DENO_SHA256}  /tmp/deno.zip" | sha256sum -c - \
+    && unzip -q /tmp/deno.zip -d /usr/local/bin \
+    && chmod 0755 /usr/local/bin/deno \
+    && rm -f /tmp/deno.zip \
+    && test "$(deno --version | head -n 1 | cut -d ' ' -f 2)" = "${DENO_VERSION}" \
     && deno --version \
     && node --version \
     && apt-get clean \

@@ -88,3 +88,24 @@ def test_gitignore_blocks_runtime_secret_outputs():
     assert ".env.runtime" in content
     assert "runtime-env*.template" in content
     assert "runtime-secrets-evidence*.md" in content
+
+def test_production_deploy_uses_production_environment_for_deploy_secrets():
+    content = read(".github/workflows/production-deploy.yml")
+
+    assert "\n  deploy:\n" in content
+    deploy_job = content.split("\n  deploy:\n", 1)[1]
+
+    assert "\n    environment:\n      name: production\n" in deploy_job
+
+    required = [
+        "PRODUCTION_SSH_HOST",
+        "PRODUCTION_SSH_USER",
+        "PRODUCTION_SSH_KEY",
+        "PRODUCTION_SSH_PORT",
+        "PRODUCTION_PROJECT_ROOT",
+        "PRODUCTION_RUNTIME_ENV_FILE",
+        "PRODUCTION_SMOKE_BASE_URL",
+    ]
+
+    for name in required:
+        assert f"secrets.{name}" in deploy_job

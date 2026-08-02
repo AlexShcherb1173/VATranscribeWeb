@@ -148,3 +148,13 @@ production-rehearsal-*.redacted.txt
 VATranscribeWeb_P4-01_live_redacted_evidence_*.tar.gz
 VATranscribeWeb_P4-01_*.tar.gz
 *.bak.*
+
+# Tracked P0-06 security evidence contracts
+!docs/security/supply-chain-evidence.md
+!infra/backup/backup-restore-proof-evidence-template.md
+!infra/deploy/domain-tls-cdn-evidence-template.md
+!infra/deploy/production-rehearsal-evidence-template.md
+!infra/monitoring/monitoring-apm-logs-evidence-template.md
+!infra/security/runtime-secrets-evidence-template.md
+!infra/security/supply-chain-evidence-checklist.md
+!infra/security/supply-chain-evidence-template.md

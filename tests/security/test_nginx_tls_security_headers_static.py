@@ -77,7 +77,9 @@ def test_production_compose_exposes_https_and_mounts_tls_template():
     assert "${WEB_HTTP_PORT:-80}:80" in text
     assert "${WEB_HTTPS_PORT:-443}:443" in text
     assert "nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro" in text
-    assert "./infra/certbot/conf:/etc/letsencrypt:ro" in text
+    assert "vatranscribe_nginx_certs:/etc/letsencrypt:ro" in text
+    assert "./infra/certbot/conf:/etc/letsencrypt" in text
+    assert "vatranscribe_nginx_certs:/etc/nginx-certs" in text
     assert "./infra/certbot/www:/var/www/certbot:ro" in text
 
 

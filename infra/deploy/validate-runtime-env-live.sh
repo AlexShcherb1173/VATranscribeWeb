@@ -28,12 +28,12 @@ if [[ "${perms}" != "unknown" ]]; then
 fi
 
 info "Running production secret validator for ${RUNTIME_ENV_FILE}"
-"${SCRIPT_DIR}/validate-production-secrets.sh" "${RUNTIME_ENV_FILE}"
+bash "${SCRIPT_DIR}/validate-production-secrets.sh" "${RUNTIME_ENV_FILE}"
 
 if [[ -n "${EVIDENCE_FILE}" ]]; then
   umask 077
   mkdir -p "$(dirname "${EVIDENCE_FILE}")"
-  "${SCRIPT_DIR}/redact-runtime-env.sh" "${RUNTIME_ENV_FILE}" > "${EVIDENCE_FILE}"
+  bash "${SCRIPT_DIR}/redact-runtime-env.sh" "${RUNTIME_ENV_FILE}" > "${EVIDENCE_FILE}"
   info "Redacted runtime evidence written: ${EVIDENCE_FILE}"
 fi
 

@@ -27,10 +27,13 @@ def test_runtime_secret_activation_scripts_exist_and_are_lf_safe():
 
 def test_live_validator_wraps_production_validator_and_blocks_repo_env_file():
     content = read("infra/deploy/validate-runtime-env-live.sh")
-    assert "validate-production-secrets.sh" in content
-    assert "RUNTIME_ENV_FILE" in content
+    lines = content.splitlines()
+    assert 'bash "${SCRIPT_DIR}/validate-production-secrets.sh" "${RUNTIME_ENV_FILE}"' in lines
+    assert '  bash "${SCRIPT_DIR}/redact-runtime-env.sh" "${RUNTIME_ENV_FILE}" > "${EVIDENCE_FILE}"' in lines
+    assert '"${SCRIPT_DIR}/validate-production-secrets.sh" "${RUNTIME_ENV_FILE}"' not in lines
+    assert '  "${SCRIPT_DIR}/redact-runtime-env.sh" "${RUNTIME_ENV_FILE}" > "${EVIDENCE_FILE}"' not in lines
     assert "Runtime env file must not be inside the Git repository" in content
-    assert "redact-runtime-env.sh" in content
+    assert "RUNTIME_ENV_FILE" in content
     assert "EVIDENCE_FILE" in content
 
 

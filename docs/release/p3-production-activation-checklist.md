@@ -115,9 +115,9 @@ DO NOT commit raw scanner outputs, SBOM files, private registry URLs, real crede
 
 - [ ] Runtime env file `/opt/vatranscribe/secrets/.env.runtime` is available on the rehearsal host.
 - [ ] Release candidate commit is recorded.
-- [ ] Previous known-good rollback ref is recorded.
+- [ ] Previous known-good `app.prev.*` release directory is recorded.
 - [ ] `infra/deploy/run-production-rehearsal.sh` completed on staging or production-like infrastructure.
-- [ ] Staging deploy completed from the release candidate.
+- [ ] Immutable release archive and SHA-256 manifest were activated through `infra/deploy/activate-release.sh`.
 - [ ] Alembic migrations completed with `python -m alembic upgrade head`.
 - [ ] `infra/deploy/smoke-test.sh` passed.
 - [ ] `infra/deploy/rollback.sh` completed in 300 seconds or less.

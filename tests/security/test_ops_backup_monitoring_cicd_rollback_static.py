@@ -85,4 +85,7 @@ def test_github_actions_production_deploy_workflow_is_manual_and_runs_verificati
     assert "npm run build:frontend" in text
     assert "docker compose -f docker-compose.yml -f infra/compose/docker-compose.prod.yml config" in text
     assert "run_deploy" in text
-    assert "appleboy/ssh-action" in text
+    assert "appleboy/ssh-action" not in text
+    assert "scp " in text
+    assert "activate-release.sh" in text
+    assert "StrictHostKeyChecking=yes" in text

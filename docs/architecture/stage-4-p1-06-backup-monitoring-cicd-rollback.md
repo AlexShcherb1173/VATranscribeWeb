@@ -17,4 +17,4 @@ Adds operational production foundation:
 
 ## Rollback policy
 
-Rollback is application-first: backup current DB, checkout previous tag/commit, rebuild/restart services, run smoke tests. Database downgrade is not automatic.
+Rollback is application-first: backup the current database, rotate the current application directory to a broken-release directory, activate a retained `app.prev.*` filesystem release, recreate services, and run smoke tests. Database downgrade is not automatic.

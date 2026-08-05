@@ -32,7 +32,7 @@ def test_run_production_rehearsal_orchestrates_release_gates():
 
     for marker in [
         "REHEARSAL_ALLOW_LIVE_ACTIONS",
-        "deploy.sh",
+        "activate-release.sh",
         "python -m alembic upgrade head",
         "smoke-test.sh",
         "rollback.sh",
@@ -50,6 +50,14 @@ def test_run_production_rehearsal_orchestrates_release_gates():
 
     assert "elapsed > 300" in content
     assert "PRODUCTION_REHEARSAL_RESULT" in content
+    assert "STAGING_DEPLOY_REF" not in content
+    assert "ROLLBACK_REF" not in content
+    assert "GIT_REF=" not in content
+    assert 'RELEASE_ARCHIVE="${RELEASE_ARCHIVE:-}"' in content
+    assert 'RELEASE_CHECKSUM="${RELEASE_CHECKSUM:-}"' in content
+    assert "REHEARSAL_RELEASE_ID" in content
+    assert "ROLLBACK_RELEASE_DIR" in content
+    assert 'RELEASE_ID="${REHEARSAL_RELEASE_ID}"' in content
 
 
 def test_validate_production_rehearsal_checks_go_no_go_and_sensitive_markers():
@@ -137,6 +145,8 @@ def test_release_checklist_contains_p3_08_rehearsal_gate():
     assert "run-production-rehearsal.sh" in content
     assert "validate-production-rehearsal.sh" in content
     assert "rollback.sh" in content
+    assert "activate-release.sh" in content
+    assert "app.prev.*" in content
     assert "300 seconds" in content
     assert "Auth checks" in content
     assert "Private files/storage checks" in content

@@ -113,13 +113,16 @@ def test_production_deploy_uses_production_environment_for_deploy_secrets():
     for name in required:
         assert f"secrets.{name}" in deploy_job
 
-def test_production_deploy_invokes_deploy_script_via_bash() -> None:
+def test_production_deploy_invokes_release_activator_via_bash() -> None:
     from pathlib import Path
 
     workflow = Path(
         ".github/workflows/production-deploy.yml"
     ).read_text(encoding="utf-8")
 
-    assert "bash ./infra/deploy/deploy.sh" in workflow
-    assert "./infra/deploy/deploy.sh" in workflow
+    assert "bash ./infra/deploy/deploy.sh" not in workflow
+    assert "activate-release.sh" in workflow
+    assert "scp " in workflow
+    assert "StrictHostKeyChecking=yes" in workflow
+    assert 'remote_activator="${remote_prefix}.activate-release.sh"' in workflow
     assert "            ./infra/deploy/deploy.sh" not in workflow

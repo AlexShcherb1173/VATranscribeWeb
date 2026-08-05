@@ -102,3 +102,27 @@ def test_secret_renderer_and_validator_include_domain_tls_vars():
         assert name in validate
     assert "CDN_API_ENABLED false" in validate
     assert "HSTS_PRELOAD_ENABLED false" in validate
+
+
+def test_certbot_runtime_root_matches_immutable_release_layout():
+    scripts = (
+        "infra/deploy/certbot-issue.sh",
+        "infra/deploy/certbot-renew.sh",
+        "infra/deploy/certbot-renew-dry-run.sh",
+        "infra/deploy/sync-nginx-certificates.sh",
+    )
+    expected_root = "PROJECT_ROOT=\"${PROJECT_ROOT:-/opt/vatranscribe/app}\""
+
+    for path in scripts:
+        content = read(path)
+        assert expected_root in content
+        assert "/srv/vatranscribe" not in content
+
+    service = read("infra/deploy/systemd/vatranscribe-certbot-renew.service")
+    assert "WorkingDirectory=/opt/vatranscribe/app" in service
+    assert "Environment=PROJECT_ROOT=/opt/vatranscribe/app" in service
+    assert "ExecStart=/opt/vatranscribe/app/infra/deploy/certbot-renew.sh" in service
+    assert "/srv/vatranscribe" not in service
+
+    timer = read("infra/deploy/systemd/vatranscribe-certbot-renew.timer")
+    assert "Unit=vatranscribe-certbot-renew.service" in timer

@@ -129,3 +129,6 @@ def test_legal_document_versions_are_aligned_across_production_surfaces():
     versions_doc = read("docs/privacy/legal-document-versions.md")
     assert '`2.0`' in versions_doc
     assert '`1.0`' not in versions_doc
+    legal_pages = read("docs/legal/legal-pages.md")
+    assert '`2.0`' in legal_pages
+    assert '`1.0`' not in legal_pages

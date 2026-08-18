@@ -70,7 +70,7 @@ LOCKFILES_STATUS="$(status_of "$LOCKFILES_EXIT")"
 
 if command -v pip-audit >/dev/null 2>&1; then
   set +e
-  pip-audit --local --progress-spinner off --format json --output "${RAW_DIR}/pip-audit.json" >"${RAW_DIR}/pip-audit.log" 2>&1
+  pip-audit --local --progress-spinner off --timeout 60 --format json --output "${RAW_DIR}/pip-audit.json" >"${RAW_DIR}/pip-audit.log" 2>&1
   PIP_AUDIT_EXIT=$?
   set -e
   PIP_AUDIT_STATUS="$(status_of "$PIP_AUDIT_EXIT")"

@@ -89,3 +89,58 @@ def test_github_actions_production_deploy_workflow_is_manual_and_runs_verificati
     assert "scp " in text
     assert "activate-release.sh" in text
     assert "StrictHostKeyChecking=yes" in text
+
+
+def test_web_deploy_uses_config_from_the_same_immutable_image():
+    dockerfile = read("infra/docker/web.Dockerfile")
+    compose = read("infra/compose/docker-compose.prod.yml")
+    deploy = read("infra/deploy/deploy-web.sh")
+
+    release_root = "/opt/vatranscribe/web-release"
+
+    assert release_root in dockerfile
+    assert "docker-compose.prod.yml" in dockerfile
+    assert "docker-compose.registry.yml" in dockerfile
+    assert "nginx.prod.conf.template" in dockerfile
+    assert "sync-nginx-certificates.sh" in dockerfile
+
+    assert (
+        '"${WEB_NGINX_TEMPLATE_PATH:-'
+        './infra/docker/nginx.prod.conf.template}:'
+        '/etc/nginx/templates/default.conf.template:ro"'
+        in compose
+    )
+
+    assert f'IMAGE_RELEASE_ROOT="{release_root}"' in deploy
+    assert 'docker create "$TARGET_IMAGE"' in deploy
+    assert (
+        'docker cp \\\n'
+        '      "${container_id}:${IMAGE_RELEASE_ROOT}/."'
+        in deploy
+    )
+
+    assert "org.opencontainers.image.revision" in deploy
+    assert 'EXPECTED_COMMIT="${IMAGE_TAG#sha-}"' in deploy
+    assert "Image revision mismatch" in deploy
+
+    assert "TARGET_RELEASE_ROOT" in deploy
+    assert "TARGET_PROD_COMPOSE" in deploy
+    assert "TARGET_REGISTRY_COMPOSE" in deploy
+    assert "TARGET_NGINX_TEMPLATE" in deploy
+    assert "TARGET_CERT_SYNC" in deploy
+
+    assert '--project-directory "$APP_DIR"' in deploy
+    assert '-f "$TARGET_PROD_COMPOSE"' in deploy
+    assert '-f "$TARGET_REGISTRY_COMPOSE"' in deploy
+    assert 'WEB_NGINX_TEMPLATE_PATH="$TARGET_NGINX_TEMPLATE"' in deploy
+    assert 'bash "$TARGET_CERT_SYNC"' in deploy
+
+    assert 'config \\\n    >/dev/null' in deploy
+    assert "current-web-release-root" in deploy
+
+    assert (
+        'PREVIOUS_PROD_COMPOSE='
+        '"$APP_DIR/infra/compose/docker-compose.prod.yml"'
+        in deploy
+    )
+    assert "PREVIOUS_RELEASE_ROOT" in deploy

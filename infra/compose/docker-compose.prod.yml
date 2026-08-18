@@ -43,7 +43,7 @@ services:
       CDN_ASSET_CACHE_SECONDS: ${CDN_ASSET_CACHE_SECONDS:-31536000}
       CDN_HTML_CACHE_POLICY: ${CDN_HTML_CACHE_POLICY:-no-cache}
     volumes:
-      - ./infra/docker/nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - "${WEB_NGINX_TEMPLATE_PATH:-./infra/docker/nginx.prod.conf.template}:/etc/nginx/templates/default.conf.template:ro"
       - ./infra/certbot/www:/var/www/certbot:ro
       - vatranscribe_nginx_certs:/etc/letsencrypt:ro
     user: "101:101"

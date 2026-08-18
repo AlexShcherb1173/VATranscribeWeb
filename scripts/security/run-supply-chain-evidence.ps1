@@ -58,7 +58,7 @@ $LockExit = Invoke-Scan "lockfile policy" (Join-Path $RawDir "check-lockfiles.lo
 
 if (Test-CommandAvailable "pip-audit") {
     $PipExit = Invoke-Scan "pip-audit" (Join-Path $RawDir "pip-audit.log") {
-        pip-audit --local --progress-spinner off --format json --output (Join-Path $RawDir "pip-audit.json")
+        pip-audit --local --progress-spinner off --timeout 60 --format json --output (Join-Path $RawDir "pip-audit.json")
     }
 }
 else {

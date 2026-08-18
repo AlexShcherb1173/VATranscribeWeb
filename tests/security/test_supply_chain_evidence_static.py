@@ -80,3 +80,17 @@ def test_gitignore_blocks_supply_chain_evidence_artifacts():
     assert "*.trivy.json" in gitignore
     assert "*.gitleaks.json" in gitignore
     assert "*.sbom.spdx.json" in gitignore
+
+def test_powershell_runner_propagates_native_exit_codes():
+    ps1 = read("scripts/security/run-supply-chain-evidence.ps1")
+
+    assert "$ExitCode = $LASTEXITCODE" in ps1
+    assert "$NpmExit = $LASTEXITCODE" in ps1
+    assert '--skip-dirs "**/node_modules"' in ps1
+    assert '--skip-dirs "**/node_modules"' in read("scripts/security/run-supply-chain-evidence.sh")
+    assert "--timeout 30m" in ps1
+    assert "--scanners vuln,misconfig,secret" in ps1
+    assert "--timeout 30m" in read("scripts/security/run-supply-chain-evidence.sh")
+    assert "--scanners vuln,misconfig,secret" in read("scripts/security/run-supply-chain-evidence.sh")
+    assert "| Expiry date |" in ps1
+    assert "| Expiry date |" in read("scripts/security/run-supply-chain-evidence.sh")

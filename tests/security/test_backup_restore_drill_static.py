@@ -47,6 +47,10 @@ def test_restore_drill_restores_only_disposable_database_and_verifies_schema():
     assert 'RESTORE_DRILL_DATABASE}" != "${POSTGRES_DB}' in drill
     assert "DROP DATABASE IF EXISTS" in drill
     assert "CREATE DATABASE" in drill
+    assert 'RESTORE_DRILL_ADMIN_USER="${RESTORE_DRILL_ADMIN_USER:-postgres}"' in drill
+    assert drill.count('psql -U "${RESTORE_DRILL_ADMIN_USER}" -d postgres') == 2
+    assert 'CREATE DATABASE ${RESTORE_DRILL_DATABASE} OWNER ${POSTGRES_USER};' in drill
+    assert 'pg_restore -U "${POSTGRES_USER}" -d "${RESTORE_DRILL_DATABASE}"' in drill
     assert "pg_restore" in drill
     assert "alembic_version" in drill
     assert "CRITICAL_RESTORE_TABLES" in drill

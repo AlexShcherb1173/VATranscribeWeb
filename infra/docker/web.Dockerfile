@@ -29,14 +29,45 @@ RUN npm run build:web
 
 FROM nginx:1.27-alpine AS runtime
 
-COPY infra/docker/nginx.conf /etc/nginx/conf.d/default.conf
+RUN sed -i '/^user  nginx;/d' /etc/nginx/nginx.conf \
+    && mkdir -p /etc/nginx/conf.d /var/cache/nginx /run \
+    && chown -R nginx:nginx /etc/nginx/conf.d /var/cache/nginx /run
 
-COPY --from=build /app/apps/marketing/dist /usr/share/nginx/html/marketing
-COPY --from=build /app/apps/web/dist /usr/share/nginx/html/web
+COPY --chown=nginx:nginx infra/docker/nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# Immutable deployment configuration shipped with the exact web image.
+RUN mkdir -p \
+    /opt/vatranscribe/web-release/infra/compose \
+    /opt/vatranscribe/web-release/infra/docker \
+    /opt/vatranscribe/web-release/infra/deploy
+
+COPY infra/compose/docker-compose.prod.yml \
+    /opt/vatranscribe/web-release/infra/compose/docker-compose.prod.yml
+
+COPY infra/compose/docker-compose.registry.yml \
+    /opt/vatranscribe/web-release/infra/compose/docker-compose.registry.yml
+
+COPY infra/docker/nginx.prod.conf.template \
+    /opt/vatranscribe/web-release/infra/docker/nginx.prod.conf.template
+
+COPY infra/deploy/sync-nginx-certificates.sh \
+    /opt/vatranscribe/web-release/infra/deploy/sync-nginx-certificates.sh
+
+RUN chmod 0444 \
+      /opt/vatranscribe/web-release/infra/compose/docker-compose.prod.yml \
+      /opt/vatranscribe/web-release/infra/compose/docker-compose.registry.yml \
+      /opt/vatranscribe/web-release/infra/docker/nginx.prod.conf.template \
+    && chmod 0555 \
+      /opt/vatranscribe/web-release/infra/deploy/sync-nginx-certificates.sh
+
+COPY --from=build --chown=nginx:nginx /app/apps/marketing/dist /usr/share/nginx/html/marketing
+COPY --from=build --chown=nginx:nginx /app/apps/web/dist /usr/share/nginx/html/web
+
+EXPOSE 80 443
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD wget -q -O /dev/null http://127.0.0.1/healthz || exit 1
+
+USER 101:101
 
 CMD ["nginx", "-g", "daemon off;"]

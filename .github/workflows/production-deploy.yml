@@ -8,17 +8,27 @@ on:
         required: true
         default: "main"
       run_deploy:
-        description: "Set to true to run remote deploy"
+        description: "Set to true to transfer and activate the release"
         required: true
         default: "false"
 
 jobs:
   verify:
     runs-on: ubuntu-latest
+    outputs:
+      release_commit: ${{ steps.release.outputs.release_commit }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.git_ref }}
+      - name: Resolve verified release commit
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_commit="$(git rev-parse HEAD)"
+          test "$(git rev-parse "${release_commit}^{commit}")" = "${release_commit}"
+          echo "release_commit=${release_commit}" >> "${GITHUB_OUTPUT}"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -31,22 +41,110 @@ jobs:
       - run: npm install --include=optional --no-audit --no-fund
       - run: npm run build:frontend
       - run: docker compose -f docker-compose.yml -f infra/compose/docker-compose.prod.yml config
+
   deploy:
     runs-on: ubuntu-latest
     needs: verify
     if: ${{ inputs.run_deploy == 'true' }}
+    environment:
+      name: production
+    permissions:
+      contents: read
     steps:
-      - name: Run remote deploy over SSH
-        uses: appleboy/ssh-action@v1.2.0
+      - uses: actions/checkout@v4
         with:
-          host: ${{ secrets.PRODUCTION_SSH_HOST }}
-          username: ${{ secrets.PRODUCTION_SSH_USER }}
-          key: ${{ secrets.PRODUCTION_SSH_KEY }}
-          port: ${{ secrets.PRODUCTION_SSH_PORT || '22' }}
-          script_stop: true
-          script: |
-            cd ${{ secrets.PRODUCTION_PROJECT_ROOT }}
-            RUNTIME_ENV_FILE=${{ secrets.PRODUCTION_RUNTIME_ENV_FILE }} \
-            GIT_REF=${{ inputs.git_ref }} \
-            SMOKE_BASE_URL=${{ secrets.PRODUCTION_SMOKE_BASE_URL }} \
-            ./infra/deploy/deploy.sh
+          ref: ${{ needs.verify.outputs.release_commit }}
+          fetch-depth: 0
+
+      - name: Build immutable release payload
+        id: payload
+        shell: bash
+        env:
+          VERIFIED_RELEASE_COMMIT: ${{ needs.verify.outputs.release_commit }}
+        run: |
+          set -euo pipefail
+          release_commit="$(git rev-parse HEAD)"
+          test "${release_commit}" = "${VERIFIED_RELEASE_COMMIT}"
+          release_id="sha-${release_commit}-run-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          archive="${RUNNER_TEMP}/vatranscribe-${release_id}.tar.gz"
+          checksum="${archive}.sha256"
+          unsafe_entries="$(git ls-tree -r --full-tree "${release_commit}" | awk '$1 != "100644" && $1 != "100755" { print $1 " " $4 }')"
+          test -z "${unsafe_entries}" || {
+            printf 'Unsupported Git entry modes:\n%s\n' "${unsafe_entries}" >&2
+            exit 1
+          }
+          git archive --format=tar.gz --output="${archive}" "${release_commit}"
+          (
+            cd "$(dirname "${archive}")"
+            sha256sum "$(basename "${archive}")" > "$(basename "${checksum}")"
+          )
+          echo "archive=${archive}" >> "${GITHUB_OUTPUT}"
+          echo "checksum=${checksum}" >> "${GITHUB_OUTPUT}"
+          echo "release_id=${release_id}" >> "${GITHUB_OUTPUT}"
+
+      - name: Configure verified SSH transport
+        shell: bash
+        env:
+          PROD_SSH_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+          PRODUCTION_SSH_KEY: ${{ secrets.PRODUCTION_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${PROD_SSH_KNOWN_HOSTS}"
+          test -n "${PRODUCTION_SSH_KEY}"
+          install -d -m 700 "${HOME}/.ssh"
+          printf '%s\n' "${PROD_SSH_KNOWN_HOSTS}" > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/known_hosts"
+          printf '%s\n' "${PRODUCTION_SSH_KEY}" > "${RUNNER_TEMP}/production_ssh_key"
+          chmod 600 "${RUNNER_TEMP}/production_ssh_key"
+
+      - name: Transfer and activate release
+        shell: bash
+        env:
+          PRODUCTION_SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
+          PRODUCTION_SSH_USER: ${{ secrets.PRODUCTION_SSH_USER }}
+          PRODUCTION_SSH_PORT: ${{ secrets.PRODUCTION_SSH_PORT }}
+          PRODUCTION_PROJECT_ROOT: ${{ secrets.PRODUCTION_PROJECT_ROOT }}
+          PRODUCTION_RUNTIME_ENV_FILE: ${{ secrets.PRODUCTION_RUNTIME_ENV_FILE }}
+          PRODUCTION_SMOKE_BASE_URL: ${{ secrets.PRODUCTION_SMOKE_BASE_URL }}
+          RELEASE_ARCHIVE: ${{ steps.payload.outputs.archive }}
+          RELEASE_CHECKSUM: ${{ steps.payload.outputs.checksum }}
+          RELEASE_ID: ${{ steps.payload.outputs.release_id }}
+        run: |
+          set -euo pipefail
+          port="${PRODUCTION_SSH_PORT:-22}"
+          key="${RUNNER_TEMP}/production_ssh_key"
+          target="${PRODUCTION_SSH_USER}@${PRODUCTION_SSH_HOST}"
+          remote_prefix="/tmp/vatranscribe-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${RELEASE_ID}"
+          remote_archive="${remote_prefix}.tar.gz"
+          remote_checksum="${remote_archive}.sha256"
+          remote_activator="${remote_prefix}.activate-release.sh"
+
+          cleanup_command="$(printf 'rm -f -- %q %q %q' \
+            "${remote_archive}" \
+            "${remote_checksum}" \
+            "${remote_activator}")"
+
+          cleanup_remote_payload() {
+            local status=$?
+            trap - EXIT
+            set +e
+            ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -i "${key}" -p "${port}" "${target}" "${cleanup_command}" >/dev/null 2>&1 || true
+            exit "${status}"
+          }
+
+          trap cleanup_remote_payload EXIT
+
+          scp -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -i "${key}" -P "${port}" "${RELEASE_ARCHIVE}" "${target}:${remote_archive}"
+          scp -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -i "${key}" -P "${port}" "${RELEASE_CHECKSUM}" "${target}:${remote_checksum}"
+          scp -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -i "${key}" -P "${port}" infra/deploy/activate-release.sh "${target}:${remote_activator}"
+
+          remote_command="$(printf 'PROJECT_ROOT=%q RUNTIME_ENV_FILE=%q SMOKE_BASE_URL=%q RELEASE_ID=%q bash %q %q %q' \
+            "${PRODUCTION_PROJECT_ROOT}" \
+            "${PRODUCTION_RUNTIME_ENV_FILE}" \
+            "${PRODUCTION_SMOKE_BASE_URL}" \
+            "${RELEASE_ID}" \
+            "${remote_activator}" \
+            "${remote_archive}" \
+            "${remote_checksum}")"
+
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes -i "${key}" -p "${port}" "${target}" "${remote_command}"

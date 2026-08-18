@@ -6,16 +6,16 @@ The application tracks legal document versions accepted by users.
 
 | Backend document type | Marketing route | Version |
 |---|---|---|
-| `terms` | `/legal/terms` | `1.0` |
-| `privacy` | `/legal/privacy` | `1.0` |
-| `personal_data` | `/legal/personal-data` | `1.0` |
+| `terms` | `/legal/terms` | `2.0` |
+| `privacy` | `/legal/privacy` | `2.0` |
+| `personal_data` | `/legal/personal-data` | `2.0` |
 
 ## Additional public policy pages
 
 | Document type | Marketing route | Version |
 |---|---|---|
-| `cookies` | `/legal/cookies` | `1.0` |
-| `refund` | `/legal/refund` | `1.0` |
+| `cookies` | `/legal/cookies` | `2.0` |
+| `refund` | `/legal/refund` | `2.0` |
 
 ## Registration flow
 
@@ -26,17 +26,17 @@ The frontend registration flow sends:
   "accepted_legal_documents": [
     {
       "document_type": "terms",
-      "document_version": "1.0",
+      "document_version": "2.0",
       "accepted": true
     },
     {
       "document_type": "privacy",
-      "document_version": "1.0",
+      "document_version": "2.0",
       "accepted": true
     },
     {
       "document_type": "personal_data",
-      "document_version": "1.0",
+      "document_version": "2.0",
       "accepted": true
     }
   ]

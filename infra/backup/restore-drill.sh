@@ -7,6 +7,7 @@ RUNTIME_ENV_FILE="${RUNTIME_ENV_FILE:-}"
 DB_SERVICE="${DB_SERVICE:-db}"
 POSTGRES_DB="${POSTGRES_DB:-vatranscribe}"
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
+RESTORE_DRILL_ADMIN_USER="${RESTORE_DRILL_ADMIN_USER:-postgres}"
 BACKUP_DIR="${BACKUP_DIR:-/backups/vatranscribe}"
 RESTORE_DRILL_DATABASE="${RESTORE_DRILL_DATABASE:-vatranscribe_restore_drill}"
 RESTORE_DRILL_KEEP_DB="${RESTORE_DRILL_KEEP_DB:-false}"
@@ -29,6 +30,8 @@ fi
 [[ -n "${BACKUP_FILE}" && -f "${BACKUP_FILE}" ]] || fail "Usage: $0 /path/to/backup.dump[.age] or provide latest daily backup"
 [[ "${RESTORE_DRILL_DATABASE}" != "${POSTGRES_DB}" ]] || fail "RESTORE_DRILL_DATABASE must not equal production POSTGRES_DB"
 [[ "${RESTORE_DRILL_DATABASE}" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] || fail "RESTORE_DRILL_DATABASE contains unsafe characters"
+[[ "${POSTGRES_USER}" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] || fail "POSTGRES_USER contains unsafe characters"
+[[ "${RESTORE_DRILL_ADMIN_USER}" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] || fail "RESTORE_DRILL_ADMIN_USER contains unsafe characters"
 
 compose_exec() {
   if [[ -n "${RUNTIME_ENV_FILE}" && -f "${RUNTIME_ENV_FILE}" ]]; then
@@ -60,10 +63,10 @@ fi
 pg_restore --list "${TMP_DUMP}" >/dev/null
 
 info "Creating disposable restore database: ${RESTORE_DRILL_DATABASE}"
-compose_exec exec -T "${DB_SERVICE}" psql -U "${POSTGRES_USER}" -d postgres -v ON_ERROR_STOP=1 <<SQL
+compose_exec exec -T "${DB_SERVICE}" psql -U "${RESTORE_DRILL_ADMIN_USER}" -d postgres -v ON_ERROR_STOP=1 <<SQL
 SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${RESTORE_DRILL_DATABASE}';
 DROP DATABASE IF EXISTS ${RESTORE_DRILL_DATABASE};
-CREATE DATABASE ${RESTORE_DRILL_DATABASE};
+CREATE DATABASE ${RESTORE_DRILL_DATABASE} OWNER ${POSTGRES_USER};
 SQL
 
 info "Restoring backup into disposable database"
@@ -93,7 +96,7 @@ SQL
 
 if [[ "${RESTORE_DRILL_KEEP_DB}" != "true" ]]; then
   info "Dropping disposable restore drill database"
-  compose_exec exec -T "${DB_SERVICE}" psql -U "${POSTGRES_USER}" -d postgres -v ON_ERROR_STOP=1 <<SQL
+  compose_exec exec -T "${DB_SERVICE}" psql -U "${RESTORE_DRILL_ADMIN_USER}" -d postgres -v ON_ERROR_STOP=1 <<SQL
 SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${RESTORE_DRILL_DATABASE}';
 DROP DATABASE IF EXISTS ${RESTORE_DRILL_DATABASE};
 SQL

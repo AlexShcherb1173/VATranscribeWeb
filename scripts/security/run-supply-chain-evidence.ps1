@@ -31,7 +31,8 @@ function Invoke-Scan {
     Write-Host "[SCAN] $Name" -ForegroundColor Cyan
     try {
         & $Command *> $LogFile
-        return 0
+        $ExitCode = $LASTEXITCODE
+        return $ExitCode
     }
     catch {
         $_ | Out-String | Add-Content -LiteralPath $LogFile -Encoding UTF8
@@ -57,7 +58,7 @@ $LockExit = Invoke-Scan "lockfile policy" (Join-Path $RawDir "check-lockfiles.lo
 
 if (Test-CommandAvailable "pip-audit") {
     $PipExit = Invoke-Scan "pip-audit" (Join-Path $RawDir "pip-audit.log") {
-        pip-audit --local --progress-spinner off --format json --output (Join-Path $RawDir "pip-audit.json")
+        pip-audit --local --progress-spinner off --timeout 60 --format json --output (Join-Path $RawDir "pip-audit.json")
     }
 }
 else {
@@ -69,7 +70,7 @@ if (Test-CommandAvailable "npm") {
     Write-Host "[SCAN] npm audit" -ForegroundColor Cyan
     try {
         npm audit --workspaces --audit-level=high --json *> (Join-Path $RawDir "npm-audit.json")
-        $NpmExit = 0
+        $NpmExit = $LASTEXITCODE
     }
     catch {
         $_ | Out-String | Add-Content -LiteralPath (Join-Path $RawDir "npm-audit.json") -Encoding UTF8
@@ -83,7 +84,7 @@ else {
 
 if (Test-CommandAvailable "trivy") {
     $TrivyExit = Invoke-Scan "Trivy fs" (Join-Path $RawDir "trivy-fs.log") {
-        trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --format json --output (Join-Path $RawDir "trivy-fs.json") .
+        trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs "**/node_modules" --format json --output (Join-Path $RawDir "trivy-fs.json") .
     }
 }
 else {
@@ -93,7 +94,7 @@ else {
 
 if (Test-CommandAvailable "gitleaks") {
     $GitleaksExit = Invoke-Scan "Gitleaks" (Join-Path $RawDir "gitleaks.log") {
-        gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path (Join-Path $RawDir "gitleaks.json")
+        gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path (Join-Path $RawDir "gitleaks.json")
     }
 }
 else {
@@ -165,9 +166,9 @@ DO NOT commit raw scan reports, SBOM files, private registry URLs, tokens, crede
 
 Use this file for release-owner review. Store the completed copy outside Git unless it is fully sanitized.
 
-| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date |
-|---|---|---|---|---|---|---|---|---|---|
-| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ |
+| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date | Expiry date |
+|---|---|---|---|---|---|---|---|---|---|---|
+| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ | _YYYY-MM-DD or N/A_ |
 
 Critical findings require a fix before public release unless the release owner records a formal no-exposure decision. High findings block release unless fixed or covered by a dated temporary exception.
 "@ | Set-Content -LiteralPath $TriageFile -Encoding UTF8

@@ -15,7 +15,7 @@ Stage 3.4 replaces placeholder legal pages with structured legal document drafts
 
 Current public legal document version:
 
-- `1.0`
+- `2.0`
 
 ## Backend consent mapping
 

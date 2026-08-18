@@ -89,7 +89,7 @@ fi
 
 if command -v trivy >/dev/null 2>&1; then
   set +e
-  trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --format json --output "${RAW_DIR}/trivy-fs.json" . >"${RAW_DIR}/trivy-fs.log" 2>&1
+  trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs "**/node_modules" --format json --output "${RAW_DIR}/trivy-fs.json" . >"${RAW_DIR}/trivy-fs.log" 2>&1
   TRIVY_EXIT=$?
   set -e
   TRIVY_STATUS="$(status_of "$TRIVY_EXIT")"
@@ -170,9 +170,9 @@ cat >"$TRIAGE_FILE" <<'EOF_TRIAGE'
 
 Use this file for release-owner review. Store the completed copy outside Git unless it is fully sanitized.
 
-| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date |
-|---|---|---|---|---|---|---|---|---|---|
-| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ |
+| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date | Expiry date |
+|---|---|---|---|---|---|---|---|---|---|---|
+| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ | _YYYY-MM-DD or N/A_ |
 
 Critical findings require a fix before public release unless the release owner records a formal no-exposure decision. High findings block release unless fixed or covered by a dated temporary exception.
 EOF_TRIAGE

@@ -95,10 +95,16 @@ def test_powershell_runner_propagates_native_exit_codes():
     assert "| Expiry date |" in ps1
     assert "| Expiry date |" in read("scripts/security/run-supply-chain-evidence.sh")
 
+def test_all_supply_chain_runners_use_project_mode_pip_audit():
+    runners = [
+        read("scripts/security/run-supply-chain-evidence.ps1"),
+        read("scripts/security/run-supply-chain-evidence.sh"),
+        read("scripts/security/run-supply-chain-scan.ps1"),
+        read("scripts/security/run-supply-chain-scan.sh"),
+    ]
 
-def test_evidence_runners_use_resilient_pip_audit_timeout():
-    ps1 = read("scripts/security/run-supply-chain-evidence.ps1")
-    sh = read("scripts/security/run-supply-chain-evidence.sh")
+    expected = "pip-audit . --strict --progress-spinner off --timeout 60"
 
-    assert "pip-audit --local --progress-spinner off --timeout 60" in ps1
-    assert "pip-audit --local --progress-spinner off --timeout 60" in sh
+    for content in runners:
+        assert expected in content
+        assert "pip-audit --local" not in content

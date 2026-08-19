@@ -17,7 +17,7 @@ function Test-Command {
 pwsh -ExecutionPolicy Bypass -File .\scripts\security\check-lockfiles.ps1
 
 if (Test-Command "pip-audit") {
-    pip-audit --local --progress-spinner off --format json --output (Join-Path $ReportDir "pip-audit.json")
+    pip-audit . --strict --progress-spinner off --timeout 60 --format json --output (Join-Path $ReportDir "pip-audit.json")
 }
 else {
     Write-Host "[WARN] pip-audit is not installed. Install with: python -m pip install pip-audit" -ForegroundColor Yellow

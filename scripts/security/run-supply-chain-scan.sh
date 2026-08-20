@@ -32,7 +32,7 @@ else
 fi
 
 if command -v trivy >/dev/null 2>&1; then
-  run_or_warn "trivy fs" trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --format table . | tee "$REPORT_DIR/trivy-fs.txt"
+  run_or_warn "trivy fs" trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs ".venv" --skip-dirs "**/node_modules" --format table . | tee "$REPORT_DIR/trivy-fs.txt"
 else
   echo "[WARN] Trivy is not installed. See docs/security/supply-chain-security-scan.md" >&2
 fi
@@ -44,7 +44,7 @@ else
 fi
 
 if command -v syft >/dev/null 2>&1; then
-  run_or_warn "syft sbom" syft . -o spdx-json="$REPORT_DIR/sbom.spdx.json"
+  run_or_warn "syft sbom" syft . --exclude "./.venv/**" --exclude "**/node_modules/**" -o spdx-json="$REPORT_DIR/sbom.spdx.json"
 else
   echo "[INFO] Syft is optional for local runs. SBOM generation is documented and enabled in CI." >&2
 fi

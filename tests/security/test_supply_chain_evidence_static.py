@@ -108,3 +108,59 @@ def test_all_supply_chain_runners_use_project_mode_pip_audit():
     for content in runners:
         assert expected in content
         assert "pip-audit --local" not in content
+
+def test_supply_chain_filesystem_scanners_exclude_local_dependency_trees():
+    runners = [
+        read("scripts/security/run-supply-chain-evidence.ps1"),
+        read("scripts/security/run-supply-chain-evidence.sh"),
+        read("scripts/security/run-supply-chain-scan.ps1"),
+        read("scripts/security/run-supply-chain-scan.sh"),
+    ]
+
+    for content in runners:
+        assert '--skip-dirs ".venv"' in content
+        assert '--skip-dirs "**/node_modules"' in content
+        assert '--exclude "./.venv/**"' in content
+        assert '--exclude "**/node_modules/**"' in content
+
+
+def test_powershell_npm_audit_keeps_json_stdout_separate_from_stderr():
+    runners = [
+        read("scripts/security/run-supply-chain-evidence.ps1"),
+        read("scripts/security/run-supply-chain-scan.ps1"),
+    ]
+
+    for content in runners:
+        assert 'Get-Command "npm.cmd"' in content
+        assert "& $NpmCommand.Source audit" in content
+        assert "1> $NpmJson" in content
+        assert "2> $NpmStderr" in content
+        assert "--json *>" not in content
+
+def test_supply_chain_redactors_do_not_treat_plain_secret_labels_as_credentials():
+    ps1 = read("scripts/security/redact-supply-chain-evidence.ps1")
+    sh = read("scripts/security/redact-supply-chain-evidence.sh")
+
+    assert r"([ \t]*[:=][ \t]*)" in ps1
+    assert "([=: ]+)" not in ps1
+
+    assert "([[:blank:]]*[:=][[:blank:]]*)" in sh
+    assert "([=: ]+)" not in sh
+
+    ps1_generic = next(
+        line
+        for line in ps1.splitlines()
+        if "token|secret|password|passwd" in line
+    )
+
+    sh_generic = next(
+        line
+        for line in sh.splitlines()
+        if "token|secret|password|passwd" in line
+    )
+
+    assert r"\r\n" in ps1_generic
+    assert "[^[:space:]" in sh_generic
+
+    for content in [ps1, sh]:
+        assert "token|secret|password|passwd" in content

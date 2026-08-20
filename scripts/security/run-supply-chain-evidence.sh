@@ -89,7 +89,7 @@ fi
 
 if command -v trivy >/dev/null 2>&1; then
   set +e
-  trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs "**/node_modules" --format json --output "${RAW_DIR}/trivy-fs.json" . >"${RAW_DIR}/trivy-fs.log" 2>&1
+  trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs ".venv" --skip-dirs "**/node_modules" --format json --output "${RAW_DIR}/trivy-fs.json" . >"${RAW_DIR}/trivy-fs.log" 2>&1
   TRIVY_EXIT=$?
   set -e
   TRIVY_STATUS="$(status_of "$TRIVY_EXIT")"
@@ -111,7 +111,7 @@ fi
 
 if command -v syft >/dev/null 2>&1; then
   set +e
-  syft . -o "spdx-json=${RAW_DIR}/sbom.spdx.json" >"${RAW_DIR}/syft.log" 2>&1
+  syft . --exclude "./.venv/**" --exclude "**/node_modules/**" -o "spdx-json=${RAW_DIR}/sbom.spdx.json" >"${RAW_DIR}/syft.log" 2>&1
   SYFT_EXIT=$?
   set -e
   SYFT_STATUS="$(status_of "$SYFT_EXIT")"

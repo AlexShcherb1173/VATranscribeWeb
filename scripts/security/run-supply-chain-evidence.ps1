@@ -66,25 +66,36 @@ else {
     "pip-audit not installed" | Set-Content -LiteralPath (Join-Path $RawDir "pip-audit.log") -Encoding UTF8
 }
 
-if (Test-CommandAvailable "npm") {
+$NpmJson = Join-Path $RawDir "npm-audit.json"
+$NpmStderr = Join-Path $RawDir "npm-audit.stderr.log"
+
+$NpmCommand = Get-Command "npm.cmd" -ErrorAction SilentlyContinue
+
+if ($null -eq $NpmCommand) {
+    $NpmCommand = Get-Command "npm" -ErrorAction SilentlyContinue
+}
+
+if ($null -ne $NpmCommand) {
     Write-Host "[SCAN] npm audit" -ForegroundColor Cyan
+
     try {
-        npm audit --workspaces --audit-level=high --json *> (Join-Path $RawDir "npm-audit.json")
+        & $NpmCommand.Source audit --workspaces --audit-level=high --json 1> $NpmJson 2> $NpmStderr
         $NpmExit = $LASTEXITCODE
     }
     catch {
-        $_ | Out-String | Add-Content -LiteralPath (Join-Path $RawDir "npm-audit.json") -Encoding UTF8
+        $_ | Out-String | Add-Content -LiteralPath $NpmStderr -Encoding UTF8
         $NpmExit = 1
     }
 }
 else {
     $NpmExit = 127
-    "npm not installed" | Set-Content -LiteralPath (Join-Path $RawDir "npm-audit.json") -Encoding UTF8
+    '{"error":"npm not installed"}' | Set-Content -LiteralPath $NpmJson -Encoding UTF8
+    "npm not installed" | Set-Content -LiteralPath $NpmStderr -Encoding UTF8
 }
 
 if (Test-CommandAvailable "trivy") {
     $TrivyExit = Invoke-Scan "Trivy fs" (Join-Path $RawDir "trivy-fs.log") {
-        trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs "**/node_modules" --format json --output (Join-Path $RawDir "trivy-fs.json") .
+        trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs ".venv" --skip-dirs "**/node_modules" --format json --output (Join-Path $RawDir "trivy-fs.json") .
     }
 }
 else {
@@ -105,7 +116,7 @@ else {
 if (Test-CommandAvailable "syft") {
     $SbomPath = Join-Path $RawDir "sbom.spdx.json"
     $SyftExit = Invoke-Scan "Syft SBOM" (Join-Path $RawDir "syft.log") {
-        syft . -o "spdx-json=$SbomPath"
+        syft . --exclude "./.venv/**" --exclude "**/node_modules/**" -o "spdx-json=$SbomPath"
     }
 }
 else {

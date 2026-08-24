@@ -56,14 +56,16 @@ $LockExit = Invoke-Scan "lockfile policy" (Join-Path $RawDir "check-lockfiles.lo
     pwsh -ExecutionPolicy Bypass -File .\scripts\security\check-lockfiles.ps1
 }
 
-if (Test-CommandAvailable "pip-audit") {
-    $PipExit = Invoke-Scan "pip-audit" (Join-Path $RawDir "pip-audit.log") {
-        pip-audit . --strict --progress-spinner off --timeout 60 --format json --output (Join-Path $RawDir "pip-audit.json")
-    }
+$PipJson = Join-Path $RawDir "pip-audit.json"
+
+$PipExit = Invoke-Scan "pip-audit (Python 3.12 container)" (Join-Path $RawDir "pip-audit.log") {
+    pwsh -ExecutionPolicy Bypass -File .\scripts\security\run-pip-audit-production.ps1 -OutputFile $PipJson
 }
-else {
-    $PipExit = 127
-    "pip-audit not installed" | Set-Content -LiteralPath (Join-Path $RawDir "pip-audit.log") -Encoding UTF8
+
+$PipReportRef = "raw/pip-audit.log"
+
+if (Test-Path -LiteralPath $PipJson) {
+    $PipReportRef = "raw/pip-audit.json"
 }
 
 $NpmJson = Join-Path $RawDir "npm-audit.json"
@@ -144,7 +146,7 @@ Evidence directory: $EvidenceDir
 
 | Tool | Status |
 |---|---|
-| pip-audit | $(Tool-Status "pip-audit") |
+| pip-audit (Python 3.12 container) | $(Tool-Status "docker") |
 | npm | $(Tool-Status "npm") |
 | Trivy | $(Tool-Status "trivy") |
 | Gitleaks | $(Tool-Status "gitleaks") |
@@ -155,7 +157,7 @@ Evidence directory: $EvidenceDir
 | Gate | Status | Exit code | Raw report |
 |---|---:|---:|---|
 | Lockfile policy | $(Status-Of $LockExit) | $LockExit | raw/check-lockfiles.log |
-| pip-audit | $(Status-Of $PipExit) | $PipExit | raw/pip-audit.json |
+| pip-audit | $(Status-Of $PipExit) | $PipExit | $PipReportRef |
 | npm audit | $(Status-Of $NpmExit) | $NpmExit | raw/npm-audit.json |
 | Trivy filesystem/config/secret | $(Status-Of $TrivyExit) | $TrivyExit | raw/trivy-fs.json |
 | Gitleaks secret scan | $(Status-Of $GitleaksExit) | $GitleaksExit | raw/gitleaks.json |

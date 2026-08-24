@@ -68,15 +68,20 @@ LOCKFILES_STATUS="not-run"
 LOCKFILES_EXIT="$(run_capture "lockfile policy" "${RAW_DIR}/check-lockfiles.log" bash scripts/security/check-lockfiles.sh)"
 LOCKFILES_STATUS="$(status_of "$LOCKFILES_EXIT")"
 
-if command -v pip-audit >/dev/null 2>&1; then
-  set +e
-  pip-audit . --strict --progress-spinner off --timeout 60 --format json --output "${RAW_DIR}/pip-audit.json" >"${RAW_DIR}/pip-audit.log" 2>&1
-  PIP_AUDIT_EXIT=$?
-  set -e
-  PIP_AUDIT_STATUS="$(status_of "$PIP_AUDIT_EXIT")"
-else
-  PIP_AUDIT_EXIT=127
-  echo "pip-audit not installed" >"${RAW_DIR}/pip-audit.log"
+set +e
+bash scripts/security/run-pip-audit-production.sh \
+  "${RAW_DIR}/pip-audit.json" \
+  >"${RAW_DIR}/pip-audit.log" \
+  2>&1
+PIP_AUDIT_EXIT=$?
+set -e
+
+PIP_AUDIT_STATUS="$(status_of "$PIP_AUDIT_EXIT")"
+
+PIP_AUDIT_REPORT="raw/pip-audit.log"
+
+if [ -f "${RAW_DIR}/pip-audit.json" ]; then
+  PIP_AUDIT_REPORT="raw/pip-audit.json"
 fi
 
 if command -v npm >/dev/null 2>&1; then
@@ -137,7 +142,7 @@ Evidence directory: ${EVIDENCE_DIR}
 
 | Tool | Status |
 |---|---|
-| pip-audit | $(required_tool_status pip-audit) |
+| pip-audit (Python 3.12 container) | $(required_tool_status docker) |
 | npm | $(required_tool_status npm) |
 | Trivy | $(required_tool_status trivy) |
 | Gitleaks | $(required_tool_status gitleaks) |
@@ -148,7 +153,7 @@ Evidence directory: ${EVIDENCE_DIR}
 | Gate | Status | Exit code | Raw report |
 |---|---:|---:|---|
 | Lockfile policy | ${LOCKFILES_STATUS} | ${LOCKFILES_EXIT} | raw/check-lockfiles.log |
-| pip-audit | ${PIP_AUDIT_STATUS} | ${PIP_AUDIT_EXIT} | raw/pip-audit.json |
+| pip-audit | ${PIP_AUDIT_STATUS} | ${PIP_AUDIT_EXIT} | ${PIP_AUDIT_REPORT} |
 | npm audit | ${NPM_AUDIT_STATUS} | ${NPM_AUDIT_EXIT} | raw/npm-audit.json |
 | Trivy filesystem/config/secret | ${TRIVY_STATUS} | ${TRIVY_EXIT} | raw/trivy-fs.json |
 | Gitleaks secret scan | ${GITLEAKS_STATUS} | ${GITLEAKS_EXIT} | raw/gitleaks.json |

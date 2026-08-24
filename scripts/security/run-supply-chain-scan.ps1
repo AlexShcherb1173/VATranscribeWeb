@@ -16,11 +16,12 @@ function Test-Command {
 
 pwsh -ExecutionPolicy Bypass -File .\scripts\security\check-lockfiles.ps1
 
-if (Test-Command "pip-audit") {
-    pip-audit . --strict --progress-spinner off --timeout 60 --format json --output (Join-Path $ReportDir "pip-audit.json")
-}
-else {
-    Write-Host "[WARN] pip-audit is not installed. Install with: python -m pip install pip-audit" -ForegroundColor Yellow
+pwsh -ExecutionPolicy Bypass -File .\scripts\security\run-pip-audit-production.ps1 -OutputFile (Join-Path $ReportDir "pip-audit.json")
+
+$PipAuditExit = $LASTEXITCODE
+
+if ($PipAuditExit -ne 0) {
+    throw "production-aligned pip-audit failed with exit code $PipAuditExit"
 }
 
 $NpmJson = Join-Path $ReportDir "npm-audit.json"

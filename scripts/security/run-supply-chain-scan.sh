@@ -19,11 +19,10 @@ run_or_warn() {
 
 bash scripts/security/check-lockfiles.sh
 
-if command -v pip-audit >/dev/null 2>&1; then
-  run_or_warn "pip-audit" pip-audit . --strict --progress-spinner off --timeout 60 --format json --output "$REPORT_DIR/pip-audit.json"
-else
-  echo "[WARN] pip-audit is not installed. Install with: python -m pip install pip-audit" >&2
-fi
+run_or_warn \
+  "pip-audit (Python 3.12 container)" \
+  bash scripts/security/run-pip-audit-production.sh \
+  "$REPORT_DIR/pip-audit.json"
 
 if command -v npm >/dev/null 2>&1; then
   run_or_warn "npm audit" npm audit --workspaces --audit-level=high --json > "$REPORT_DIR/npm-audit.json"

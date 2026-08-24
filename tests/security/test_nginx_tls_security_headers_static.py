@@ -76,7 +76,7 @@ def test_production_compose_exposes_https_and_mounts_tls_template():
     text = read(PROD_COMPOSE)
     assert "${WEB_HTTP_PORT:-80}:80" in text
     assert "${WEB_HTTPS_PORT:-443}:443" in text
-    assert "nginx.prod.conf.template:/etc/nginx/templates/default.conf.template:ro" in text
+    assert "${WEB_NGINX_TEMPLATE_PATH:-./infra/docker/nginx.prod.conf.template}:/etc/nginx/templates/default.conf.template:ro" in text
     assert "vatranscribe_nginx_certs:/etc/letsencrypt:ro" in text
     assert "./infra/certbot/conf:/etc/letsencrypt" in text
     assert "vatranscribe_nginx_certs:/etc/nginx-certs" in text
@@ -92,3 +92,43 @@ def test_env_examples_document_nginx_tls_settings():
         assert "NGINX_HSTS_MAX_AGE=31536000" in text
         assert "NGINX_AUTH_STRICT_RATE=5r/m" in text
         assert "NGINX_UPLOAD_BODY_LIMIT=1024m" in text
+
+def test_https_locations_do_not_shadow_security_headers():
+    text = read(PROD_NGINX)
+
+    assert "map $request_uri $vatranscribe_cache_control {" in text
+    assert '~^/healthz(?:\\?|$) "no-store";' in text
+    assert '~^/api/ "no-store";' in text
+    assert (
+        '~^/app/assets/ '
+        '"public, max-age=${CDN_ASSET_CACHE_SECONDS}, immutable";'
+        in text
+    )
+    assert (
+        '~^/assets/ '
+        '"public, max-age=${CDN_ASSET_CACHE_SECONDS}, immutable";'
+        in text
+    )
+    assert (
+        '~^/_astro/ '
+        '"public, max-age=${CDN_ASSET_CACHE_SECONDS}, immutable";'
+        in text
+    )
+
+    https = text.split("listen 443 ssl http2;", 1)[1]
+
+    assert (
+        'add_header Cache-Control '
+        '"$vatranscribe_cache_control" always;'
+        in https
+    )
+
+    # nginx inherits server-level add_header directives only when
+    # the child location does not define its own add_header.
+    assert "        add_header " not in https
+
+    # expires also creates Cache-Control; keep a single authoritative
+    # server-level cache policy to avoid duplicate response headers.
+    assert "        expires 1y;" not in https
+
+    assert 'default_type "text/plain";' in https

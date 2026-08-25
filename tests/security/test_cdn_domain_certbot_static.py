@@ -58,6 +58,7 @@ def test_certbot_and_domain_scripts_exist_with_required_commands():
     issue = read("infra/deploy/certbot-issue.sh")
     renew = read("infra/deploy/certbot-renew.sh")
     dry = read("infra/deploy/certbot-renew-dry-run.sh")
+    sync = read("infra/deploy/sync-nginx-certificates.sh")
     check_domain = read("infra/deploy/check-domain-readiness.sh")
     check_tls = read("infra/deploy/check-tls-renewal.sh")
     assert "certonly" in issue
@@ -70,6 +71,8 @@ def test_certbot_and_domain_scripts_exist_with_required_commands():
     assert "compose run -T --rm certbot renew --webroot" in renew
     assert "renew --dry-run" in dry
     assert "compose run -T --rm certbot renew --dry-run --webroot" in dry
+    assert "compose run -T" in sync
+    assert 'source "${RUNTIME_ENV_FILE}"' in renew
     assert "PRODUCTION_HOST_PUBLIC_IP" in check_domain
     assert "openssl s_client" in check_tls
     assert "x509 -checkend" in check_tls

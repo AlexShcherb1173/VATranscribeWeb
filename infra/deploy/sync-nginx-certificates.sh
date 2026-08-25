@@ -192,7 +192,7 @@ SYNC_COMMAND
 
 info "Synchronizing certificate for ${CERTBOT_PRIMARY_DOMAIN}"
 
-compose run \
+compose run -T \
   --rm \
   --entrypoint /bin/sh \
   certbot \

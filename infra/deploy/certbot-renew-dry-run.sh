@@ -12,7 +12,7 @@ compose() {
   docker compose --env-file "${RUNTIME_ENV_FILE}" -p "${PROJECT_NAME}" -f ${COMPOSE_FILES} "$@"
 }
 
-compose run --rm certbot renew --dry-run --webroot -w /var/www/certbot
+compose run -T --rm certbot renew --dry-run --webroot -w /var/www/certbot
 if [[ "${CERTBOT_RENEW_DEPLOY_HOOK_RELOAD:-true}" == "true" ]]; then
   true # dry-run does not require nginx reload
 fi

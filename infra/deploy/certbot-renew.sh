@@ -12,7 +12,7 @@ compose() {
   docker compose --env-file "${RUNTIME_ENV_FILE}" -p "${PROJECT_NAME}" -f ${COMPOSE_FILES} "$@"
 }
 
-compose run --rm certbot renew --webroot -w /var/www/certbot
+compose run -T --rm certbot renew --webroot -w /var/www/certbot
 
 bash infra/deploy/sync-nginx-certificates.sh
 

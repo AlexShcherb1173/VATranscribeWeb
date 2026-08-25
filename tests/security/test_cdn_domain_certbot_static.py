@@ -67,7 +67,9 @@ def test_certbot_and_domain_scripts_exist_with_required_commands():
     assert "openssl req -x509" in issue
     assert "nginx -s reload" in issue
     assert "renew --webroot" in renew
+    assert "compose run -T --rm certbot renew --webroot" in renew
     assert "renew --dry-run" in dry
+    assert "compose run -T --rm certbot renew --dry-run --webroot" in dry
     assert "PRODUCTION_HOST_PUBLIC_IP" in check_domain
     assert "openssl s_client" in check_tls
     assert "x509 -checkend" in check_tls

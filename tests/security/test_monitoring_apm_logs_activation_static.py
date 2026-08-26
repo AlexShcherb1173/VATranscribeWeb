@@ -67,8 +67,17 @@ def test_request_id_validator_checks_header_and_log_search_marker():
     assert "RESPONSE contains" not in content
     assert "Response contains" in content
     assert "Loki/Grafana" in content
-    assert "docker compose" in content
     assert "LOG_SEARCH_MODE" in content
+    assert "CORRELATION_REQUEST_ID" in content
+    assert 'REQUEST_ID_MODEL="CLIENT_ID_PRESERVED"' in content
+    assert 'REQUEST_ID_MODEL="EDGE_GENERATED"' in content
+    assert "docker ps" in content
+    assert "com.docker.compose.service=api" in content
+    assert "com.docker.compose.service=web" in content
+    assert "docker logs" in content
+    assert "DOCKER_LOG_SINCE" in content
+    assert "REQUEST_ID_DOCKER_CORRELATION_OK" in content
+    assert "REQUEST_ID_LIVE_VERIFICATION_OK" in content
 
 
 def test_p3_04_docs_and_evidence_templates_exist():

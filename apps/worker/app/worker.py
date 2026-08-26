@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from celery import Celery
+from celery import Celery, signals
 
 from apps.api.app.config import get_settings
 from apps.api.app.observability import configure_logging, init_sentry
@@ -8,6 +8,13 @@ from apps.api.app.observability import configure_logging, init_sentry
 settings = get_settings()
 configure_logging(settings)
 init_sentry(settings, service="worker")
+
+
+@signals.setup_logging.connect
+def configure_celery_logging(**_: object) -> None:
+    """Keep Celery worker logs on the application JSON formatter."""
+    configure_logging(settings)
+
 
 celery = Celery(
     "vatranscribe_worker",

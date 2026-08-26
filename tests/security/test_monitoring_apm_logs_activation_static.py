@@ -80,6 +80,21 @@ def test_request_id_validator_checks_header_and_log_search_marker():
     assert "REQUEST_ID_LIVE_VERIFICATION_OK" in content
 
 
+def test_worker_celery_logging_is_owned_by_application_json_formatter():
+    content = read("apps/worker/app/worker.py")
+
+    assert "from celery import Celery, signals" in content
+
+    signal_index = content.index("@signals.setup_logging.connect")
+    celery_index = content.index("celery = Celery(")
+
+    hook = content[signal_index:celery_index]
+
+    assert signal_index < celery_index
+    assert "def configure_celery_logging(**_: object) -> None:" in hook
+    assert "configure_logging(settings)" in hook
+    assert "Keep Celery worker logs on the application JSON formatter." in hook
+
 def test_p3_04_docs_and_evidence_templates_exist():
     docs = [
         "infra/monitoring/monitoring-apm-logs-activation-checklist.md",

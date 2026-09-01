@@ -1,41 +1,30 @@
+import * as Sentry from "@sentry/react";
+
 import { env } from "@/shared/config/env";
 
-type SentryBrowserSdk = {
-  init?: (options: Record<string, unknown>) => void;
-  captureException?: (error: unknown) => void;
-  captureMessage?: (message: string, level?: string) => void;
-};
-
-declare global {
-  interface Window {
-    Sentry?: SentryBrowserSdk;
-  }
-}
+let sentryInitialized = false;
 
 export function initFrontendObservability(): void {
-  if (!env.sentryDsn) {
+  if (!env.sentryDsn || sentryInitialized) {
     return;
   }
 
-  const sentry = window.Sentry;
-  if (!sentry?.init) {
-    console.warn("VITE_SENTRY_DSN is set, but Sentry browser SDK is not loaded.");
-    return;
-  }
-
-  sentry.init({
+  Sentry.init({
     dsn: env.sentryDsn,
     environment: env.sentryEnvironment,
     release: env.sentryRelease,
+    integrations: [Sentry.browserTracingIntegration()],
     tracesSampleRate: env.sentryTracesSampleRate,
     sendDefaultPii: false,
   });
 
-  window.addEventListener("error", (event) => {
-    sentry.captureException?.(event.error || event.message);
-  });
+  sentryInitialized = true;
+}
 
-  window.addEventListener("unhandledrejection", (event) => {
-    sentry.captureException?.(event.reason);
-  });
+export function captureFrontendException(error: unknown): void {
+  if (!env.sentryDsn || !sentryInitialized) {
+    return;
+  }
+
+  Sentry.captureException(error);
 }

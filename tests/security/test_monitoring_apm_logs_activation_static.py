@@ -95,6 +95,43 @@ def test_worker_celery_logging_is_owned_by_application_json_formatter():
     assert "configure_logging(settings)" in hook
     assert "Keep Celery worker logs on the application JSON formatter." in hook
 
+def test_frontend_sentry_sdk_and_build_contract_are_wired():
+    package = read("apps/web/package.json")
+    sentry = read("apps/web/src/shared/observability/sentry.ts")
+    error_boundary = read("apps/web/src/shared/ui/ErrorBoundary.tsx")
+    dockerfile = read("infra/docker/web.Dockerfile")
+
+    assert '"@sentry/react": "10.71.0"' in package
+
+    assert 'import * as Sentry from "@sentry/react";' in sentry
+    assert "window.Sentry" not in sentry
+    assert "Sentry.init({" in sentry
+    assert "Sentry.browserTracingIntegration()" in sentry
+    assert "environment: env.sentryEnvironment" in sentry
+    assert "release: env.sentryRelease" in sentry
+    assert "tracesSampleRate: env.sentryTracesSampleRate" in sentry
+    assert "sendDefaultPii: false" in sentry
+    assert "Sentry.captureException(error)" in sentry
+    assert 'window.addEventListener("error"' not in sentry
+    assert 'window.addEventListener("unhandledrejection"' not in sentry
+
+    assert (
+        'import { captureFrontendException } '
+        'from "@/shared/observability/sentry";'
+    ) in error_boundary
+    assert "captureFrontendException(error);" in error_boundary
+
+    sentry_build_keys = [
+        "VITE_SENTRY_DSN",
+        "VITE_SENTRY_ENVIRONMENT",
+        "VITE_SENTRY_RELEASE",
+        "VITE_SENTRY_TRACES_SAMPLE_RATE",
+    ]
+
+    for key in sentry_build_keys:
+        assert f"ARG {key}" in dockerfile
+        assert f"ENV {key}=${{{key}}}" in dockerfile
+
 def test_p3_04_docs_and_evidence_templates_exist():
     docs = [
         "infra/monitoring/monitoring-apm-logs-activation-checklist.md",

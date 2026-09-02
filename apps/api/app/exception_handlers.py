@@ -31,6 +31,13 @@ def _request_id(request: Request, settings: Settings) -> str | None:
     return request.headers.get(header_name) or getattr(request.state, "request_id", None)
 
 
+def _request_id_headers(settings: Settings, request_id: str | None) -> dict[str, str]:
+    if not request_id:
+        return {}
+    header_name = getattr(settings, "request_id_header", "X-Request-ID")
+    return {header_name: request_id}
+
+
 def _safe_detail(status_code: int, detail: Any, settings: Settings) -> str:
     if status_code == 404:
         return SAFE_STATUS_MESSAGES[404]
@@ -66,6 +73,7 @@ def register_exception_handlers(app: FastAPI, *, settings: Settings) -> None:
         return JSONResponse(
             status_code=exc.status_code,
             content=_payload(exc.status_code, message, request_id),
+            headers=_request_id_headers(settings, request_id),
         )
 
     @app.exception_handler(RequestValidationError)
@@ -78,6 +86,7 @@ def register_exception_handlers(app: FastAPI, *, settings: Settings) -> None:
         return JSONResponse(
             status_code=422,
             content=_payload(422, message, request_id),
+            headers=_request_id_headers(settings, request_id),
         )
 
     @app.exception_handler(Exception)
@@ -94,4 +103,5 @@ def register_exception_handlers(app: FastAPI, *, settings: Settings) -> None:
         return JSONResponse(
             status_code=500,
             content=_payload(500, SAFE_STATUS_MESSAGES[500], request_id),
+            headers=_request_id_headers(settings, request_id),
         )

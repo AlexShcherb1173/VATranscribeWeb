@@ -171,3 +171,109 @@ def test_gitignore_blocks_monitoring_evidence_artifacts():
     assert "*.request-id-evidence.txt" in content
     assert "*.monitoring-evidence.txt" in content
     assert "uptime-kuma-export*.json" in content
+
+
+def test_backend_sentry_safety_contract_is_wired():
+    content = read(
+        "apps/api/app/observability.py"
+    )
+
+    assert (
+        "LoggingIntegration("
+        "level=logging.INFO, "
+        "event_level=None)"
+        in content
+    )
+
+    assert (
+        "before_send="
+        "_build_sentry_before_send("
+        in content
+    )
+
+    assert (
+        '"authorization"'
+        in content
+    )
+    assert (
+        '"cookie"'
+        in content
+    )
+    assert (
+        '"x-api-key"'
+        in content
+    )
+    assert (
+        "_SENTRY_REDACTED"
+        in content
+    )
+    assert (
+        "_sentry_header_value"
+        in content
+    )
+    assert (
+        'extra.setdefault(\n'
+        '                    "request_id",'
+        in content
+    )
+
+
+
+def test_backend_sentry_nested_header_container_redaction_contract_is_wired():
+    content = read(
+        "apps/api/app/observability.py"
+    )
+
+    assert (
+        'normalized_field_name == "headers"'
+        in content
+    )
+
+    assert (
+        "_redact_sentry_headers("
+        in content
+    )
+
+    assert (
+        "isinstance(value, (bytes, bytearray))"
+        in content
+    )
+
+    assert (
+        'decode(\n'
+        '            "latin-1",'
+        in content
+    )
+
+
+
+def test_backend_sentry_stacktrace_local_variables_are_disabled():
+    content = read(
+        "apps/api/app/observability.py"
+    )
+
+    assert (
+        "include_local_variables=False"
+        in content
+    )
+
+    assert (
+        "send_default_pii=False"
+        in content
+    )
+
+    assert (
+        "before_send="
+        "_build_sentry_before_send("
+        in content
+    )
+
+    # We intentionally keep stack traces and
+    # breadcrumbs; only frame-local snapshots are
+    # disabled.
+    assert (
+        "LoggingIntegration("
+        "level=logging.INFO, "
+        "event_level=None)"
+        in content
+    )

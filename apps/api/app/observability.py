@@ -5,8 +5,244 @@ import logging
 import sys
 from datetime import datetime, timezone
 from typing import Any
+from urllib.parse import urlsplit
 
 from apps.api.app.config import Settings
+
+
+_SENTRY_REDACTED = "[Filtered]"
+
+_SENTRY_SENSITIVE_FIELDS = frozenset(
+    {
+        "authorization",
+        "proxy-authorization",
+        "cookie",
+        "set-cookie",
+        "x-api-key",
+        "api-key",
+        "password",
+        "passwd",
+        "secret",
+        "client-secret",
+        "access-token",
+        "refresh-token",
+        "id-token",
+        "csrf-token",
+        "x-csrf-token",
+        "sentry-dsn",
+    }
+)
+
+
+def _normalize_sentry_field_name(value: Any) -> str:
+    if isinstance(value, (bytes, bytearray)):
+        text = bytes(value).decode(
+            "latin-1",
+            errors="replace",
+        )
+    else:
+        text = str(value)
+
+    return (
+        text
+        .strip()
+        .lower()
+        .replace("_", "-")
+    )
+
+
+def _sentry_header_value(
+    headers: Any,
+    header_name: str,
+) -> str | None:
+    expected = header_name.strip().lower()
+
+    if isinstance(headers, dict):
+        for key, value in headers.items():
+            if str(key).strip().lower() == expected:
+                return str(value)
+
+        return None
+
+    if isinstance(headers, (list, tuple)):
+        for item in headers:
+            if (
+                isinstance(item, (list, tuple))
+                and len(item) == 2
+                and str(item[0]).strip().lower()
+                == expected
+            ):
+                return str(item[1])
+
+    return None
+
+
+def _redact_sentry_headers(headers: Any) -> Any:
+    if isinstance(headers, dict):
+        return {
+            key: (
+                _SENTRY_REDACTED
+                if _normalize_sentry_field_name(key)
+                in _SENTRY_SENSITIVE_FIELDS
+                else value
+            )
+            for key, value in headers.items()
+        }
+
+    if isinstance(headers, (list, tuple)):
+        redacted: list[Any] = []
+
+        for item in headers:
+            if (
+                isinstance(item, (list, tuple))
+                and len(item) == 2
+            ):
+                key, value = item
+
+                if (
+                    _normalize_sentry_field_name(key)
+                    in _SENTRY_SENSITIVE_FIELDS
+                ):
+                    value = _SENTRY_REDACTED
+
+                redacted.append(
+                    [key, value]
+                )
+            else:
+                redacted.append(item)
+
+        return redacted
+
+    return headers
+
+
+def _redact_sentry_value(
+    value: Any,
+    *,
+    field_name: Any | None = None,
+) -> Any:
+    normalized_field_name = (
+        _normalize_sentry_field_name(
+            field_name
+        )
+        if field_name is not None
+        else None
+    )
+
+    if (
+        normalized_field_name
+        in _SENTRY_SENSITIVE_FIELDS
+    ):
+        return _SENTRY_REDACTED
+
+    # ASGI request/scope/connection objects can be
+    # captured inside Sentry stack-frame local vars.
+    # Their headers are usually represented as
+    # key/value pair lists rather than dictionaries.
+    if normalized_field_name == "headers":
+        value = _redact_sentry_headers(
+            value
+        )
+
+    if isinstance(value, dict):
+        return {
+            key: _redact_sentry_value(
+                item,
+                field_name=key,
+            )
+            for key, item in value.items()
+        }
+
+    if isinstance(value, list):
+        return [
+            _redact_sentry_value(item)
+            for item in value
+        ]
+
+    if isinstance(value, tuple):
+        return [
+            _redact_sentry_value(item)
+            for item in value
+        ]
+
+    return value
+
+
+def _build_sentry_before_send(
+    request_id_header: str,
+):
+    """Build a transport-boundary sanitizer.
+
+    Sensitive request values must be removed before the
+    event leaves the process. The callback also restores
+    request metadata on framework-native exception events.
+    """
+
+    def before_send(
+        event: dict[str, Any],
+        hint: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        del hint
+
+        request = event.get("request")
+
+        if isinstance(request, dict):
+            headers = request.get("headers")
+
+            request_id = _sentry_header_value(
+                headers,
+                request_id_header,
+            )
+
+            extra = event.get("extra")
+
+            if not isinstance(extra, dict):
+                extra = {}
+                event["extra"] = extra
+
+            if request_id:
+                extra.setdefault(
+                    "request_id",
+                    request_id,
+                )
+
+            method = request.get("method")
+
+            if method:
+                extra.setdefault(
+                    "method",
+                    str(method),
+                )
+
+            url = request.get("url")
+
+            if url:
+                path = urlsplit(
+                    str(url)
+                ).path
+
+                if path:
+                    extra.setdefault(
+                        "path",
+                        path,
+                    )
+
+            request["headers"] = (
+                _redact_sentry_headers(
+                    headers
+                )
+            )
+
+        redacted = _redact_sentry_value(
+            event
+        )
+
+        if not isinstance(redacted, dict):
+            return None
+
+        return redacted
+
+    return before_send
 
 
 class JsonLogFormatter(logging.Formatter):
@@ -74,7 +310,7 @@ def init_sentry(settings: Settings, *, service: str = "api") -> None:
 
     integrations: list[Any] = [
         SqlalchemyIntegration(),
-        LoggingIntegration(level=logging.INFO, event_level=logging.ERROR),
+        LoggingIntegration(level=logging.INFO, event_level=None),
     ]
 
     if service == "api":
@@ -98,6 +334,18 @@ def init_sentry(settings: Settings, *, service: str = "api") -> None:
         profiles_sample_rate=settings.sentry_profiles_sample_rate,
         integrations=integrations,
         send_default_pii=False,
+        # Do not send Python frame local variables.
+        #
+        # ASGI Request/scope/connection objects can
+        # contain Authorization, Cookie and other
+        # credentials. Sentry serializes frame locals
+        # under exception.stacktrace.frames[*].vars.
+        # Keep the stack trace itself, but exclude the
+        # local-variable snapshot at the SDK boundary.
+        include_local_variables=False,
         release=settings.release_version,
         server_name=service,
+        before_send=_build_sentry_before_send(
+            settings.request_id_header
+        ),
     )

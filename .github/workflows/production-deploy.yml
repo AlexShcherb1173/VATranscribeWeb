@@ -32,6 +32,115 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Prepare deterministic verification environment
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f .env.example
+          cp .env.example .env
+
+          ci_secret="$(
+            printf 'production-deploy-ci:%s:%s' \
+              "${GITHUB_RUN_ID}" \
+              "${GITHUB_RUN_ATTEMPT}" |
+            sha256sum |
+            awk '{print $1}'
+          )"
+
+          python - "${ci_secret}" <<'PY'
+          from pathlib import Path
+          import sys
+
+
+          path = Path(".env")
+
+          values = {
+              "APP_ENV": "test",
+              "DEBUG": "false",
+              "DATABASE_URL": "sqlite:///./.ci-production-deploy.db",
+              "SECRET_KEY": sys.argv[1],
+              "RATE_LIMIT_BACKEND": "memory",
+              "RATE_LIMIT_REDIS_URL": "",
+              "SENTRY_REQUIRED": "false",
+              "SENTRY_DSN": "",
+              "MONITORING_REQUIRED": "false",
+              "CENTRAL_LOGGING_REQUIRED": "false",
+              "CENTRAL_LOGGING_PROVIDER": "disabled",
+          }
+
+          lines = path.read_text(
+              encoding="utf-8"
+          ).splitlines()
+
+          seen = {
+              key: 0
+              for key in values
+          }
+
+          result = []
+
+          for line in lines:
+              replaced = False
+
+              for key, value in values.items():
+                  prefix = key + "="
+
+                  if line.startswith(prefix):
+                      result.append(
+                          prefix + value
+                      )
+                      seen[key] += 1
+                      replaced = True
+                      break
+
+              if not replaced:
+                  result.append(line)
+
+          bad = {
+              key: count
+              for key, count in seen.items()
+              if count != 1
+          }
+
+          if bad:
+              raise SystemExit(
+                  "verification env key contract failed: "
+                  + repr(bad)
+              )
+
+          path.write_text(
+              "\n".join(result) + "\n",
+              encoding="utf-8",
+              newline="\n",
+          )
+          PY
+
+          unset ci_secret
+
+          test -s .env
+          grep -Fxq \
+            'APP_ENV=test' \
+            .env
+          grep -Fxq \
+            'DATABASE_URL=sqlite:///./.ci-production-deploy.db' \
+            .env
+          grep -Fxq \
+            'RATE_LIMIT_BACKEND=memory' \
+            .env
+          grep -Fxq \
+            'CENTRAL_LOGGING_REQUIRED=false' \
+            .env
+          grep -Fxq \
+            'CENTRAL_LOGGING_PROVIDER=disabled' \
+            .env
+
+          test "$(
+            grep -c '^SECRET_KEY=' .env
+          )" -eq 1
+
+          echo "PRODUCTION_DEPLOY_VERIFY_ENV_READY"
+
       - run: python -m pip install -e .
       - run: pytest -v
       - uses: actions/setup-node@v4
@@ -39,8 +148,26 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm install --include=optional --no-audit --no-fund
+      - name: Ensure Rollup native binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROLLUP_VERSION="$(node -p 'require("./node_modules/rollup/package.json").version')"
+          npm install --no-save --package-lock=false --include=optional --no-audit --no-fund "@rollup/rollup-linux-x64-gnu@${ROLLUP_VERSION}"
+          node -e 'require("@rollup/rollup-linux-x64-gnu"); console.log("ROLLUP_NATIVE_GNU_OK")'
+
       - run: npm run build:frontend
       - run: docker compose -f docker-compose.yml -f infra/compose/docker-compose.prod.yml config
+
+      - name: Cleanup verification environment
+        if: always()
+        shell: bash
+        run: |
+          rm -f \
+            .env \
+            .ci-production-deploy.db \
+            p3-centralized-log-test.db \
+            p3-log-probe.db
 
   deploy:
     runs-on: ubuntu-latest

@@ -19,7 +19,7 @@ Search keys:
 - `path`
 - `status_code`
 
-Run optional local observability overlay on a Linux Docker host:
+Run optional local observability overlay on a Linux Docker host. `GRAFANA_ADMIN_PASSWORD` is mandatory and must be supplied through the protected runtime environment; there is no default production password:
 
 ```bash
 docker compose -f infra/logging/docker-compose.observability.yml up -d

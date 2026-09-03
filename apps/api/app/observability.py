@@ -246,7 +246,7 @@ def _build_sentry_before_send(
 
 
 class JsonLogFormatter(logging.Formatter):
-    """Container-friendly JSON formatter with request/correlation support."""
+    """Container-friendly JSON formatter with correlation and safety support."""
 
     _reserved = {
         "name", "msg", "args", "levelname", "levelno", "pathname", "filename",
@@ -255,26 +255,224 @@ class JsonLogFormatter(logging.Formatter):
         "processName", "process", "message", "asctime",
     }
 
-    def format(self, record: logging.LogRecord) -> str:
+    _log_redacted = "[Filtered]"
+
+    _sensitive_fields = frozenset(
+        {
+            "authorization",
+            "proxy-authorization",
+            "cookie",
+            "set-cookie",
+            "x-api-key",
+            "api-key",
+            "password",
+            "passwd",
+            "secret",
+            "client-secret",
+            "access-token",
+            "refresh-token",
+            "id-token",
+            "csrf-token",
+            "x-csrf-token",
+            "sentry-dsn",
+        }
+    )
+
+    _celery_argument_fields = frozenset(
+        {
+            "args",
+            "kwargs",
+            "argsrepr",
+            "kwargsrepr",
+        }
+    )
+
+    @classmethod
+    def _normalize_field_name(
+        cls,
+        value: Any,
+    ) -> str:
+        return (
+            str(value)
+            .strip()
+            .lower()
+            .replace("_", "-")
+        )
+
+    @classmethod
+    def _redact_value(
+        cls,
+        value: Any,
+        *,
+        field_name: Any | None = None,
+    ) -> Any:
+        normalized = (
+            cls._normalize_field_name(
+                field_name
+            )
+            if field_name is not None
+            else None
+        )
+
+        if normalized in cls._sensitive_fields:
+            return cls._log_redacted
+
+        if isinstance(value, dict):
+            return {
+                key: cls._redact_value(
+                    item,
+                    field_name=key,
+                )
+                for key, item in value.items()
+            }
+
+        if isinstance(value, list):
+            return [
+                cls._redact_value(item)
+                for item in value
+            ]
+
+        if isinstance(value, tuple):
+            return tuple(
+                cls._redact_value(item)
+                for item in value
+            )
+
+        return value
+
+    @classmethod
+    def _redact_celery_data(
+        cls,
+        value: Any,
+    ) -> Any:
+        if not isinstance(value, dict):
+            return cls._redact_value(
+                value
+            )
+
+        redacted: dict[Any, Any] = {}
+
+        for key, item in value.items():
+            normalized = (
+                cls._normalize_field_name(
+                    key
+                )
+            )
+
+            if normalized in cls._celery_argument_fields:
+                redacted[key] = cls._log_redacted
+                continue
+
+            redacted[key] = cls._redact_value(
+                item,
+                field_name=key,
+            )
+
+        return redacted
+
+    @classmethod
+    def _safe_message(
+        cls,
+        record: logging.LogRecord,
+    ) -> str:
+        safe_msg = cls._redact_value(
+            record.msg
+        )
+
+        safe_args = cls._redact_value(
+            record.args
+        )
+
+        message = str(
+            safe_msg
+        )
+
+        if safe_args:
+            try:
+                message = (
+                    message
+                    % safe_args
+                )
+            except Exception:
+                # Do not fall back to original unredacted arguments.
+                message = (
+                    message
+                    + " [log-argument-format-error]"
+                )
+
+        return message
+
+    def format(
+        self,
+        record: logging.LogRecord,
+    ) -> str:
         payload: dict[str, Any] = {
-            "timestamp": datetime.fromtimestamp(record.created, timezone.utc).isoformat(),
+            "timestamp": datetime.fromtimestamp(
+                record.created,
+                timezone.utc,
+            ).isoformat(),
             "level": record.levelname,
             "logger": record.name,
-            "message": record.getMessage(),
+            "message": self._safe_message(
+                record
+            ),
         }
+
+        is_celery_logger = (
+            record.name == "celery"
+            or record.name.startswith(
+                "celery."
+            )
+        )
+
         for key, value in record.__dict__.items():
-            if key.startswith("_") or key in self._reserved:
+            if (
+                key.startswith("_")
+                or key in self._reserved
+            ):
                 continue
+
+            if (
+                is_celery_logger
+                and key == "data"
+            ):
+                safe_value = self._redact_celery_data(
+                    value
+                )
+            else:
+                safe_value = self._redact_value(
+                    value,
+                    field_name=key,
+                )
+
             try:
-                json.dumps(value)
-                payload[key] = value
+                json.dumps(
+                    safe_value
+                )
+                payload[key] = safe_value
             except TypeError:
-                payload[key] = str(value)
+                payload[key] = str(
+                    safe_value
+                )
+
         if record.exc_info:
-            payload["exception"] = self.formatException(record.exc_info)
+            payload["exception"] = (
+                self.formatException(
+                    record.exc_info
+                )
+            )
+
         if record.stack_info:
-            payload["stack"] = self.formatStack(record.stack_info)
-        return json.dumps(payload, ensure_ascii=False)
+            payload["stack"] = (
+                self.formatStack(
+                    record.stack_info
+                )
+            )
+
+        return json.dumps(
+            payload,
+            ensure_ascii=False,
+        )
 
 
 def configure_logging(settings: Settings) -> None:

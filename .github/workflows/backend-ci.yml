@@ -16,6 +16,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install targeted test dependency
+        run: python -m pip install "pytest>=8.3.0,<9.0.0"
+
+      - name: Validate deployment filesystem regressions
+        run: |
+          python -m pytest \
+            tests/security/test_release_activation_filemode_static.py \
+            tests/security/test_backup_runtime_env_propagation_static.py \
+            tests/security/test_backup_restore_drill_static.py \
+            -q
+
       - name: Prepare CI environment file
 
         shell: bash

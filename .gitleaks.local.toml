@@ -1,0 +1,30 @@
+title = "VATranscribe local filesystem secret scanning"
+
+# Keep the same detection rules as the strict repository configuration.
+[extend]
+path = ".gitleaks.toml"
+
+# These exclusions apply only to local filesystem scans.
+# CI and Git-history scans use .gitleaks.toml directly and remain strict.
+[[allowlists]]
+description = "Exclude local dependencies, build outputs, runtime secret files, and generated evidence"
+paths = [
+  '''(^|/)\.venv/''',
+  '''(^|/)venv/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)(dist|build|coverage)/''',
+  '''(^|/)\.coverage$''',
+
+  # Authorized local/runtime secret stores. Example templates remain scanned.
+  '''(^|/)\.env$''',
+  '''(^|/)\.env\.local$''',
+  '''(^|/)\.env\.[^/]+\.local$''',
+  '''(^|/)\.env\.runtime(?:\.[^/]+)?$''',
+  '''(^|/)[^/]+\.env\.runtime$''',
+
+  # Generated evidence directories; source documentation is not excluded.
+  '''(^|/)reports/security/supply-chain-evidence/''',
+  '''(^|/)reports/release/production-rehearsal/''',
+  '''(^|/)infra/backup/reports/''',
+  '''(^|/)infra/backup/restore-drills/''',
+]

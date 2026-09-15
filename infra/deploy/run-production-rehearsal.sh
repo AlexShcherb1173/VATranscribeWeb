@@ -10,8 +10,12 @@ REDACTED_EVIDENCE="${REDACTED_EVIDENCE:-${EVIDENCE_DIR}/production-rehearsal-${T
 
 PROJECT_NAME="${PROJECT_NAME:-vatranscribeweb}"
 COMPOSE_FILES="${COMPOSE_FILES:-docker-compose.yml -f infra/compose/docker-compose.prod.yml}"
-STAGING_DEPLOY_REF="${STAGING_DEPLOY_REF:-}"
-ROLLBACK_REF="${ROLLBACK_REF:-}"
+PROJECT_ROOT="$(realpath -m "${PROJECT_ROOT}")"
+PROJECT_PARENT="$(dirname "${PROJECT_ROOT}")"
+RELEASE_ARCHIVE="${RELEASE_ARCHIVE:-}"
+RELEASE_CHECKSUM="${RELEASE_CHECKSUM:-}"
+REHEARSAL_RELEASE_ID="${REHEARSAL_RELEASE_ID:-rehearsal-${TIMESTAMP}}"
+ROLLBACK_RELEASE_DIR="${ROLLBACK_RELEASE_DIR:-${PROJECT_PARENT}/app.prev.${REHEARSAL_RELEASE_ID}}"
 SMOKE_BASE_URL="${SMOKE_BASE_URL:-https://api.vatranscribe.ru}"
 REHEARSAL_ALLOW_LIVE_ACTIONS="${REHEARSAL_ALLOW_LIVE_ACTIONS:-false}"
 REHEARSAL_RUN_DEPLOY="${REHEARSAL_RUN_DEPLOY:-true}"
@@ -91,14 +95,17 @@ rehearsal_header() {
   record "TIMESTAMP_UTC" "${TIMESTAMP}"
   record "PROJECT_ROOT" "${PROJECT_ROOT}"
   record "RUNTIME_ENV_FILE" "<redacted>"
-  record "GIT_COMMIT" "$(git rev-parse HEAD 2>/dev/null || echo unknown)"
-  record "GIT_BRANCH" "$(git branch --show-current 2>/dev/null || echo unknown)"
+  record "REHEARSAL_RELEASE_ID" "${REHEARSAL_RELEASE_ID}"
+  record "RELEASE_ARCHIVE_PROVIDED" "$([[ -n "${RELEASE_ARCHIVE}" ]] && echo true || echo false)"
+  record "RELEASE_CHECKSUM_PROVIDED" "$([[ -n "${RELEASE_CHECKSUM}" ]] && echo true || echo false)"
+  record "ROLLBACK_RELEASE_DIR" "${ROLLBACK_RELEASE_DIR}"
   record "PROJECT_NAME" "${PROJECT_NAME}"
   record "SMOKE_BASE_URL" "${SMOKE_BASE_URL}"
   record "REHEARSAL_ALLOW_LIVE_ACTIONS" "${REHEARSAL_ALLOW_LIVE_ACTIONS}"
 }
 
 validate_scripts_syntax() {
+  bash -n infra/deploy/activate-release.sh
   bash -n infra/deploy/deploy.sh
   bash -n infra/deploy/rollback.sh
   bash -n infra/deploy/smoke-test.sh
@@ -110,8 +117,8 @@ validate_scripts_syntax() {
 }
 
 validate_runtime_secrets() {
-  infra/deploy/validate-production-secrets.sh "${RUNTIME_ENV_FILE}"
-  infra/deploy/validate-runtime-env-live.sh "${RUNTIME_ENV_FILE}"
+  bash infra/deploy/validate-production-secrets.sh "${RUNTIME_ENV_FILE}"
+  bash infra/deploy/validate-runtime-env-live.sh "${RUNTIME_ENV_FILE}"
 }
 
 validate_compose_config() {
@@ -122,11 +129,27 @@ validate_compose_config() {
 
 staging_deploy() {
   require_live_actions
-  if [[ -n "${STAGING_DEPLOY_REF}" ]]; then
-    GIT_REF="${STAGING_DEPLOY_REF}" RUN_MIGRATIONS="false" infra/deploy/deploy.sh
-  else
-    RUN_MIGRATIONS="false" infra/deploy/deploy.sh
+
+  if [[ -z "${RELEASE_ARCHIVE}" || ! -f "${RELEASE_ARCHIVE}" ]]; then
+    echo "[FAIL] RELEASE_ARCHIVE must reference an existing immutable release archive" >&2
+    return 1
   fi
+
+  if [[ -z "${RELEASE_CHECKSUM}" || ! -f "${RELEASE_CHECKSUM}" ]]; then
+    echo "[FAIL] RELEASE_CHECKSUM must reference the matching SHA-256 file" >&2
+    return 1
+  fi
+
+  RELEASE_ID="${REHEARSAL_RELEASE_ID}" \
+  PROJECT_ROOT="${PROJECT_ROOT}" \
+  RUNTIME_ENV_FILE="${RUNTIME_ENV_FILE}" \
+  SMOKE_BASE_URL="${SMOKE_BASE_URL}" \
+  RUN_MIGRATIONS="false" \
+    bash "${PROJECT_ROOT}/infra/deploy/activate-release.sh" \
+      "${RELEASE_ARCHIVE}" \
+      "${RELEASE_CHECKSUM}"
+
+  cd "${PROJECT_ROOT}"
 }
 
 run_migrations() {
@@ -142,20 +165,29 @@ run_smoke() {
 
 rollback_timing() {
   require_live_actions
-  if [[ -z "${ROLLBACK_REF}" ]]; then
-    echo "[FAIL] ROLLBACK_REF is required for rollback timing proof" >&2
+
+  if [[ ! -d "${ROLLBACK_RELEASE_DIR}" ]]; then
+    echo "[FAIL] Rollback release directory not found: ${ROLLBACK_RELEASE_DIR}" >&2
     return 1
   fi
+
   local started ended elapsed
   started="$(date +%s)"
-  infra/deploy/rollback.sh "${ROLLBACK_REF}"
+
+  bash "${PROJECT_ROOT}/infra/deploy/rollback.sh" \
+    "${ROLLBACK_RELEASE_DIR}"
+
+  cd "${PROJECT_ROOT}"
+
   ended="$(date +%s)"
   elapsed=$((ended - started))
   record "ROLLBACK_SECONDS" "${elapsed}"
+
   if (( elapsed > 300 )); then
     echo "[FAIL] Rollback exceeded 5 minutes: ${elapsed}s" >&2
     return 1
   fi
+
   echo "[OK] rollback completed in ${elapsed}s"
 }
 

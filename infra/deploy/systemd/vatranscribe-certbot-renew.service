@@ -5,7 +5,7 @@ After=docker.service network-online.target
 
 [Service]
 Type=oneshot
-WorkingDirectory=/srv/vatranscribe
-Environment=PROJECT_ROOT=/srv/vatranscribe
+WorkingDirectory=/opt/vatranscribe/app
+Environment=PROJECT_ROOT=/opt/vatranscribe/app
 Environment=RUNTIME_ENV_FILE=/opt/vatranscribe/secrets/.env.runtime
-ExecStart=/srv/vatranscribe/infra/deploy/certbot-renew.sh
+ExecStart=/opt/vatranscribe/app/infra/deploy/certbot-renew.sh

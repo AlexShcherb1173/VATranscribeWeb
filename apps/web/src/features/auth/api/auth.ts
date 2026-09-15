@@ -8,9 +8,9 @@ import type {
 } from "@/features/auth/model/types";
 
 const REQUIRED_LEGAL_ACCEPTANCES: LegalDocumentAcceptance[] = [
-  { document_type: "terms", document_version: "1.0", accepted: true },
-  { document_type: "privacy", document_version: "1.0", accepted: true },
-  { document_type: "personal_data", document_version: "1.0", accepted: true },
+  { document_type: "terms", document_version: "2.0", accepted: true },
+  { document_type: "privacy", document_version: "2.0", accepted: true },
+  { document_type: "personal_data", document_version: "2.0", accepted: true },
 ];
 
 function normalizeRegisterPayload(payload: RegisterRequest): RegisterRequest {

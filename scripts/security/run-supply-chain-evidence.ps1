@@ -31,7 +31,8 @@ function Invoke-Scan {
     Write-Host "[SCAN] $Name" -ForegroundColor Cyan
     try {
         & $Command *> $LogFile
-        return 0
+        $ExitCode = $LASTEXITCODE
+        return $ExitCode
     }
     catch {
         $_ | Out-String | Add-Content -LiteralPath $LogFile -Encoding UTF8
@@ -55,35 +56,48 @@ $LockExit = Invoke-Scan "lockfile policy" (Join-Path $RawDir "check-lockfiles.lo
     pwsh -ExecutionPolicy Bypass -File .\scripts\security\check-lockfiles.ps1
 }
 
-if (Test-CommandAvailable "pip-audit") {
-    $PipExit = Invoke-Scan "pip-audit" (Join-Path $RawDir "pip-audit.log") {
-        pip-audit --local --progress-spinner off --format json --output (Join-Path $RawDir "pip-audit.json")
-    }
-}
-else {
-    $PipExit = 127
-    "pip-audit not installed" | Set-Content -LiteralPath (Join-Path $RawDir "pip-audit.log") -Encoding UTF8
+$PipJson = Join-Path $RawDir "pip-audit.json"
+
+$PipExit = Invoke-Scan "pip-audit (Python 3.12 container)" (Join-Path $RawDir "pip-audit.log") {
+    pwsh -ExecutionPolicy Bypass -File .\scripts\security\run-pip-audit-production.ps1 -OutputFile $PipJson
 }
 
-if (Test-CommandAvailable "npm") {
+$PipReportRef = "raw/pip-audit.log"
+
+if (Test-Path -LiteralPath $PipJson) {
+    $PipReportRef = "raw/pip-audit.json"
+}
+
+$NpmJson = Join-Path $RawDir "npm-audit.json"
+$NpmStderr = Join-Path $RawDir "npm-audit.stderr.log"
+
+$NpmCommand = Get-Command "npm.cmd" -ErrorAction SilentlyContinue
+
+if ($null -eq $NpmCommand) {
+    $NpmCommand = Get-Command "npm" -ErrorAction SilentlyContinue
+}
+
+if ($null -ne $NpmCommand) {
     Write-Host "[SCAN] npm audit" -ForegroundColor Cyan
+
     try {
-        npm audit --workspaces --audit-level=high --json *> (Join-Path $RawDir "npm-audit.json")
-        $NpmExit = 0
+        & $NpmCommand.Source audit --workspaces --audit-level=high --json 1> $NpmJson 2> $NpmStderr
+        $NpmExit = $LASTEXITCODE
     }
     catch {
-        $_ | Out-String | Add-Content -LiteralPath (Join-Path $RawDir "npm-audit.json") -Encoding UTF8
+        $_ | Out-String | Add-Content -LiteralPath $NpmStderr -Encoding UTF8
         $NpmExit = 1
     }
 }
 else {
     $NpmExit = 127
-    "npm not installed" | Set-Content -LiteralPath (Join-Path $RawDir "npm-audit.json") -Encoding UTF8
+    '{"error":"npm not installed"}' | Set-Content -LiteralPath $NpmJson -Encoding UTF8
+    "npm not installed" | Set-Content -LiteralPath $NpmStderr -Encoding UTF8
 }
 
 if (Test-CommandAvailable "trivy") {
     $TrivyExit = Invoke-Scan "Trivy fs" (Join-Path $RawDir "trivy-fs.log") {
-        trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --format json --output (Join-Path $RawDir "trivy-fs.json") .
+        trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs ".venv" --skip-dirs "**/node_modules" --format json --output (Join-Path $RawDir "trivy-fs.json") .
     }
 }
 else {
@@ -93,7 +107,7 @@ else {
 
 if (Test-CommandAvailable "gitleaks") {
     $GitleaksExit = Invoke-Scan "Gitleaks" (Join-Path $RawDir "gitleaks.log") {
-        gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path (Join-Path $RawDir "gitleaks.json")
+        gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path (Join-Path $RawDir "gitleaks.json")
     }
 }
 else {
@@ -104,7 +118,7 @@ else {
 if (Test-CommandAvailable "syft") {
     $SbomPath = Join-Path $RawDir "sbom.spdx.json"
     $SyftExit = Invoke-Scan "Syft SBOM" (Join-Path $RawDir "syft.log") {
-        syft . -o "spdx-json=$SbomPath"
+        syft . --exclude "./.venv/**" --exclude "**/node_modules/**" -o "spdx-json=$SbomPath"
     }
 }
 else {
@@ -132,7 +146,7 @@ Evidence directory: $EvidenceDir
 
 | Tool | Status |
 |---|---|
-| pip-audit | $(Tool-Status "pip-audit") |
+| pip-audit (Python 3.12 container) | $(Tool-Status "docker") |
 | npm | $(Tool-Status "npm") |
 | Trivy | $(Tool-Status "trivy") |
 | Gitleaks | $(Tool-Status "gitleaks") |
@@ -143,7 +157,7 @@ Evidence directory: $EvidenceDir
 | Gate | Status | Exit code | Raw report |
 |---|---:|---:|---|
 | Lockfile policy | $(Status-Of $LockExit) | $LockExit | raw/check-lockfiles.log |
-| pip-audit | $(Status-Of $PipExit) | $PipExit | raw/pip-audit.json |
+| pip-audit | $(Status-Of $PipExit) | $PipExit | $PipReportRef |
 | npm audit | $(Status-Of $NpmExit) | $NpmExit | raw/npm-audit.json |
 | Trivy filesystem/config/secret | $(Status-Of $TrivyExit) | $TrivyExit | raw/trivy-fs.json |
 | Gitleaks secret scan | $(Status-Of $GitleaksExit) | $GitleaksExit | raw/gitleaks.json |
@@ -165,9 +179,9 @@ DO NOT commit raw scan reports, SBOM files, private registry URLs, tokens, crede
 
 Use this file for release-owner review. Store the completed copy outside Git unless it is fully sanitized.
 
-| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date |
-|---|---|---|---|---|---|---|---|---|---|
-| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ |
+| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date | Expiry date |
+|---|---|---|---|---|---|---|---|---|---|---|
+| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ | _YYYY-MM-DD or N/A_ |
 
 Critical findings require a fix before public release unless the release owner records a formal no-exposure decision. High findings block release unless fixed or covered by a dated temporary exception.
 "@ | Set-Content -LiteralPath $TriageFile -Encoding UTF8

@@ -27,10 +27,13 @@ def test_runtime_secret_activation_scripts_exist_and_are_lf_safe():
 
 def test_live_validator_wraps_production_validator_and_blocks_repo_env_file():
     content = read("infra/deploy/validate-runtime-env-live.sh")
-    assert "validate-production-secrets.sh" in content
-    assert "RUNTIME_ENV_FILE" in content
+    lines = content.splitlines()
+    assert 'bash "${SCRIPT_DIR}/validate-production-secrets.sh" "${RUNTIME_ENV_FILE}"' in lines
+    assert '  bash "${SCRIPT_DIR}/redact-runtime-env.sh" "${RUNTIME_ENV_FILE}" > "${EVIDENCE_FILE}"' in lines
+    assert '"${SCRIPT_DIR}/validate-production-secrets.sh" "${RUNTIME_ENV_FILE}"' not in lines
+    assert '  "${SCRIPT_DIR}/redact-runtime-env.sh" "${RUNTIME_ENV_FILE}" > "${EVIDENCE_FILE}"' not in lines
     assert "Runtime env file must not be inside the Git repository" in content
-    assert "redact-runtime-env.sh" in content
+    assert "RUNTIME_ENV_FILE" in content
     assert "EVIDENCE_FILE" in content
 
 
@@ -88,3 +91,38 @@ def test_gitignore_blocks_runtime_secret_outputs():
     assert ".env.runtime" in content
     assert "runtime-env*.template" in content
     assert "runtime-secrets-evidence*.md" in content
+
+def test_production_deploy_uses_production_environment_for_deploy_secrets():
+    content = read(".github/workflows/production-deploy.yml")
+
+    assert "\n  deploy:\n" in content
+    deploy_job = content.split("\n  deploy:\n", 1)[1]
+
+    assert "\n    environment:\n      name: production\n" in deploy_job
+
+    required = [
+        "PRODUCTION_SSH_HOST",
+        "PRODUCTION_SSH_USER",
+        "PRODUCTION_SSH_KEY",
+        "PRODUCTION_SSH_PORT",
+        "PRODUCTION_PROJECT_ROOT",
+        "PRODUCTION_RUNTIME_ENV_FILE",
+        "PRODUCTION_SMOKE_BASE_URL",
+    ]
+
+    for name in required:
+        assert f"secrets.{name}" in deploy_job
+
+def test_production_deploy_invokes_release_activator_via_bash() -> None:
+    from pathlib import Path
+
+    workflow = Path(
+        ".github/workflows/production-deploy.yml"
+    ).read_text(encoding="utf-8")
+
+    assert "bash ./infra/deploy/deploy.sh" not in workflow
+    assert "activate-release.sh" in workflow
+    assert "scp " in workflow
+    assert "StrictHostKeyChecking=yes" in workflow
+    assert 'remote_activator="${remote_prefix}.activate-release.sh"' in workflow
+    assert "            ./infra/deploy/deploy.sh" not in workflow

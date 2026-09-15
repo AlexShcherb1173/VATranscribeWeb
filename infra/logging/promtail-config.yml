@@ -33,6 +33,4 @@ scrape_configs:
       - labels:
           level:
           logger:
-          request_id:
-          path:
           status_code:

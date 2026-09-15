@@ -1,9 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+RUNTIME_ENV_FILE="${RUNTIME_ENV_FILE:-}"
+
+if [[ -n "${RUNTIME_ENV_FILE}" ]]; then
+  [[ -f "${RUNTIME_ENV_FILE}" ]] || {
+    echo "[ERROR] Runtime env file not found: ${RUNTIME_ENV_FILE}" >&2
+    exit 1
+  }
+
+  [[ -r "${RUNTIME_ENV_FILE}" ]] || {
+    echo "[ERROR] Runtime env file is not readable: ${RUNTIME_ENV_FILE}" >&2
+    exit 1
+  }
+
+  set -a
+  # shellcheck disable=SC1090
+  source "${RUNTIME_ENV_FILE}"
+  set +a
+fi
+
 PROJECT_NAME="${PROJECT_NAME:-vatranscribeweb}"
 COMPOSE_FILES="${COMPOSE_FILES:-docker-compose.yml -f infra/compose/docker-compose.prod.yml}"
-RUNTIME_ENV_FILE="${RUNTIME_ENV_FILE:-}"
 DB_SERVICE="${DB_SERVICE:-db}"
 POSTGRES_DB="${POSTGRES_DB:-vatranscribe}"
 POSTGRES_USER="${POSTGRES_USER:-postgres}"

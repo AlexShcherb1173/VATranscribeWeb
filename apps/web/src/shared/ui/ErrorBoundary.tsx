@@ -1,5 +1,7 @@
 import React, { PropsWithChildren } from "react";
 
+import { captureFrontendException } from "@/shared/observability/sentry";
+
 const isDevelopment = import.meta.env.DEV;
 
 type ErrorBoundaryState = {
@@ -28,6 +30,7 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    captureFrontendException(error);
     console.error("VATranscribe runtime error:", error, errorInfo);
   }
 

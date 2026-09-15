@@ -19,7 +19,7 @@ if ($OutputParent -and -not (Test-Path $OutputParent)) {
 
 $Content = Get-Content -LiteralPath $InputFile -Raw
 
-$Content = $Content -replace '(?i)(token|secret|password|passwd|api[_-]?key|authorization|credential|private[_-]?key)([=: ]+)[^ ,;"'']+', '$1$2<redacted>'
+$Content = $Content -replace '(?i)(token|secret|password|passwd|api[_-]?key|authorization|credential|private[_-]?key)([ \t]*[:=][ \t]*)[^ \r\n,;"'']+', '$1$2<redacted>'
 $Content = $Content -replace '(https?://)[^/@\s]+:[^/@\s]+@', '$1<redacted>:<redacted>@'
 $Content = $Content -replace '(registry\.npmjs\.org/)[^\s]+', '$1<redacted>'
 $Content = $Content -replace '(/opt/vatranscribe/secrets/)[^\s]+', '$1<redacted>'

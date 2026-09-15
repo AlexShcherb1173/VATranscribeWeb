@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -253,7 +253,15 @@ export function FilesPage() {
   const [schemeDialogFile, setSchemeDialogFile] = useState<MediaFile | null>(null);
 
   const { data, isLoading } = useMediaFilesQuery();
-  const files = data ?? [];
+  const files = useMemo(() => data ?? [], [data]);
+
+  const setSelectedFile = useCallback(
+    (fileId: string) => {
+      setSelectedFileId(fileId);
+      setSearchParams({ fileId, source: "files" });
+    },
+    [setSearchParams],
+  );
 
   const deleteFileMutation = useMutation({
     mutationFn: (file: MediaFile) => deleteMediaFile(file.id),
@@ -357,7 +365,7 @@ export function FilesPage() {
     if (!exists) {
       setSelectedFile(files[0].id);
     }
-  }, [files, selectedFileId]);
+  }, [files, selectedFileId, setSelectedFile]);
 
   const selectedFile = files.find((file) => file.id === selectedFileId) ?? null;
   const selectedFileJobId = selectedFileId ? createdJobByFileId[selectedFileId] : null;
@@ -405,11 +413,6 @@ export function FilesPage() {
 
     return [];
   }, [failedItems, filesFilter, uploadItems, uploadingItems]);
-
-  function setSelectedFile(fileId: string) {
-    setSelectedFileId(fileId);
-    setSearchParams({ fileId, source: "files" });
-  }
 
   function handleSummaryClick(nextFilter: FilesFilter) {
     setFilesFilter(nextFilter);
@@ -782,13 +785,15 @@ function TranscriptionSchemeDialog({
   const [selectedLanguageCode, setSelectedLanguageCode] = useState<TranscriptionLanguageCode>("auto");
   const [selectedAudioProfileCode, setSelectedAudioProfileCode] = useState<TranscriptionAudioProfileCode>("speech");
 
+  const fileId = file?.id;
+
   useEffect(() => {
-    if (file) {
+    if (fileId) {
       setSelectedSchemeId("standard");
       setSelectedLanguageCode("auto");
       setSelectedAudioProfileCode("speech");
     }
-  }, [file?.id]);
+  }, [fileId]);
 
   if (!file) {
     return null;

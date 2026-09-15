@@ -66,6 +66,16 @@ def test_jwt_algorithm_comes_from_settings():
     assert 'algorithms=[settings.jwt_algorithm]' in text
     assert 'ALGORITHM = "HS256"' not in text
 
+    assert "import jwt" in text
+    assert "from jwt import InvalidTokenError" in text
+    assert "from jose" not in text
+    assert "import jose" not in text
+
+    assert "def _jwt_verification_key" in text
+    assert 'if algorithm != "RS256"' in text
+    assert "serialization.load_pem_private_key" in text
+    assert "serialization.PublicFormat.SubjectPublicKeyInfo" in text
+
 
 def test_env_examples_document_safe_production_defaults():
     dev_env = read(".env.example")

@@ -62,6 +62,7 @@ app.add_middleware(
 @app.middleware("http")
 async def request_id_and_access_log_middleware(request: Request, call_next):
     request_id = request.headers.get(settings.request_id_header) or uuid4().hex
+    request.state.request_id = request_id
     start = time.perf_counter()
     try:
         response = await call_next(request)

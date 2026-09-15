@@ -16,36 +16,52 @@ function Test-Command {
 
 pwsh -ExecutionPolicy Bypass -File .\scripts\security\check-lockfiles.ps1
 
-if (Test-Command "pip-audit") {
-    pip-audit --local --progress-spinner off --format json --output (Join-Path $ReportDir "pip-audit.json")
-}
-else {
-    Write-Host "[WARN] pip-audit is not installed. Install with: python -m pip install pip-audit" -ForegroundColor Yellow
+pwsh -ExecutionPolicy Bypass -File .\scripts\security\run-pip-audit-production.ps1 -OutputFile (Join-Path $ReportDir "pip-audit.json")
+
+$PipAuditExit = $LASTEXITCODE
+
+if ($PipAuditExit -ne 0) {
+    throw "production-aligned pip-audit failed with exit code $PipAuditExit"
 }
 
-if (Test-Command "npm") {
-    npm audit --workspaces --audit-level=high --json | Set-Content -LiteralPath (Join-Path $ReportDir "npm-audit.json") -Encoding UTF8
+$NpmJson = Join-Path $ReportDir "npm-audit.json"
+$NpmStderr = Join-Path $ReportDir "npm-audit.stderr.log"
+
+$NpmCommand = Get-Command "npm.cmd" -ErrorAction SilentlyContinue
+
+if ($null -eq $NpmCommand) {
+    $NpmCommand = Get-Command "npm" -ErrorAction SilentlyContinue
+}
+
+if ($null -ne $NpmCommand) {
+    & $NpmCommand.Source audit --workspaces --audit-level=high --json 1> $NpmJson 2> $NpmStderr
+
+    $NpmScanExit = $LASTEXITCODE
+
+    if ($NpmScanExit -ne 0) {
+        throw "npm audit failed with exit code $NpmScanExit"
+    }
 }
 else {
     Write-Host "[WARN] npm is not installed" -ForegroundColor Yellow
 }
 
 if (Test-Command "trivy") {
-    trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --format table . | Tee-Object -FilePath (Join-Path $ReportDir "trivy-fs.txt")
+    trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs ".venv" --skip-dirs "**/node_modules" --format table . | Tee-Object -FilePath (Join-Path $ReportDir "trivy-fs.txt")
 }
 else {
     Write-Host "[WARN] Trivy is not installed. See docs/security/supply-chain-security-scan.md" -ForegroundColor Yellow
 }
 
 if (Test-Command "gitleaks") {
-    gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path (Join-Path $ReportDir "gitleaks.json")
+    gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path (Join-Path $ReportDir "gitleaks.json")
 }
 else {
     Write-Host "[WARN] Gitleaks is not installed. See docs/security/supply-chain-security-scan.md" -ForegroundColor Yellow
 }
 
 if (Test-Command "syft") {
-    syft . -o "spdx-json=$(Join-Path $ReportDir 'sbom.spdx.json')"
+    syft . --exclude "./.venv/**" --exclude "**/node_modules/**" -o "spdx-json=$(Join-Path $ReportDir 'sbom.spdx.json')"
 }
 else {
     Write-Host "[INFO] Syft is optional for local runs. SBOM generation is documented and enabled in CI." -ForegroundColor Cyan

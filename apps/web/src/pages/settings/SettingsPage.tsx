@@ -85,15 +85,15 @@ export function SettingsPage() {
           <div className="mt-5 rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
             <div>
               {t.settings.cookiesStatus}:{" "}
-              <span className={status?.exists ? "text-emerald-300" : "text-rose-300"}>
-                {status?.exists ? t.settings.cookiesUploaded : t.settings.cookiesNotUploaded}
+              <span className={status?.configured ? "text-emerald-300" : "text-rose-300"}>
+                {status?.configured ? t.settings.cookiesUploaded : t.settings.cookiesNotUploaded}
               </span>
             </div>
 
             <div className="mt-2">
               {t.settings.cookiesPath}:{" "}
               <span className="text-slate-400">
-                {status?.path || "—"}
+                {status?.source_filename || "—"}
               </span>
             </div>
 
@@ -119,7 +119,7 @@ export function SettingsPage() {
 
             <button
               type="button"
-              disabled={isLoading || !status?.exists}
+              disabled={isLoading || !status?.configured}
               onClick={handleDelete}
               className="rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-200 transition hover:border-rose-400 hover:text-rose-200 disabled:cursor-not-allowed disabled:opacity-50"
             >

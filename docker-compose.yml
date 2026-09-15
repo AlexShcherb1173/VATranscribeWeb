@@ -13,6 +13,7 @@ services:
     environment:
       PYTHONUNBUFFERED: "1"
       PYTHONDONTWRITEBYTECODE: "1"
+      YOUTUBE_COOKIES_ENCRYPTION_KEY: ${YOUTUBE_COOKIES_ENCRYPTION_KEY:-}
 
       # yt-dlp / YouTube options
       YT_DLP_PROXY_URL: ${YT_DLP_PROXY_URL:-}
@@ -44,6 +45,7 @@ services:
     environment:
       PYTHONUNBUFFERED: "1"
       PYTHONDONTWRITEBYTECODE: "1"
+      YOUTUBE_COOKIES_ENCRYPTION_KEY: ${YOUTUBE_COOKIES_ENCRYPTION_KEY:-}
       C_FORCE_ROOT: "true"
       XDG_CACHE_HOME: "/app/storage/cache"
       TORCH_HOME: "/app/storage/cache/torch"

@@ -82,3 +82,53 @@ def test_env_examples_do_not_point_to_global_youtube_cookie_file():
     assert "YOUTUBE_COOKIES_ENCRYPTION_KEY" in prod_env
     assert "YT_DLP_COOKIES_FILE=./storage/cookies/youtube.txt" not in dev_env
     assert "YT_DLP_COOKIES_FILE=./storage/cookies/youtube.txt" not in prod_env
+
+def test_legacy_global_youtube_cookie_settings_router_is_removed():
+    legacy_router = ROOT / "apps/api/app/routers/settings.py"
+    router_index = read("apps/api/app/routers/__init__.py")
+
+    assert not legacy_router.exists()
+    assert "routers.settings" not in router_index
+    assert "settings_router" not in router_index
+
+
+def test_frontend_uses_only_per_user_youtube_cookie_endpoints():
+    active_wrapper = read("apps/web/src/shared/api/settings.ts")
+    settings_page = read("apps/web/src/pages/settings/SettingsPage.tsx")
+    duplicate_wrapper = ROOT / "apps/web/src/pages/shared/api/settings.ts"
+
+    assert '"/youtube-cookies/status"' in active_wrapper
+    assert active_wrapper.count('"/youtube-cookies"') == 2
+    assert "/settings/youtube-cookies" not in active_wrapper
+
+    assert "source_filename: string | null" in active_wrapper
+    assert "cookie_format: string | null" in active_wrapper
+    assert "updated_at: string | null" in active_wrapper
+    assert "exists:" not in active_wrapper
+    assert "path:" not in active_wrapper
+
+    assert "status?.configured" in settings_page
+    assert "status?.source_filename" in settings_page
+    assert "status?.exists" not in settings_page
+    assert "status?.path" not in settings_page
+
+    assert not duplicate_wrapper.exists()
+
+    frontend_root = ROOT / "apps/web/src"
+
+    for path in [
+        *frontend_root.rglob("*.ts"),
+        *frontend_root.rglob("*.tsx"),
+    ]:
+        text = path.read_text(encoding="utf-8")
+        assert "/settings/youtube-cookies" not in text, path
+
+
+def test_compose_explicitly_injects_cookie_key_into_api_and_worker():
+    compose = read("docker-compose.yml")
+    expected = (
+        "YOUTUBE_COOKIES_ENCRYPTION_KEY: "
+        "${YOUTUBE_COOKIES_ENCRYPTION_KEY:-}"
+    )
+
+    assert compose.count(expected) == 2

@@ -68,15 +68,20 @@ LOCKFILES_STATUS="not-run"
 LOCKFILES_EXIT="$(run_capture "lockfile policy" "${RAW_DIR}/check-lockfiles.log" bash scripts/security/check-lockfiles.sh)"
 LOCKFILES_STATUS="$(status_of "$LOCKFILES_EXIT")"
 
-if command -v pip-audit >/dev/null 2>&1; then
-  set +e
-  pip-audit --local --progress-spinner off --format json --output "${RAW_DIR}/pip-audit.json" >"${RAW_DIR}/pip-audit.log" 2>&1
-  PIP_AUDIT_EXIT=$?
-  set -e
-  PIP_AUDIT_STATUS="$(status_of "$PIP_AUDIT_EXIT")"
-else
-  PIP_AUDIT_EXIT=127
-  echo "pip-audit not installed" >"${RAW_DIR}/pip-audit.log"
+set +e
+bash scripts/security/run-pip-audit-production.sh \
+  "${RAW_DIR}/pip-audit.json" \
+  >"${RAW_DIR}/pip-audit.log" \
+  2>&1
+PIP_AUDIT_EXIT=$?
+set -e
+
+PIP_AUDIT_STATUS="$(status_of "$PIP_AUDIT_EXIT")"
+
+PIP_AUDIT_REPORT="raw/pip-audit.log"
+
+if [ -f "${RAW_DIR}/pip-audit.json" ]; then
+  PIP_AUDIT_REPORT="raw/pip-audit.json"
 fi
 
 if command -v npm >/dev/null 2>&1; then
@@ -89,7 +94,7 @@ fi
 
 if command -v trivy >/dev/null 2>&1; then
   set +e
-  trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --format json --output "${RAW_DIR}/trivy-fs.json" . >"${RAW_DIR}/trivy-fs.log" 2>&1
+  trivy fs --timeout 30m --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs ".venv" --skip-dirs "**/node_modules" --format json --output "${RAW_DIR}/trivy-fs.json" . >"${RAW_DIR}/trivy-fs.log" 2>&1
   TRIVY_EXIT=$?
   set -e
   TRIVY_STATUS="$(status_of "$TRIVY_EXIT")"
@@ -100,7 +105,7 @@ fi
 
 if command -v gitleaks >/dev/null 2>&1; then
   set +e
-  gitleaks detect --source . --redact --exit-code 1 --report-format json --report-path "${RAW_DIR}/gitleaks.json" >"${RAW_DIR}/gitleaks.log" 2>&1
+  gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path "${RAW_DIR}/gitleaks.json" >"${RAW_DIR}/gitleaks.log" 2>&1
   GITLEAKS_EXIT=$?
   set -e
   GITLEAKS_STATUS="$(status_of "$GITLEAKS_EXIT")"
@@ -111,7 +116,7 @@ fi
 
 if command -v syft >/dev/null 2>&1; then
   set +e
-  syft . -o "spdx-json=${RAW_DIR}/sbom.spdx.json" >"${RAW_DIR}/syft.log" 2>&1
+  syft . --exclude "./.venv/**" --exclude "**/node_modules/**" -o "spdx-json=${RAW_DIR}/sbom.spdx.json" >"${RAW_DIR}/syft.log" 2>&1
   SYFT_EXIT=$?
   set -e
   SYFT_STATUS="$(status_of "$SYFT_EXIT")"
@@ -137,7 +142,7 @@ Evidence directory: ${EVIDENCE_DIR}
 
 | Tool | Status |
 |---|---|
-| pip-audit | $(required_tool_status pip-audit) |
+| pip-audit (Python 3.12 container) | $(required_tool_status docker) |
 | npm | $(required_tool_status npm) |
 | Trivy | $(required_tool_status trivy) |
 | Gitleaks | $(required_tool_status gitleaks) |
@@ -148,7 +153,7 @@ Evidence directory: ${EVIDENCE_DIR}
 | Gate | Status | Exit code | Raw report |
 |---|---:|---:|---|
 | Lockfile policy | ${LOCKFILES_STATUS} | ${LOCKFILES_EXIT} | raw/check-lockfiles.log |
-| pip-audit | ${PIP_AUDIT_STATUS} | ${PIP_AUDIT_EXIT} | raw/pip-audit.json |
+| pip-audit | ${PIP_AUDIT_STATUS} | ${PIP_AUDIT_EXIT} | ${PIP_AUDIT_REPORT} |
 | npm audit | ${NPM_AUDIT_STATUS} | ${NPM_AUDIT_EXIT} | raw/npm-audit.json |
 | Trivy filesystem/config/secret | ${TRIVY_STATUS} | ${TRIVY_EXIT} | raw/trivy-fs.json |
 | Gitleaks secret scan | ${GITLEAKS_STATUS} | ${GITLEAKS_EXIT} | raw/gitleaks.json |
@@ -170,9 +175,9 @@ cat >"$TRIAGE_FILE" <<'EOF_TRIAGE'
 
 Use this file for release-owner review. Store the completed copy outside Git unless it is fully sanitized.
 
-| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date |
-|---|---|---|---|---|---|---|---|---|---|
-| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ |
+| Finding | Scanner | Package/image/file | Severity | Reachability | User/data exposure | Fix/mitigation | Decision | Owner | Review date | Expiry date |
+|---|---|---|---|---|---|---|---|---|---|---|
+| _fill locally_ | _pip-audit/npm audit/Trivy/Gitleaks_ | _fill locally_ | _Critical/High_ | _yes/no/unknown_ | _yes/no/unknown_ | _fix version or mitigation_ | _fix/block/temporary exception_ | _owner_ | _YYYY-MM-DD_ | _YYYY-MM-DD or N/A_ |
 
 Critical findings require a fix before public release unless the release owner records a formal no-exposure decision. High findings block release unless fixed or covered by a dated temporary exception.
 EOF_TRIAGE

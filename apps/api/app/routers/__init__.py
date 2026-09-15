@@ -15,7 +15,6 @@ from apps.api.app.routers.jobs import router as jobs_router
 from apps.api.app.routers.media_assets import router as media_assets_router
 from apps.api.app.routers.profile import router as profile_router
 from apps.api.app.routers.quota import router as quota_router
-from apps.api.app.routers.settings import router as settings_router
 from apps.api.app.routers.transcriptions import router as transcriptions_router
 from apps.api.app.routers.transcripts import router as transcripts_router
 from apps.api.app.routers.uploads import router as uploads_router
@@ -46,7 +45,6 @@ router.include_router(media_assets_router)
 router.include_router(transcriptions_router)
 router.include_router(transcripts_router)
 router.include_router(export_artifacts_router)
-router.include_router(settings_router)
 
 # Stage 2 security/privacy foundation routers
 router.include_router(consents_router)

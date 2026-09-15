@@ -18,7 +18,7 @@ mkdir -p "$(dirname "$OUTPUT_FILE")"
 cp "$INPUT_FILE" "$OUTPUT_FILE"
 
 # Generic redaction for accidental secrets, private registry URLs, tokens, and local runtime paths.
-sed -i -E 's#(token|secret|password|passwd|api[_-]?key|authorization|credential|private[_-]?key)([=: ]+)[^ ,;\"\047]+#\1\2<redacted>#Ig' "$OUTPUT_FILE"
+sed -i -E 's#(token|secret|password|passwd|api[_-]?key|authorization|credential|private[_-]?key)([[:blank:]]*[:=][[:blank:]]*)[^[:space:],;\"\047]+#\1\2<redacted>#Ig' "$OUTPUT_FILE"
 sed -i -E 's#(https?://)[^/@[:space:]]+:[^/@[:space:]]+@#\1<redacted>:<redacted>@#g' "$OUTPUT_FILE"
 sed -i -E 's#(registry\.npmjs\.org/)[^[:space:]]+#\1<redacted>#g' "$OUTPUT_FILE"
 sed -i -E 's#(/opt/vatranscribe/secrets/)[^[:space:]]+#\1<redacted>#g' "$OUTPUT_FILE"

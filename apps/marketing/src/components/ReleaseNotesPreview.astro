@@ -12,7 +12,7 @@ const content = getDownloadContent(locale);
 
 <section class="section" id="release-notes">
   <div class="container">
-    <span class="eyebrow">{content.releaseTitle}</span>
+    {locale !== "ru" && <span class="eyebrow">{content.releaseTitle}</span>}
     <h2 class="h2">{content.releaseTitle}</h2>
     <p class="lead">{content.releaseLead}</p>
 
@@ -35,8 +35,17 @@ const content = getDownloadContent(locale);
       <h3 class="h3">{content.checksumTitle}</h3>
       <p class="muted">{content.checksumLead}</p>
       <div class="download-checksum-box">
-        <code>SHA256: set-on-first-signed-build</code>
-        <code>Signature: planned-code-signing</code>
+        {locale === "ru" ? (
+          <>
+            <code>SHA256: будет задан для первой подписанной сборки</code>
+            <code>Подпись: кодовая подпись запланирована</code>
+          </>
+        ) : (
+          <>
+            <code>SHA256: set-on-first-signed-build</code>
+            <code>Signature: planned-code-signing</code>
+          </>
+        )}
       </div>
     </div>
   </div>

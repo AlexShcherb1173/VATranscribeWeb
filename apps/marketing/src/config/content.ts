@@ -470,37 +470,37 @@ export const docsRu: DocItem[] = [
   {
     locale: "ru",
     title: "Быстрый старт",
-    description: "Начало работы с web dashboard, регистрацией и навигацией продукта.",
+    description: "Начало работы с веб-кабинетом, регистрацией и навигацией по продукту.",
     href: "/ru/docs#getting-started",
-    tags: ["setup", "dashboard"]
+    tags: ["настройка", "кабинет"]
   },
   {
     locale: "ru",
-    title: "Download workflow",
-    description: "URL analysis, job creation, logs и output files.",
+    title: "Процесс скачивания",
+    description: "Анализ ссылки, создание задачи, журналы выполнения и итоговые файлы.",
     href: "/ru/docs#download-workflow",
-    tags: ["downloads", "jobs"]
+    tags: ["скачивание", "задачи"]
   },
   {
     locale: "ru",
-    title: "Transcription workflow",
-    description: "Связка media assets, transcription jobs и transcript history.",
+    title: "Процесс транскрибации",
+    description: "Связь медиафайлов с задачами транскрибации и историей распознавания.",
     href: "/ru/docs#transcription-workflow",
-    tags: ["transcription", "media"]
+    tags: ["транскрибация", "медиа"]
   },
   {
     locale: "ru",
-    title: "Billing и quotas",
-    description: "Plan codes, pricing, quota matrix и будущая payment integration.",
+    title: "Тарифы и лимиты",
+    description: "Коды тарифов, публичные цены, матрица лимитов и будущая интеграция оплаты.",
     href: "/ru/docs#billing-quotas",
-    tags: ["billing", "quotas"]
+    tags: ["тарифы", "лимиты"]
   },
   {
     locale: "ru",
-    title: "Security и privacy",
-    description: "Refresh token rotation, consents, audit logs, rate limits и privacy requests.",
+    title: "Безопасность и персональные данные",
+    description: "Ротация токенов обновления, согласия, журнал аудита, лимиты запросов и обращения по персональным данным.",
     href: "/ru/docs#security-privacy",
-    tags: ["security", "privacy"]
+    tags: ["безопасность", "персональные данные"]
   }
 ];
 
@@ -643,7 +643,7 @@ export function getContentLanding(kind: "blog" | "resources" | "docs" | "changel
     "docs-ru": {
       eyebrow: "Документация",
       title: "Центр документации.",
-      lead: "Документация продукта по workflows, billing, quotas, security и privacy."
+      lead: "Документация продукта: рабочие процессы, тарифы, лимиты, безопасность и персональные данные."
     },
     "changelog-en": {
       eyebrow: "Changelog",

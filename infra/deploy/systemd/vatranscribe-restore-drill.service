@@ -1,0 +1,10 @@
+[Unit]
+Description=VATranscribeWeb monthly restore drill
+Wants=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/vatranscribe
+EnvironmentFile=/opt/vatranscribe/secrets/.env.runtime
+ExecStart=/srv/vatranscribe/infra/backup/restore-drill.sh

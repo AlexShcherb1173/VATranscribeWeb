@@ -4,6 +4,29 @@ limit_req_zone $binary_remote_addr zone=auth_strict_limit:10m rate=${NGINX_AUTH_
 limit_req_zone $binary_remote_addr zone=upload_limit:10m rate=${NGINX_UPLOAD_RATE};
 limit_req_zone $binary_remote_addr zone=download_limit:10m rate=${NGINX_DOWNLOAD_RATE};
 
+map $request_uri $vatranscribe_cache_control {
+    default "no-cache, max-age=0, must-revalidate";
+    ~^/healthz(?:\?|$) "no-store";
+    ~^/api/ "no-store";
+    ~^/app/assets/ "public, max-age=${CDN_ASSET_CACHE_SECONDS}, immutable";
+    ~^/assets/ "public, max-age=${CDN_ASSET_CACHE_SECONDS}, immutable";
+    ~^/_astro/ "public, max-age=${CDN_ASSET_CACHE_SECONDS}, immutable";
+}
+
+log_format vatranscribe_json escape=json '{'
+    '"time":"$time_iso8601",'
+    '"remote_addr":"$remote_addr",'
+    '"request_id":"$request_id",'
+    '"method":"$request_method",'
+    '"uri":"$request_uri",'
+    '"status":$status,'
+    '"bytes_sent":$bytes_sent,'
+    '"request_time":$request_time,'
+    '"upstream_response_time":"$upstream_response_time",'
+    '"http_referer":"$http_referer",'
+    '"http_user_agent":"$http_user_agent"'
+'}';
+
 server {
     listen 80;
     server_name ${NGINX_SERVER_NAME};
@@ -12,12 +35,15 @@ server {
     location = /healthz {
         access_log off;
         add_header Content-Type text/plain;
+        add_header Cache-Control "no-store" always;
         return 200 "ok\n";
     }
 
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/certbot;
         default_type "text/plain";
+        try_files $uri =404;
+        add_header Cache-Control "no-store" always;
     }
 
     location / {
@@ -30,6 +56,9 @@ server {
     server_name ${NGINX_SERVER_NAME};
     server_tokens off;
     absolute_redirect off;
+
+    access_log /var/log/nginx/access.log vatranscribe_json;
+    error_log /var/log/nginx/error.log warn;
 
     charset utf-8;
     client_max_body_size ${NGINX_GLOBAL_BODY_LIMIT};
@@ -56,11 +85,12 @@ server {
     add_header X-Frame-Options "DENY" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), fullscreen=(self)" always;
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ${PUBLIC_API_ORIGIN}; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ${PUBLIC_API_ORIGIN} https://sentry.io https://*.sentry.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" always;
+    add_header Cache-Control "$vatranscribe_cache_control" always;
 
     location = /healthz {
         access_log off;
-        add_header Content-Type text/plain;
+        default_type "text/plain";
         return 200 "ok\n";
     }
 
@@ -74,6 +104,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Request-ID $request_id;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
     }
@@ -88,6 +119,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Request-ID $request_id;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
     }
@@ -102,6 +134,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Request-ID $request_id;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
     }
@@ -117,6 +150,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Request-ID $request_id;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
     }
@@ -130,6 +164,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Request-ID $request_id;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
     }
@@ -144,8 +179,25 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Request-ID $request_id;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
+    }
+
+
+    location ^~ /app/assets/ {
+        alias /usr/share/nginx/html/web/assets/;
+        try_files $uri =404;
+    }
+
+    location ^~ /assets/ {
+        root /usr/share/nginx/html/marketing;
+        try_files $uri =404;
+    }
+
+    location ^~ /_astro/ {
+        root /usr/share/nginx/html/marketing;
+        try_files $uri =404;
     }
 
     location = /app {

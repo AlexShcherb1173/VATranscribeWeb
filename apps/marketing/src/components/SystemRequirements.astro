@@ -12,7 +12,7 @@ const content = getDownloadContent(locale);
 
 <section class="section">
   <div class="container">
-    <span class="eyebrow">{content.requirementsTitle}</span>
+    {locale !== "ru" && <span class="eyebrow">{content.requirementsTitle}</span>}
     <h2 class="h2">{content.requirementsTitle}</h2>
     <p class="lead">{content.requirementsLead}</p>
 

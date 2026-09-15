@@ -1,0 +1,11 @@
+[Unit]
+Description=Run VATranscribe certbot renewal twice daily
+
+[Timer]
+OnCalendar=*-*-* 03,15:17:00
+RandomizedDelaySec=30m
+Persistent=true
+Unit=vatranscribe-certbot-renew.service
+
+[Install]
+WantedBy=timers.target

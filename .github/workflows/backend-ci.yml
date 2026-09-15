@@ -16,6 +16,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare CI environment file
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          if [[ -f .env.example ]]; then
+
+            cp .env.example .env
+
+          else
+
+            : > .env
+
+          fi
+
+          test -f .env
+
+          echo "CI_ENV_FILE_READY"
+
       - name: Validate docker compose config
         run: docker compose config
 

@@ -1,0 +1,70 @@
+param(
+    [string]$ReportDir = "reports/security"
+)
+
+$ErrorActionPreference = "Stop"
+
+$ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
+Set-Location $ProjectRoot
+
+New-Item -ItemType Directory -Path $ReportDir -Force | Out-Null
+
+function Test-Command {
+    param([string]$Name)
+    return [bool](Get-Command $Name -ErrorAction SilentlyContinue)
+}
+
+pwsh -ExecutionPolicy Bypass -File .\scripts\security\check-lockfiles.ps1
+
+pwsh -ExecutionPolicy Bypass -File .\scripts\security\run-pip-audit-production.ps1 -OutputFile (Join-Path $ReportDir "pip-audit.json")
+
+$PipAuditExit = $LASTEXITCODE
+
+if ($PipAuditExit -ne 0) {
+    throw "production-aligned pip-audit failed with exit code $PipAuditExit"
+}
+
+$NpmJson = Join-Path $ReportDir "npm-audit.json"
+$NpmStderr = Join-Path $ReportDir "npm-audit.stderr.log"
+
+$NpmCommand = Get-Command "npm.cmd" -ErrorAction SilentlyContinue
+
+if ($null -eq $NpmCommand) {
+    $NpmCommand = Get-Command "npm" -ErrorAction SilentlyContinue
+}
+
+if ($null -ne $NpmCommand) {
+    & $NpmCommand.Source audit --workspaces --audit-level=high --json 1> $NpmJson 2> $NpmStderr
+
+    $NpmScanExit = $LASTEXITCODE
+
+    if ($NpmScanExit -ne 0) {
+        throw "npm audit failed with exit code $NpmScanExit"
+    }
+}
+else {
+    Write-Host "[WARN] npm is not installed" -ForegroundColor Yellow
+}
+
+if (Test-Command "trivy") {
+    trivy fs --scanners vuln,config,secret --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed --skip-dirs ".venv" --skip-dirs "**/node_modules" --format table . | Tee-Object -FilePath (Join-Path $ReportDir "trivy-fs.txt")
+}
+else {
+    Write-Host "[WARN] Trivy is not installed. See docs/security/supply-chain-security-scan.md" -ForegroundColor Yellow
+}
+
+if (Test-Command "gitleaks") {
+    gitleaks dir . --config .gitleaks.local.toml --redact=100 --exit-code 1 --report-format json --report-path (Join-Path $ReportDir "gitleaks.json")
+}
+else {
+    Write-Host "[WARN] Gitleaks is not installed. See docs/security/supply-chain-security-scan.md" -ForegroundColor Yellow
+}
+
+if (Test-Command "syft") {
+    syft . --exclude "./.venv/**" --exclude "**/node_modules/**" -o "spdx-json=$(Join-Path $ReportDir 'sbom.spdx.json')"
+}
+else {
+    Write-Host "[INFO] Syft is optional for local runs. SBOM generation is documented and enabled in CI." -ForegroundColor Cyan
+}
+
+Write-Host "[OK] Supply-chain scan completed" -ForegroundColor Green

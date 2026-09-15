@@ -1,0 +1,11 @@
+[Unit]
+Description=VATranscribe certbot renewal
+Wants=docker.service
+After=docker.service network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/vatranscribe/app
+Environment=PROJECT_ROOT=/opt/vatranscribe/app
+Environment=RUNTIME_ENV_FILE=/opt/vatranscribe/secrets/.env.runtime
+ExecStart=/opt/vatranscribe/app/infra/deploy/certbot-renew.sh

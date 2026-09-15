@@ -7,6 +7,7 @@ import { DownloadFlowProvider } from "@/features/downloads/model/DownloadFlowPro
 import { UploadQueueProvider } from "@/features/uploads/model/UploadQueueProvider";
 import { I18nProvider } from "@/shared/i18n";
 import { ToastProvider } from "@/shared/ui/ToastProvider";
+import { CookieConsentBanner } from "@/widgets/cookie-consent";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +26,7 @@ export function AppProviders() {
           <UploadQueueProvider>
             <DownloadFlowProvider>
               <RouterProvider router={router} />
+              <CookieConsentBanner />
             </DownloadFlowProvider>
           </UploadQueueProvider>
         </ToastProvider>

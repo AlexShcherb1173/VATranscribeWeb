@@ -1,0 +1,35 @@
+# Provider-neutral Uptime Kuma monitor template for VATranscribe.
+# Import manually or recreate these checks in Uptime Kuma.
+monitors:
+  - name: VATranscribe marketing
+    type: http
+    url: https://vatranscribe.ru
+    interval_seconds: 60
+    retry_interval_seconds: 30
+    max_retries: 3
+    expected_status: 200
+    alert_channels: [telegram, email]
+  - name: VATranscribe app
+    type: http
+    url: https://app.vatranscribe.ru/app/
+    interval_seconds: 60
+    retry_interval_seconds: 30
+    max_retries: 3
+    expected_status: 200
+    alert_channels: [telegram, email]
+  - name: VATranscribe API liveness
+    type: http
+    url: https://api.vatranscribe.ru/api/v1/health/live
+    interval_seconds: 30
+    retry_interval_seconds: 20
+    max_retries: 3
+    expected_status: 200
+    alert_channels: [telegram, email]
+  - name: VATranscribe API readiness
+    type: http
+    url: https://api.vatranscribe.ru/api/v1/health/ready
+    interval_seconds: 60
+    retry_interval_seconds: 30
+    max_retries: 3
+    expected_status: 200
+    alert_channels: [telegram, email]

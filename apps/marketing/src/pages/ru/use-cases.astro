@@ -4,29 +4,32 @@ import MarketingLayout from "../../layouts/MarketingLayout.astro";
 const detailedCases = [
   {
     id: "creators",
+    label: "Авторы",
     title: "Авторы и редакторы",
     points: [
-      "Собирать source videos и audio assets.",
-      "Готовить MP3/MP4 outputs для монтажа или повторного использования.",
-      "Создавать transcripts для субтитров, заметок и repurposing контента."
+      "Собирать исходные видео и аудиофайлы.",
+      "Готовить MP3/MP4-файлы для монтажа или повторного использования.",
+      "Создавать транскрипты для субтитров, заметок и переиспользования контента."
     ]
   },
   {
     id: "developers",
+    label: "Разработчики",
     title: "Разработчики и тестировщики",
     points: [
-      "Проверять downloader и transcription jobs через observable logs.",
-      "Тестировать quota, ownership и auth flows в SaaS-like архитектуре.",
-      "Использовать проект как production-grade portfolio foundation."
+      "Проверять задачи скачивания и транскрибации по журналам выполнения.",
+      "Тестировать лимиты, владение файлами и сценарии авторизации в сервисной архитектуре.",
+      "Использовать проект как полноценную основу для портфолио."
     ]
   },
   {
     id: "teams",
+    label: "Команды",
     title: "Команды и операторы",
     points: [
-      "Готовить audit-friendly media processing workflows.",
-      "Отслеживать privacy requests и consent versions.",
-      "Двигаться к billing, admin и collaboration layers."
+      "Выстраивать контролируемые процессы обработки медиафайлов.",
+      "Отслеживать запросы по персональным данным и версии согласий.",
+      "Развивать продукт в сторону тарифов, администрирования и совместной работы."
     ]
   }
 ];
@@ -36,9 +39,10 @@ const detailedCases = [
   <section class="section">
     <div class="container">
       <span class="eyebrow">Сценарии</span>
-      <h1 class="h1">Media workflow platform для нескольких продуктовых направлений.</h1>
+      <h1 class="h1">Платформа для работы с медиа под разные продуктовые сценарии.</h1>
       <p class="lead">
-        VATranscribe можно позиционировать как creator tool, developer workflow product или team SaaS foundation.
+        VATranscribe можно использовать как инструмент для авторов, рабочий контур для разработчиков
+        или основу командного веб-сервиса.
       </p>
     </div>
   </section>
@@ -47,7 +51,7 @@ const detailedCases = [
     <div class="container grid">
       {detailedCases.map((item) => (
         <article class="card" id={item.id}>
-          <span class="eyebrow">{item.id}</span>
+          <span class="eyebrow">{item.label}</span>
           <h2 class="h2">{item.title}</h2>
           <ul class="list">
             {item.points.map((point) => <li>✓ {point}</li>)}

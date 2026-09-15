@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CookieConsent from "../components/CookieConsent.astro";
 import { siteConfig } from "../config/site";
 import { absoluteUrl, getDefaultJsonLd, getSeoForPath } from "../config/seo";
 import { getAlternateLinks, getLocaleFromPath } from "../i18n/locales";
@@ -91,5 +92,6 @@ const jsonLdItems = [...defaultJsonLd, ...customJsonLd];
       <slot />
     </main>
     <slot name="footer" />
+    <CookieConsent />
   </body>
 </html>

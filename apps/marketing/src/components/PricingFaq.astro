@@ -12,7 +12,7 @@ const content = getPricingContent(locale);
 
 <section class="section">
   <div class="container">
-    <span class="eyebrow">{content.faqTitle}</span>
+    {locale !== "ru" && <span class="eyebrow">{content.faqTitle}</span>}
     <h2 class="h2">{content.faqTitle}</h2>
     <p class="lead">{content.faqLead}</p>
 

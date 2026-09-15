@@ -1,0 +1,6 @@
+title = "VATranscribe strict repository secret scanning"
+
+# CI and Git-history scans use all built-in Gitleaks rules.
+# Repository source, documentation, and example env files are not allowlisted.
+[extend]
+useDefault = true

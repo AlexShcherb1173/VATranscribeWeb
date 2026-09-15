@@ -199,140 +199,140 @@ export const downloadContentEn: DownloadContent = {
 };
 
 export const downloadContentRu: DownloadContent = {
-  eyebrow: "Download layer",
-  title: "Web app доступен сейчас. Desktop distribution готовим следующим шагом.",
+  eyebrow: "Скачать",
+  title: "Веб-приложение доступно сейчас. Настольные версии подготовим следующим шагом.",
   lead:
-    "VATranscribe сейчас работает как web dashboard с API-backed media workflows. Страница скачивания подготовлена для будущих desktop installers, release notes, checksums и platform-specific builds.",
-  primaryCta: "Открыть web app",
+    "VATranscribe сейчас работает как веб-кабинет с медиа-задачами через API. Страница скачивания подготовлена для будущих установщиков, заметок к релизу, контрольных сумм и сборок под разные платформы.",
+  primaryCta: "Открыть веб-приложение",
   primaryHref: getSaasLink("register"),
   secondaryCta: "Документация",
   secondaryHref: "/ru/docs",
   trustBadges: [
-    "Web dashboard доступен",
-    "Desktop roadmap подготовлен",
-    "Checksum section prepared",
-    "Структура release notes"
+    "Веб-кабинет доступен",
+    "План настольных версий подготовлен",
+    "Раздел контрольных сумм подготовлен",
+    "Структура заметок к релизу"
   ],
   platformsTitle: "Каналы распространения",
   platformsLead:
-    "Текущий production path — web dashboard. Desktop и CLI distribution подготовлены как публичная продуктовая поверхность.",
+    "Текущий рабочий путь — веб-кабинет. Настольные версии и инструменты командной строки подготовлены как будущие каналы распространения.",
   requirementsTitle: "Системные требования",
   requirementsLead:
-    "Требования будут финализированы после подготовки и тестирования подписанных desktop builds.",
-  releaseTitle: "Release notes preview",
+    "Требования будут финализированы после подготовки и тестирования подписанных настольных сборок.",
+  releaseTitle: "Заметки к релизу",
   releaseLead:
-    "Позже этот блок будет использоваться для публичной истории версий, release channels и installer integrity data.",
-  checksumTitle: "Integrity и подписи",
+    "Позже этот блок будет использоваться для публичной истории версий, каналов релизов и данных проверки установщиков.",
+  checksumTitle: "Целостность и подписи",
   checksumLead:
-    "Checksums и signatures зарезервированы для первого подписанного installer release. Реальные SHA256 и signing details добавляются при публикации installers.",
+    "Контрольные суммы и подписи зарезервированы для первого подписанного установщика. Реальные SHA256 и данные подписи добавляются при публикации установщиков.",
   faqTitle: "FAQ по скачиванию",
   faqLead:
-    "Короткие ответы про текущий web app, будущие desktop builds и проверку installers.",
-  finalTitle: "Начните с web app.",
+    "Короткие ответы про текущее веб-приложение, будущие настольные сборки и проверку установщиков.",
+  finalTitle: "Начните с веб-приложения.",
   finalLead:
-    "Самый быстрый путь сейчас — authenticated web dashboard. Desktop installers можно добавить, когда desktop runtime будет production-ready.",
-  finalPrimary: "Открыть web app",
+    "Самый быстрый путь сейчас — веб-кабинет с авторизацией. Настольные установщики можно добавить, когда настольная среда будет готова к выпуску.",
+  finalPrimary: "Открыть веб-приложение",
   finalSecondary: "Смотреть тарифы",
   platforms: [
     {
       code: "web",
-      title: "Web dashboard",
+      title: "Веб-кабинет",
       status: "Доступно",
       description:
-        "Browser-based SaaS dashboard для auth, downloads, files, transcripts, billing overview и privacy flows.",
-      version: "dev",
-      cta: "Открыть web app",
+        "Веб-кабинет в браузере для входа, скачиваний, файлов, транскриптов, обзора оплаты и запросов по персональным данным.",
+      version: "разработка",
+      cta: "Открыть веб-приложение",
       href: getSaasLink("register"),
-      meta: ["Без installer", "Современные браузеры", "Связь с API"]
+      meta: ["Без установщика", "Современные браузеры", "Связь с API"]
     },
     {
       code: "windows",
-      title: "Windows desktop",
+      title: "Настольная версия для Windows",
       status: "Запланировано",
       description:
-        "Будущий Windows installer для локальных desktop workflows и bundled runtime integration.",
-      version: "запланированный release",
+        "Будущий установщик Windows для локальных рабочих процессов и встроенной среды выполнения.",
+      version: "запланированный релиз",
       cta: "Позже",
       href: "#release-notes",
       disabled: true,
-      meta: ["Windows 10/11", "Tauri foundation", "Нужен checksum"]
+      meta: ["Windows 10/11", "Основа на Tauri", "Нужна контрольная сумма"]
     },
     {
       code: "macos",
-      title: "macOS desktop",
+      title: "Настольная версия для macOS",
       status: "Запланировано",
       description:
-        "Будущий macOS build для пользователей, которым нужен локальный desktop entry point.",
-      version: "запланированный release",
+        "Будущая сборка macOS для пользователей, которым нужен локальный настольный запуск.",
+      version: "запланированный релиз",
       cta: "Позже",
       href: "#release-notes",
       disabled: true,
-      meta: ["Apple Silicon / Intel target", "Пока без подписи", "Notarization позже"]
+      meta: ["Apple Silicon / Intel", "Пока без подписи", "Нотариальное заверение позже"]
     },
     {
       code: "linux",
-      title: "Linux desktop",
+      title: "Настольная версия для Linux",
       status: "Запланировано",
       description:
-        "Будущий Linux package для локальных workflows, тестирования и developer usage.",
-      version: "запланированный release",
+        "Будущий пакет Linux для локальных рабочих процессов, тестирования и разработки.",
+      version: "запланированный релиз",
       cta: "Позже",
       href: "#release-notes",
       disabled: true,
-      meta: ["AppImage/deb/rpm target", "Runtime packaging planned", "Нужен checksum"]
+      meta: ["Цель AppImage/deb/rpm", "Упаковка среды запланирована", "Нужна контрольная сумма"]
     },
     {
       code: "cli",
-      title: "CLI / worker tools",
-      status: "В roadmap",
+      title: "Инструменты командной строки и фоновых задач",
+      status: "В плане развития",
       description:
-        "Developer-oriented tools для local processing и worker diagnostics.",
-      version: "запланированный release",
+        "Инструменты для разработчиков: локальная обработка под контролем и диагностика фоновых задач.",
+      version: "запланированный релиз",
       cta: "Документация",
       href: "/ru/docs",
-      meta: ["Developer workflow", "Пока не public", "Сначала docs"]
+      meta: ["Рабочий процесс разработчика", "Пока не публично", "Сначала документация"]
     }
   ],
   requirements: [
-    { label: "Web app", value: "Современный Chromium, Firefox, Safari или Edge." },
-    { label: "API access", value: "Backend API и worker stack должны быть запущены для media jobs." },
-    { label: "Desktop runtime", value: "Tauri desktop shell есть как foundation, но это ещё не release." },
-    { label: "Storage", value: "Зависит от downloaded media, transcripts и local runtime cache." },
-    { label: "Network", value: "Нужна для URL analysis, downloads, auth и billing flows." }
+    { label: "Веб-приложение", value: "Современный Chromium, Firefox, Safari или Edge." },
+    { label: "Доступ к API", value: "Backend API и очередь фоновых задач должны быть запущены для медиа-задач." },
+    { label: "Настольная среда", value: "Настольная оболочка на Tauri есть как основа, но это ещё не релиз." },
+    { label: "Хранилище", value: "Зависит от скачанных медиафайлов, транскриптов и локального кэша среды выполнения." },
+    { label: "Сеть", value: "Нужна для анализа URL, скачивания, авторизации и сценариев оплаты." }
   ],
   releaseNotes: [
     {
       version: "0.1.0-web",
       date: "2026-05-31",
-      status: "Development",
+      status: "Разработка",
       items: [
-        "Web dashboard — основной способ доступа.",
-        "Добавлена структура публичной download page.",
-        "Добавлен desktop distribution roadmap.",
-        "Checksums и signatures зарезервированы для реальных installers."
+        "Веб-кабинет — основной способ доступа.",
+        "Добавлена структура публичной страницы скачивания.",
+        "Добавлен план распространения настольных версий.",
+        "Контрольные суммы и подписи зарезервированы для реальных установщиков."
       ]
     }
   ],
   faq: [
     {
-      question: "Desktop app уже можно скачать?",
+      question: "Настольное приложение уже можно скачать?",
       answer:
-        "Пока нет. В проекте есть desktop foundation, но публичные installers на этом этапе не опубликованы."
+        "Пока нет. В проекте есть основа для настольной версии, но публичные установщики на этом этапе не опубликованы."
     },
     {
       question: "Что использовать сейчас?",
       answer:
-        "Используйте web dashboard. Это текущий поддерживаемый путь для authenticated workflows."
+        "Используйте веб-кабинет. Это текущий поддерживаемый путь для рабочих процессов с авторизацией."
     },
     {
-      question: "У installers будут checksums?",
+      question: "У установщиков будут контрольные суммы?",
       answer:
-        "Да. Когда desktop builds будут опубликованы, download page должна содержать SHA256 checksums и signing details."
+        "Да. Когда настольные сборки будут опубликованы, страница скачивания должна содержать SHA256 и данные подписи."
     },
     {
-      question: "Для download page нужен backend?",
+      question: "Для страницы скачивания нужна серверная часть?",
       answer:
-        "Нет. Stage 3.6 — это marketing/distribution surface. Release storage или version API можно добавить позже."
+        "Нет. На этом этапе это маркетинговая и дистрибутивная страница. Хранилище релизов или API версий можно добавить позже."
     }
   ]
 };

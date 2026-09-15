@@ -1,11 +1,33 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 from typing import Any
 
-from jose import JWTError, jwt
+import jwt
+from cryptography.hazmat.primitives import serialization
+from jwt import InvalidTokenError
 
 from apps.api.app.config import settings
+
+
+@lru_cache(maxsize=8)
+def _jwt_verification_key(
+    algorithm: str,
+    secret_key: str,
+) -> str | bytes:
+    if algorithm != "RS256":
+        return secret_key
+
+    private_key = serialization.load_pem_private_key(
+        secret_key.encode("utf-8"),
+        password=None,
+    )
+
+    return private_key.public_key().public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+    )
 
 
 def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
@@ -20,10 +42,13 @@ def get_subject_from_token(token: str) -> str:
     try:
         payload = jwt.decode(
             token,
-            settings.secret_key,
+            _jwt_verification_key(
+                settings.jwt_algorithm,
+                settings.secret_key,
+            ),
             algorithms=[settings.jwt_algorithm],
         )
-    except JWTError as exc:
+    except InvalidTokenError as exc:
         raise ValueError("Invalid or expired token") from exc
 
     subject = payload.get("sub")

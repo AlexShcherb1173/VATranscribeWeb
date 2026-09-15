@@ -91,9 +91,9 @@ export function RegisterForm({ onRegistered, redirectTo }: RegisterFormProps) {
       email: email.trim(),
       password,
       accepted_legal_documents: [
-        { document_type: "terms", document_version: "1.0", accepted: true },
-        { document_type: "privacy", document_version: "1.0", accepted: true },
-        { document_type: "personal_data", document_version: "1.0", accepted: true },
+        { document_type: "terms", document_version: "2.0", accepted: true },
+        { document_type: "privacy", document_version: "2.0", accepted: true },
+        { document_type: "personal_data", document_version: "2.0", accepted: true },
       ],
     });
   }

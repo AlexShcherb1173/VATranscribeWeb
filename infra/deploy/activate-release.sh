@@ -210,13 +210,16 @@ done < <(tar -tzf "${RELEASE_ARCHIVE}")
 mkdir -p "${STAGING_ROOT}"
 chmod 775 "${STAGING_ROOT}"
 
+# Payload validation accepts only Git 100644/100755 files. Preserve those modes
+# despite umask 027 while keeping ownership untrusted with --no-same-owner;
+# --no-same-permissions here would make files unreadable to non-root runtimes.
 tar \
   --extract \
   --gzip \
   --file "${RELEASE_ARCHIVE}" \
   --directory "${STAGING_ROOT}" \
   --no-same-owner \
-  --no-same-permissions \
+  --same-permissions \
   --delay-directory-restore
 
 if find "${STAGING_ROOT}" -xdev -type l -print -quit | grep -q .; then

@@ -353,7 +353,7 @@ def test_linux_migration_replacement_readiness_smoke_order(linux_deploy_harness)
     run, *_ = linux_deploy_harness
     result, events, _ = run()
     assert result.returncode == 0
-    migration = next(i for i, event in enumerate(events) if "run --rm api alembic upgrade head" in event)
+    migration = next(i for i, event in enumerate(events) if "run --rm api python -m alembic upgrade head" in event)
     replacement = next(i for i, event in enumerate(events) if "--force-recreate --no-deps api worker web" in event)
     smoke = events.index("bash:./infra/deploy/smoke-test.sh")
     assert migration < replacement < smoke

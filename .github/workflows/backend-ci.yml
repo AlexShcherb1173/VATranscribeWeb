@@ -30,6 +30,7 @@ jobs:
             tests/security/test_release_activation_filemode_static.py \
             tests/security/test_backup_runtime_env_propagation_static.py \
             tests/security/test_backup_restore_drill_static.py \
+            tests/security/test_release_failure_evidence_capture.py \
             -q
 
       - name: Prepare CI environment file

@@ -32,6 +32,7 @@ jobs:
             tests/security/test_backup_restore_drill_static.py \
             tests/security/test_release_failure_evidence_capture.py \
             tests/security/test_deploy_api_readiness_gate.py \
+            tests/security/test_release_commit_boundary.py \
             -q
 
       - name: Prepare CI environment file

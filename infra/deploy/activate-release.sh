@@ -422,6 +422,7 @@ STAGING_ROOT="${PROJECT_PARENT}/app.next.${RELEASE_ID}"
 PREVIOUS_ROOT="${PROJECT_PARENT}/app.prev.${RELEASE_ID}"
 BROKEN_ROOT="${PROJECT_PARENT}/app.broken.${RELEASE_ID}"
 ROTATED="false"
+RELEASE_COMMITTED="false"
 
 compose_from_root() {
   local root="$1"
@@ -433,11 +434,67 @@ compose_from_root() {
   )
 }
 
+inspect_release_mounts() {
+  local path child inventory status index=0
+  local -a pending=("$1")
+  inventory="$(mktemp)" || return $?
+  while (( index < ${#pending[@]} )); do
+    path="${pending[index]}"
+    index=$((index + 1))
+    # Never probe through a symlink. Enumerate only immediate children after
+    # their parent is authoritatively known not to be a mount boundary.
+    [[ ! -L "${path}" ]] || continue
+    if mountpoint -q -- "${path}"; then
+      status=0
+    else
+      status=$?
+    fi
+    case "${status}" in
+      0)
+        printf '[ERROR] POST_COMMIT_PRUNE_FAILED category=mounted_state path=%q\n' "${path}" >&2
+        rm -f -- "${inventory}"
+        return 73;;
+      32) :;; # util-linux: authoritative non-mountpoint
+      *)
+        printf '[ERROR] POST_COMMIT_PRUNE_FAILED category=MOUNT_PROBE_ERROR path=%q probe_status=%s\n' "${path}" "${status}" >&2
+        rm -f -- "${inventory}"
+        return "${status}";;
+    esac
+    if [[ -d "${path}" ]]; then
+      if find -P "${path}" -mindepth 1 -maxdepth 1 ! -type l -print0 >"${inventory}"; then
+        while IFS= read -r -d '' child; do
+          pending+=("${child}")
+        done <"${inventory}"
+      else
+        status=$?
+        printf '[ERROR] POST_COMMIT_PRUNE_FAILED category=inspection_failed path=%q exit_status=%s\n' "${path}" "${status}" >&2
+        rm -f -- "${inventory}"
+        return "${status}"
+      fi
+    fi
+  done
+  rm -f -- "${inventory}"
+}
+
 prune_release_directories() {
   local pattern="$1"
   local keep_count="$2"
-  local entry directory basename_value
+  local entry directory basename_value inventory status
   local seen=0
+
+  # Failed candidates and release-evidence are forensic records, not cleanup
+  # targets. Legacy real Certbot directories also require separate review.
+  [[ "${pattern}" == 'app.prev.*' ]] || return 65
+  inventory="$(mktemp)" || return $?
+  if find "${PROJECT_PARENT}" -mindepth 1 -maxdepth 1 -type d \
+    -name "${pattern}" -printf '%T@ %p\0' | sort -z -nr >"${inventory}"; then
+    :
+  else
+    status=$?
+    printf '[ERROR] POST_COMMIT_PRUNE_FAILED category=enumeration path=%q exit_status=%s\n' "${PROJECT_PARENT}" "${status}" >&2
+    rm -f -- "${inventory}"
+    return "${status}"
+  fi
 
   while IFS= read -r -d '' entry; do
     directory="${entry#* }"
@@ -447,27 +504,46 @@ prune_release_directories() {
       continue
     fi
 
-    [[ "$(dirname "${directory}")" == "${PROJECT_PARENT}" ]] || continue
     basename_value="$(basename "${directory}")"
-
-    case "${basename_value}" in
-      app.prev.*|app.broken.*)
-        rm -rf -- "${directory}"
-        ;;
-    esac
-  done < <(
-    find "${PROJECT_PARENT}" \
-      -mindepth 1 \
-      -maxdepth 1 \
-      -type d \
-      -name "${pattern}" \
-      -printf '%T@ %p\0' |
-      sort -z -nr
-  )
+    if [[ "$(dirname "${directory}")" != "${PROJECT_PARENT}" ||
+          ! "${basename_value}" =~ ^app\.prev\.[A-Za-z0-9][A-Za-z0-9._-]*$ ||
+          -L "${directory}" || ! -d "${directory}" ||
+          "$(realpath -e -- "${directory}")" != "${directory}" ]]; then
+      printf '[ERROR] POST_COMMIT_PRUNE_FAILED category=unsafe_path path=%q\n' "${directory}" >&2
+      rm -f -- "${inventory}"
+      return 65
+    fi
+    # Never traverse a legacy release's real mutable certificate tree. Symlinks
+    # are unlinked by rm, never followed (including nested/outside symlinks).
+    if [[ ! -L "${directory}/infra" && -d "${directory}/infra/certbot" &&
+          ! -L "${directory}/infra/certbot" ]]; then
+      printf '[ERROR] POST_COMMIT_PRUNE_FAILED category=legacy_certbot_state path=%q\n' "${directory}/infra/certbot" >&2
+      rm -f -- "${inventory}"
+      return 73
+    fi
+    # Device boundaries alone do not catch bind mounts on the same filesystem.
+    # Inspect without following symlinks; stop at a mount instead of descending.
+    if inspect_release_mounts "${directory}"; then
+      :
+    else
+      status=$?
+      rm -f -- "${inventory}"
+      return "${status}"
+    fi
+    if rm -rf --one-file-system --preserve-root=all -- "${directory}"; then
+      printf '[INFO] POST_COMMIT_PRUNE_REMOVED path=%q\n' "${directory}"
+    else
+      status=$?
+      printf '[ERROR] POST_COMMIT_PRUNE_FAILED category=remove_failed path=%q exit_status=%s\n' "${directory}" "${status}" >&2
+      rm -f -- "${inventory}"
+      return "${status}"
+    fi
+  done <"${inventory}"
+  rm -f -- "${inventory}"
 }
 
 restore_previous_release() {
-  if [[ "${ROTATED}" != "true" ]]; then
+  if [[ "${ROTATED}" != "true" || "${RELEASE_COMMITTED}" == "true" ]]; then
     return 0
   fi
 
@@ -501,7 +577,9 @@ cleanup() {
   trap - EXIT
 
   if [[ "${status}" -ne 0 ]]; then
-    if [[ "${ROTATED}" == "true" ]]; then
+    if [[ "${RELEASE_COMMITTED}" == "true" ]]; then
+      printf '[ERROR] RELEASE_POST_COMMIT_FAILURE release_id=%s exit_status=%s candidate_active=true rollback_performed=false\n' "${RELEASE_ID}" "${status}" >&2
+    elif [[ "${ROTATED}" == "true" ]]; then
       if command -v timeout >/dev/null 2>&1 && command -v setsid >/dev/null 2>&1; then
         set +e
         setsid sh -c '
@@ -525,8 +603,8 @@ cleanup() {
       else
         forensic_fixed_warning
       fi
+      restore_previous_release || true
     fi
-    restore_previous_release || true
   fi
 
   rm -rf "${STAGING_ROOT}"
@@ -664,8 +742,12 @@ COMPOSE_FILES="${COMPOSE_FILES}" \
 BACKUP_BEFORE_DEPLOY="false" \
   bash "${PROJECT_ROOT}/infra/deploy/deploy.sh"
 
-prune_release_directories "app.prev.*" "${RELEASE_RETENTION_COUNT}"
-prune_release_directories "app.broken.*" "${RELEASE_RETENTION_COUNT}"
-
+# deploy.sh returns only after migration, replacement, readiness and both smoke
+# checks succeed. No later housekeeping error may undo this accepted release.
+RELEASE_COMMITTED="true"
 ROTATED="false"
+printf '[INFO] RELEASE_COMMIT_POINT release_id=%s candidate_active=true\n' "${RELEASE_ID}"
+
+prune_release_directories "app.prev.*" "${RELEASE_RETENTION_COUNT}"
+printf '[INFO] POST_COMMIT_PRUNE_COMPLETE release_id=%s broken_candidates=preserved\n' "${RELEASE_ID}"
 echo "Release activation completed: ${PROJECT_ROOT}"

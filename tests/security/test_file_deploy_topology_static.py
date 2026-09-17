@@ -129,8 +129,8 @@ def test_file_release_uses_reviewed_backup_force_recreate_and_bounded_retention(
     assert 'RELEASE_RETENTION_COUNT="${RELEASE_RETENTION_COUNT:-3}"' in activator
     assert "prune_release_directories()" in activator
     assert 'prune_release_directories "app.prev.*"' in activator
-    assert 'prune_release_directories "app.broken.*"' in activator
-    assert 'rm -rf -- "${directory}"' in activator
+    assert 'prune_release_directories "app.broken.*"' not in activator
+    assert 'rm -rf --one-file-system --preserve-root=all -- "${directory}"' in activator
 
     assert "up -d --remove-orphans --force-recreate" in activator
     assert "up -d --remove-orphans --force-recreate" in deploy
